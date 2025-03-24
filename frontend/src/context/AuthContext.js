@@ -1,135 +1,200 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import { authService } from '../services/api';
+import React, { createContext, useState, useEffect } from 'react';
+import userService from '../services/userService';
 
-const AuthContext = createContext(null);
-
-export const useAuth = () => useContext(AuthContext);
+// Создаем контекст авторизации
+export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState(null);
 
+  // Проверяем авторизацию при загрузке приложения
   useEffect(() => {
-    // Проверяем, есть ли сохраненный пользователь
-    const storedUser = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
+    const checkAuth = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+          setIsAuthenticated(false);
+          setUser(null);
+          return;
+        }
+        
+        // Получаем информацию о текущем пользователе
+        const response = await userService.getCurrentUser();
+        
+        if (response.status === 200) {
+          setUser(response.data);
+          setIsAuthenticated(true);
+        } else {
+          // Если запрос не успешен, очищаем хранилище
+          localStorage.removeItem('token');
+          setIsAuthenticated(false);
+          setUser(null);
+        }
+      } catch (error) {
+        console.error('Ошибка при проверке авторизации:', error);
+        localStorage.removeItem('token');
+        setIsAuthenticated(false);
+        setUser(null);
+        setError('Ошибка при проверке авторизации');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    if (storedUser && token) {
-      setUser(JSON.parse(storedUser));
-    }
-    
-    setLoading(false);
+    checkAuth();
   }, []);
 
-  // Загрузка профиля пользователя
-  const loadUserProfile = async () => {
-    try {
-      setLoading(true);
-      const response = await authService.getProfile();
-      const userData = response.data;
-      
-      setUser(userData);
-      localStorage.setItem('user', JSON.stringify(userData));
-      
-      setError(null);
-    } catch (err) {
-      setError('Ошибка загрузки профиля');
-      console.error('Ошибка загрузки профиля:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Регистрация пользователя
-  const register = async (userData) => {
-    try {
-      setLoading(true);
-      await authService.register(userData);
-      setError(null);
-      return true;
-    } catch (err) {
-      setError(err.response?.data?.message || 'Ошибка при регистрации');
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Вход пользователя
+  // Функция для авторизации пользователя
   const login = async (credentials) => {
     try {
       setLoading(true);
-      const response = await authService.login(credentials);
-      const { token, user: userData } = response.data;
+      const response = await userService.login(credentials);
       
+      const { token, user } = response.data;
+      
+      // Сохраняем токен в локальное хранилище
       localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(userData));
       
-      setUser(userData);
+      setUser(user);
+      setIsAuthenticated(true);
       setError(null);
-      return true;
-    } catch (err) {
-      setError(err.response?.data?.message || 'Ошибка при входе');
-      return false;
+      
+      return { success: true };
+    } catch (error) {
+      console.error('Ошибка при авторизации:', error);
+      setError(
+        error.response?.data?.message || 
+        'Произошла ошибка при авторизации. Пожалуйста, проверьте ваши учетные данные.'
+      );
+      
+      return { 
+        success: false, 
+        error: error.response?.data?.message || 'Ошибка авторизации'
+      };
     } finally {
       setLoading(false);
     }
   };
 
-  // Выход пользователя
-  const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
+  // Функция для регистрации пользователя
+  const register = async (userData) => {
+    try {
+      setLoading(true);
+      const response = await userService.register(userData);
+      
+      const { token, user } = response.data;
+      
+      // Сохраняем токен в локальное хранилище
+      localStorage.setItem('token', token);
+      
+      setUser(user);
+      setIsAuthenticated(true);
+      setError(null);
+      
+      return { success: true };
+    } catch (error) {
+      console.error('Ошибка при регистрации:', error);
+      setError(
+        error.response?.data?.message || 
+        'Произошла ошибка при регистрации. Пожалуйста, попробуйте еще раз.'
+      );
+      
+      return { 
+        success: false, 
+        error: error.response?.data?.message || 'Ошибка регистрации'
+      };
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Обновление профиля
+  // Функция для выхода из системы
+  const logout = async () => {
+    try {
+      setLoading(true);
+      
+      // Вызываем API для выхода, если нужно
+      await userService.logout();
+      
+      // Очищаем локальное хранилище
+      localStorage.removeItem('token');
+      
+      setUser(null);
+      setIsAuthenticated(false);
+      
+      return { success: true };
+    } catch (error) {
+      console.error('Ошибка при выходе из системы:', error);
+      // Даже при ошибке API мы все равно выходим локально
+      localStorage.removeItem('token');
+      setUser(null);
+      setIsAuthenticated(false);
+      
+      return { success: true }; // Всегда возвращаем успех для выхода
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Функция для обновления данных пользователя
   const updateProfile = async (userData) => {
     try {
       setLoading(true);
-      const response = await authService.updateProfile(userData);
-      const updatedUser = response.data.user;
+      const response = await userService.updateUserProfile(userData);
       
-      setUser(prevUser => ({ ...prevUser, ...updatedUser }));
-      localStorage.setItem('user', JSON.stringify({ ...user, ...updatedUser }));
-      
+      setUser(response.data);
       setError(null);
-      return true;
-    } catch (err) {
-      setError(err.response?.data?.message || 'Ошибка при обновлении профиля');
-      return false;
+      
+      return { success: true };
+    } catch (error) {
+      console.error('Ошибка при обновлении профиля:', error);
+      setError(
+        error.response?.data?.message || 
+        'Произошла ошибка при обновлении профиля. Пожалуйста, попробуйте еще раз.'
+      );
+      
+      return { 
+        success: false, 
+        error: error.response?.data?.message || 'Ошибка обновления профиля'
+      };
     } finally {
       setLoading(false);
     }
   };
-
-  // Изменение пароля
-  const changePassword = async (passwords) => {
-    try {
-      setLoading(true);
-      await authService.changePassword(passwords);
-      setError(null);
-      return true;
-    } catch (err) {
-      setError(err.response?.data?.message || 'Ошибка при изменении пароля');
-      return false;
-    } finally {
-      setLoading(false);
-    }
+  
+  // Функция для проверки роли пользователя
+  const hasRole = (role) => {
+    return user && user.role === role;
   };
 
-  const value = {
-    user,
-    loading,
-    error,
-    register,
-    login,
-    logout,
-    updateProfile,
-    changePassword,
-    loadUserProfile
-  };
+  // Передаем контекст и функции всем дочерним компонентам
+  return (
+    <AuthContext.Provider value={{
+      user,
+      isAuthenticated,
+      loading,
+      error,
+      login,
+      register,
+      logout,
+      updateProfile,
+      hasRole
+    }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+// Для удобства использования контекста в компонентах
+export const useAuth = () => {
+  const context = React.useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 }; 

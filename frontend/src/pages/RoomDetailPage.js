@@ -3,110 +3,437 @@ import { useParams, Link } from 'react-router-dom';
 import { roomService } from '../services/api';
 import styled from 'styled-components';
 import { useAuth } from '../context/AuthContext';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-const Container = styled.div`
-  padding: 20px;
+const PageContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-`;
-
-const BackLink = styled(Link)`
-  display: block;
-  margin-bottom: 20px;
-  color: #003366;
-  text-decoration: none;
-  font-weight: bold;
+  padding: 2rem;
   
-  &:hover {
-    text-decoration: underline;
+  @media (max-width: 768px) {
+    padding: 1rem;
   }
 `;
 
-const RoomTitle = styled.h1`
-  color: #003366;
-  margin-bottom: 20px;
+const BackLink = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 2rem;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition);
+  
+  i {
+    margin-right: 0.5rem;
+  }
+  
+  &:hover {
+    color: var(--accent-color);
+    transform: translateX(-5px);
+  }
 `;
 
-const RoomImage = styled.img`
+const MainContent = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 2.5rem;
+  
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const RoomGallery = styled.div`
+  margin-bottom: 2rem;
+`;
+
+const MainImage = styled.div`
+  position: relative;
   width: 100%;
-  max-height: 400px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 20px;
+  height: 450px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+  
+  &:hover img {
+    transform: scale(1.05);
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background: linear-gradient(to top, rgba(0,0,0,0.5), rgba(0,0,0,0));
+    pointer-events: none;
+  }
 `;
 
-const RoomInfo = styled.div`
-  margin-bottom: 20px;
+const ThumbnailsContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+  
+  @media (max-width: 576px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+`;
+
+const Thumbnail = styled.div`
+  height: 80px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  cursor: pointer;
+  opacity: ${props => props.active ? 1 : 0.6};
+  box-shadow: ${props => props.active ? 'var(--shadow-md)' : 'var(--shadow-sm)'};
+  transition: var(--transition);
+  border: ${props => props.active ? '2px solid var(--primary-color)' : 'none'};
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  &:hover {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+`;
+
+const RoomDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const RoomTitle = styled.h1`
+  color: var(--dark-color);
+  margin-bottom: 1rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
 `;
 
 const RoomType = styled.span`
-  background-color: #003366;
+  display: inline-block;
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
   color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
-  margin-right: 10px;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-sm);
+`;
+
+const RoomNumber = styled.span`
+  display: inline-block;
+  background-color: var(--light-color);
+  color: var(--text-color);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-sm);
+`;
+
+const RoomDescription = styled.div`
+  margin-bottom: 2rem;
+  color: var(--text-color);
+  line-height: 1.7;
+  
+  p {
+    margin-bottom: 1rem;
+  }
 `;
 
 const RoomPrice = styled.div`
-  font-size: 24px;
-  font-weight: bold;
-  color: #003366;
-  margin: 20px 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin: 1rem 0;
+  font-family: 'Playfair Display', serif;
+  
+  span {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+`;
+
+const InfoGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+  
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const InfoItem = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: var(--light-color);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  
+  i {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    color: white;
+    border-radius: 50%;
+    margin-right: 1rem;
+    font-size: 1.2rem;
+  }
+  
+  div {
+    span:first-child {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 0.25rem;
+    }
+    
+    span:last-child {
+      font-weight: 600;
+      color: var(--dark-color);
+    }
+  }
 `;
 
 const SectionTitle = styled.h2`
-  color: #003366;
-  margin: 20px 0 10px 0;
+  color: var(--dark-color);
+  margin: 2rem 0 1rem 0;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -10px;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+  }
 `;
 
 const AmenitiesList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
 `;
 
 const AmenityItem = styled.div`
-  padding: 8px 12px;
-  background-color: #f5f5f5;
-  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: var(--light-color);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  
+  i {
+    color: var(--accent-color);
+    margin-right: 0.75rem;
+    font-size: 1.1rem;
+  }
+  
+  span {
+    font-size: 0.95rem;
+  }
 `;
 
-const BookingSection = styled.div`
-  margin-top: 30px;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
+const BookingBox = styled.div`
+  background-color: white;
+  padding: 2rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+  
+  h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--dark-color);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  @media (max-width: 992px) {
+    position: static;
+    margin-top: 2rem;
+  }
+`;
+
+const BookingDate = styled.div`
+  margin-bottom: 1.5rem;
+  
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--dark-color);
+  }
+`;
+
+const StyledDatePicker = styled(DatePicker)`
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--light-color);
+  transition: var(--transition);
+  
+  &:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(33, 113, 72, 0.2);
+  }
+`;
+
+const TotalPrice = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 1rem 0;
+  margin: 1.5rem 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+`;
+
+const BookButton = styled.button`
+  display: block;
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    background-color: var(--dark-color);
+    transition: var(--transition);
+    z-index: -1;
+  }
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  &:hover::before {
+    width: 100%;
+  }
+  
+  &:disabled {
+    background-color: var(--border-color);
+    cursor: not-allowed;
+  }
+`;
+
+const LoginPrompt = styled.div`
   text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  
+  p {
+    margin-bottom: 1rem;
+    color: var(--text-color);
+  }
 `;
 
 const LoginButton = styled(Link)`
   display: inline-block;
-  padding: 10px 20px;
-  background-color: #003366;
+  padding: 0.8rem 1.5rem;
+  background-color: var(--primary-color);
   color: white;
+  border-radius: var(--radius-sm);
   text-decoration: none;
-  border-radius: 4px;
-  margin-right: 10px;
+  font-weight: 600;
+  margin-right: 1rem;
+  transition: var(--transition);
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-sm);
+    background-color: var(--dark-color);
+  }
 `;
 
 const RegisterButton = styled(Link)`
   display: inline-block;
-  padding: 10px 20px;
+  padding: 0.8rem 1.5rem;
   background-color: transparent;
-  color: #003366;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: var(--radius-sm);
   text-decoration: none;
-  border: 1px solid #003366;
-  border-radius: 4px;
+  font-weight: 600;
+  transition: var(--transition);
+  
+  &:hover {
+    background-color: var(--light-color);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-sm);
+  }
 `;
+
+const bookingSchema = Yup.object().shape({
+  checkIn: Yup.date()
+    .required('Выберите дату заезда')
+    .min(new Date(), 'Дата не может быть в прошлом'),
+  checkOut: Yup.date()
+    .required('Выберите дату выезда')
+    .min(Yup.ref('checkIn'), 'Дата выезда должна быть после даты заезда')
+});
 
 const RoomDetailPage = () => {
   const { id } = useParams();
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -114,6 +441,17 @@ const RoomDetailPage = () => {
   
   // Placeholder изображения
   const placeholderImage = 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80';
+  
+  // Генерация дополнительных изображений для галереи, если их недостаточно
+  const generateImages = (mainImage) => {
+    return [
+      mainImage,
+      'https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
+      'https://images.unsplash.com/photo-1618773928121-c32242e63f39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
+      'https://images.unsplash.com/photo-1582719508461-905c673771fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1925&q=80',
+      'https://images.unsplash.com/photo-1540518614846-7eded433c457?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1739&q=80'
+    ];
+  };
   
   useEffect(() => {
     console.log('RoomDetailPage: Загрузка комнаты с ID:', id);
@@ -135,20 +473,38 @@ const RoomDetailPage = () => {
     fetchRoom();
   }, [id]);
   
+  const handleImageChange = (index) => {
+    setSelectedImage(index);
+  };
+  
+  const calculateDays = (checkIn, checkOut) => {
+    if (!checkIn || !checkOut) return 1;
+    const diffTime = Math.abs(checkOut - checkIn);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays || 1;
+  };
+  
+  const handleSubmit = (values, { setSubmitting }) => {
+    console.log('Отправка формы бронирования:', values);
+    // TODO: Реализовать бронирование
+    
+    setSubmitting(false);
+  };
+  
   if (loading) {
     return (
-      <Container>
+      <PageContainer>
         <div>Загрузка данных о номере...</div>
-      </Container>
+      </PageContainer>
     );
   }
   
   if (error || !room) {
     return (
-      <Container>
-        <BackLink to="/rooms">← Назад к списку номеров</BackLink>
+      <PageContainer>
+        <BackLink to="/rooms"><i className="fas fa-chevron-left"></i> Назад к списку номеров</BackLink>
         <div>{error || 'Номер не найден'}</div>
-      </Container>
+      </PageContainer>
     );
   }
   
@@ -161,56 +517,188 @@ const RoomDetailPage = () => {
     'executive': 'Премиум'
   };
   
+  // Создание массива изображений
+  const roomImages = room.images && room.images.length > 0 ? 
+    room.images : 
+    generateImages(placeholderImage);
+  
+  // Дополнительные удобства, если они отсутствуют в данных
+  const defaultAmenities = [
+    'Бесплатный Wi-Fi',
+    'Кондиционер',
+    'Телевизор',
+    'Холодильник',
+    'Сейф',
+    'Фен',
+    'Ванные принадлежности'
+  ];
+  
+  const amenities = room.amenities && room.amenities.length > 0 ? 
+    room.amenities : 
+    defaultAmenities;
+  
   return (
-    <Container>
-      <BackLink to="/rooms">← Назад к списку номеров</BackLink>
+    <PageContainer>
+      <BackLink to="/rooms"><i className="fas fa-chevron-left"></i> Назад к списку номеров</BackLink>
       
-      <RoomTitle>{room.name}</RoomTitle>
-      
-      <RoomInfo>
-        <RoomType>
-          {roomTypeNames[room.roomType] || room.roomType}
-        </RoomType>
-        <span>Номер {room.roomNumber}</span>
-      </RoomInfo>
-      
-      <RoomPrice>
-        {room.price.toLocaleString()} ₽
-        <span style={{ fontSize: '16px', fontWeight: 'normal', color: '#666' }}> за ночь</span>
-      </RoomPrice>
-      
-      <RoomImage 
-        src={room.images && room.images.length > 0 ? room.images[selectedImage] : placeholderImage} 
-        alt={room.name}
-      />
-      
-      <SectionTitle>Описание</SectionTitle>
-      <p>{room.description}</p>
-      
-      <SectionTitle>Детали номера</SectionTitle>
-      <AmenitiesList>
-        <AmenityItem>👤 Вместимость: {room.capacity} гостей</AmenityItem>
-        <AmenityItem>🏢 Этаж: {room.floor || 1}</AmenityItem>
-        <AmenityItem>📏 Площадь: {room.area || '25'} м²</AmenityItem>
-        <AmenityItem>🛏️ Кровати: {room.beds || '1 двуспальная'}</AmenityItem>
-      </AmenitiesList>
-      
-      <SectionTitle>Удобства</SectionTitle>
-      <AmenitiesList>
-        {room.amenities && room.amenities.map((amenity, index) => (
-          <AmenityItem key={index}>✓ {amenity}</AmenityItem>
-        ))}
-      </AmenitiesList>
-      
-      <BookingSection>
-        <h3 style={{ marginBottom: '10px' }}>Хотите забронировать этот номер?</h3>
-        <p style={{ marginBottom: '20px' }}>Для бронирования необходимо войти в систему.</p>
+      <MainContent>
         <div>
-          <LoginButton to="/login">Войти</LoginButton>
-          <RegisterButton to="/register">Зарегистрироваться</RegisterButton>
+          <RoomGallery>
+            <MainImage>
+              <img src={roomImages[selectedImage]} alt={room.name} />
+            </MainImage>
+            <ThumbnailsContainer>
+              {roomImages.map((image, index) => (
+                <Thumbnail 
+                  key={index} 
+                  active={selectedImage === index}
+                  onClick={() => handleImageChange(index)}
+                >
+                  <img src={image} alt={`${room.name} - изображение ${index + 1}`} />
+                </Thumbnail>
+              ))}
+            </ThumbnailsContainer>
+          </RoomGallery>
+          
+          <RoomDetails>
+            <RoomTitle>{room.name}</RoomTitle>
+            
+            <div>
+              <RoomType>
+                {roomTypeNames[room.roomType] || room.roomType}
+              </RoomType>
+              <RoomNumber>
+                <i className="fas fa-door-open"></i> Номер {room.roomNumber}
+              </RoomNumber>
+            </div>
+            
+            <RoomPrice>
+              {room.price.toLocaleString()} ₽ <span>за ночь</span>
+            </RoomPrice>
+            
+            <RoomDescription>
+              <p>{room.description || `Уютный ${roomTypeNames[room.roomType].toLowerCase()} номер с современным дизайном и всеми необходимыми удобствами для комфортного проживания. Наслаждайтесь прекрасным видом и качественным сервисом.`}</p>
+            </RoomDescription>
+            
+            <InfoGrid>
+              <InfoItem>
+                <i className="fas fa-user"></i>
+                <div>
+                  <span>Вместимость</span>
+                  <span>{room.capacity} {room.capacity === 1 ? 'гость' : 'гостей'}</span>
+                </div>
+              </InfoItem>
+              <InfoItem>
+                <i className="fas fa-building"></i>
+                <div>
+                  <span>Этаж</span>
+                  <span>{room.floor || 1}</span>
+                </div>
+              </InfoItem>
+              <InfoItem>
+                <i className="fas fa-expand"></i>
+                <div>
+                  <span>Площадь</span>
+                  <span>{room.area || '25'} м²</span>
+                </div>
+              </InfoItem>
+              <InfoItem>
+                <i className="fas fa-bed"></i>
+                <div>
+                  <span>Кровати</span>
+                  <span>{room.beds || '1 двуспальная'}</span>
+                </div>
+              </InfoItem>
+            </InfoGrid>
+            
+            <SectionTitle>Удобства и сервисы</SectionTitle>
+            <AmenitiesList>
+              {amenities.map((amenity, index) => (
+                <AmenityItem key={index}>
+                  <i className="fas fa-check-circle"></i>
+                  <span>{amenity}</span>
+                </AmenityItem>
+              ))}
+            </AmenitiesList>
+          </RoomDetails>
         </div>
-      </BookingSection>
-    </Container>
+        
+        <aside>
+          <BookingBox>
+            <h3>Забронировать номер</h3>
+            
+            {isAuthenticated ? (
+              <Formik
+                initialValues={{
+                  checkIn: new Date(),
+                  checkOut: new Date(new Date().setDate(new Date().getDate() + 1)),
+                }}
+                validationSchema={bookingSchema}
+                onSubmit={handleSubmit}
+              >
+                {({ values, setFieldValue, isSubmitting }) => {
+                  const calculatedDays = calculateDays(values.checkIn, values.checkOut);
+                  return (
+                    <Form>
+                      <BookingDate>
+                        <label htmlFor="checkIn">Дата заезда</label>
+                        <StyledDatePicker
+                          id="checkIn"
+                          selected={values.checkIn}
+                          onChange={date => {
+                            setFieldValue('checkIn', date);
+                          }}
+                          selectsStart
+                          startDate={values.checkIn}
+                          endDate={values.checkOut}
+                          minDate={new Date()}
+                          dateFormat="dd.MM.yyyy"
+                        />
+                        <ErrorMessage name="checkIn" component={Error} />
+                      </BookingDate>
+                      
+                      <BookingDate>
+                        <label htmlFor="checkOut">Дата выезда</label>
+                        <StyledDatePicker
+                          id="checkOut"
+                          selected={values.checkOut}
+                          onChange={date => {
+                            setFieldValue('checkOut', date);
+                          }}
+                          selectsEnd
+                          startDate={values.checkIn}
+                          endDate={values.checkOut}
+                          minDate={values.checkIn}
+                          dateFormat="dd.MM.yyyy"
+                        />
+                        <ErrorMessage name="checkOut" component={Error} />
+                      </BookingDate>
+                      
+                      <TotalPrice>
+                        <span>Итого за {calculatedDays} {calculatedDays === 1 ? 'ночь' : calculatedDays < 5 ? 'ночи' : 'ночей'}</span>
+                        <span>{(room.price * calculatedDays).toLocaleString()} ₽</span>
+                      </TotalPrice>
+                      
+                      <BookButton type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? 'Бронирование...' : 'Забронировать'}
+                      </BookButton>
+                    </Form>
+                  );
+                }}
+              </Formik>
+            ) : (
+              <LoginPrompt>
+                <p>Для бронирования необходимо войти в систему</p>
+                <div>
+                  <LoginButton to="/login">Войти</LoginButton>
+                  <RegisterButton to="/register">Регистрация</RegisterButton>
+                </div>
+              </LoginPrompt>
+            )}
+          </BookingBox>
+        </aside>
+      </MainContent>
+    </PageContainer>
   );
 };
 

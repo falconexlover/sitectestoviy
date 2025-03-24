@@ -4,19 +4,56 @@
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Гостиничный комплекс Лесной Дворик - комфортный отдых на природе"
-    />
+    <meta name="theme-color" content="#217148" />
+    
+    <!-- Мета-теги для SEO -->
+    <meta name="description" content="Гостиничный комплекс «Лесной дворик» - уютные номера, сауна и конференц-зал в лесопарковой зоне города Жуковского. Бронирование онлайн." />
+    <meta name="keywords" content="гостиница Жуковский, отель Жуковский, сауна Жуковский, конференц-зал, номера, бронирование" />
+    
+    <!-- Open Graph метатеги для соцсетей -->
+    <meta property="og:title" content="Лесной дворик - гостиница в Жуковском" />
+    <meta property="og:description" content="Комфортные номера, сауна и конференц-зал в лесопарковой зоне города Жуковского. Бронирование онлайн." />
+    <meta property="og:image" content="%PUBLIC_URL%/logo512.png" />
+    <meta property="og:url" content="https://yourwebsite.com/" />
+    <meta property="og:type" content="website" />
+    
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Подключение шрифтов -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Подключение Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
     
     <!-- Добавляем стили DatePicker из CDN для решения проблемы -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/react-datepicker/4.21.0/react-datepicker.min.css" />
     
     <title>Лесной Дворик</title>
+    
+    <!-- Структурированные данные для Google -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Hotel",
+      "name": "Лесной дворик",
+      "description": "Гостиничный комплекс «Лесной дворик» - уютные номера, сауна и конференц-зал в лесопарковой зоне города Жуковского.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "ул. Нижегородская, д. 4",
+        "addressLocality": "Жуковский",
+        "addressRegion": "Московская область",
+        "postalCode": "140180",
+        "addressCountry": "RU"
+      },
+      "telephone": "+74984831941",
+      "priceRange": "$$"
+    }
+    </script>
   </head>
   <body>
     <noscript>Для работы этого приложения необходимо включить JavaScript.</noscript>

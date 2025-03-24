@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import PrivateRoute from './components/PrivateRoute';
 
 // Импорт компонентов страниц
 import Layout from './components/Layout';
@@ -10,11 +11,17 @@ import RegisterPage from './pages/RegisterPage';
 import RoomsPage from './pages/RoomsPage';
 import RoomDetailPage from './pages/RoomDetailPage';
 import ProfilePage from './pages/ProfilePage';
-// import BookingsPage from './pages/BookingsPage';
-// import BookingDetailPage from './pages/BookingDetailPage';
-// import AdminDashboardPage from './pages/admin/DashboardPage';
-// import AdminRoomsPage from './pages/admin/RoomsPage';
-// import AdminBookingsPage from './pages/admin/BookingsPage';
+import ServicePage from './pages/ServicePage';
+import GalleryPage from './pages/GalleryPage';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
+import BookingPage from './pages/BookingPage';
+import BookingsPage from './pages/BookingsPage';
+import BookingDetailPage from './pages/BookingDetailPage';
+// Импорт страниц администратора
+import AdminDashboardPage from './pages/admin/DashboardPage';
+import AdminRoomsPage from './pages/admin/RoomsPage';
+import AdminBookingsPage from './pages/admin/BookingsPage';
 // import AdminCustomersPage from './pages/admin/CustomersPage';
 // import AdminCustomerDetailPage from './pages/admin/CustomerDetailPage';
 // import AdminAnalyticsPage from './pages/admin/AnalyticsPage';
@@ -30,25 +37,6 @@ const PlaceholderPage = ({ title }) => (
     </a>
   </div>
 );
-
-// Защищенный маршрут для аутентифицированных пользователей
-const PrivateRoute = ({ children, roles = [] }) => {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return <div>Загрузка...</div>;
-  }
-
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  if (roles.length > 0 && !roles.includes(user.role)) {
-    return <Navigate to="/" replace />;
-  }
-
-  return children;
-};
 
 function App() {
   useEffect(() => {
@@ -72,8 +60,13 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="rooms" element={<RoomsPage />} />
             <Route path="rooms/:id" element={<RoomDetailPage />} />
+            <Route path="services" element={<ServicePage />} />
+            <Route path="gallery" element={<GalleryPage />} />
+            <Route path="about" element={<AboutPage />} />
+            <Route path="contacts" element={<ContactPage />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="register" element={<RegisterPage />} />
+            <Route path="booking" element={<BookingPage />} />
 
             {/* Защищенные страницы для аутентифицированных пользователей */}
             <Route path="profile" element={
@@ -83,49 +76,54 @@ function App() {
             } />
             <Route path="bookings" element={
               <PrivateRoute>
-                <PlaceholderPage title="Мои бронирования" />
+                <BookingsPage />
               </PrivateRoute>
             } />
             <Route path="bookings/:id" element={
               <PrivateRoute>
-                <PlaceholderPage title="Детали бронирования" />
+                <BookingDetailPage />
               </PrivateRoute>
             } />
 
             {/* Административные страницы */}
             <Route path="admin/dashboard" element={
               <PrivateRoute roles={['admin', 'manager']}>
-                <PlaceholderPage title="Панель администратора" />
+                <AdminDashboardPage />
               </PrivateRoute>
             } />
             <Route path="admin/rooms" element={
               <PrivateRoute roles={['admin', 'manager']}>
-                <PlaceholderPage title="Управление номерами" />
+                <AdminRoomsPage />
               </PrivateRoute>
             } />
             <Route path="admin/bookings" element={
               <PrivateRoute roles={['admin', 'manager']}>
-                <PlaceholderPage title="Управление бронированиями" />
+                <AdminBookingsPage />
               </PrivateRoute>
             } />
+            {/* Заглушки для маршрутов, которые еще не реализованы */}
+            {/* 
             <Route path="admin/customers" element={
               <PrivateRoute roles={['admin', 'manager']}>
-                <PlaceholderPage title="Управление клиентами" />
+                <AdminCustomersPage />
               </PrivateRoute>
             } />
+            
             <Route path="admin/customers/:id" element={
               <PrivateRoute roles={['admin', 'manager']}>
-                <PlaceholderPage title="Информация о клиенте" />
+                <AdminCustomerDetailPage />
               </PrivateRoute>
             } />
+            
             <Route path="admin/analytics" element={
               <PrivateRoute roles={['admin', 'manager']}>
-                <PlaceholderPage title="Аналитика" />
+                <AdminAnalyticsPage />
               </PrivateRoute>
             } />
+            */}
 
             {/* Страница 404 */}
-            <Route path="*" element={<PlaceholderPage title="Страница не найдена" />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
       </Router>
