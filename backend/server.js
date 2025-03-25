@@ -43,8 +43,16 @@ const corsOptions = {
 // Middleware
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use(i18nMiddleware);
-app.use(requestLogger);
+
+// В serverless среде Vercel некоторые middleware могут не работать корректно
+// Проверяем наличие middleware перед использованием
+if (i18nMiddleware) {
+  app.use(i18nMiddleware);
+}
+
+if (requestLogger) {
+  app.use(requestLogger);
+}
 
 // Конфигурация Swagger
 const swaggerOptions = {
@@ -57,7 +65,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: process.env.API_URL || 'http://localhost:5000',
+        url: process.env.API_URL || 'https://lesnoy-dvorik-backend.vercel.app',
         description: 'Сервер API'
       }
     ],
@@ -80,19 +88,22 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
-// Подключение к базе данных
-db.authenticate()
-  .then(() => {
-    logger.info('Подключение к базе данных установлено успешно.');
-    // Синхронизация моделей с базой данных (в продакшн используйте миграции)
-    return db.sync({ force: false });
-  })
-  .then(() => {
-    logger.info('Модели синхронизированы с базой данных.');
-  })
-  .catch(err => {
-    logger.error('Ошибка подключения к базе данных:', err);
-  });
+// Подключение к базе данных только в продакшн-окружении
+// В Vercel мы будем использовать serverless функции
+if (process.env.NODE_ENV !== 'development') {
+  db.authenticate()
+    .then(() => {
+      logger.info('Подключение к базе данных установлено успешно.');
+      // Синхронизация моделей с базой данных (в продакшн используйте миграции)
+      return db.sync({ force: false });
+    })
+    .then(() => {
+      logger.info('Модели синхронизированы с базой данных.');
+    })
+    .catch(err => {
+      logger.error('Ошибка подключения к базе данных:', err);
+    });
+}
 
 // Маршруты
 app.use('/api/auth', authRoutes);
@@ -108,22 +119,27 @@ app.get('/health', (req, res) => {
   res.status(200).send('Сервер работает');
 });
 
+// Обработка базового маршрута
+app.get('/', (req, res) => {
+  res.status(200).send('API гостиничного комплекса "Лесной Дворик"');
+});
+
 // Добавляем middleware для логирования ошибок
-app.use(errorLogger);
+if (errorLogger) {
+  app.use(errorLogger);
+}
 
 // Обработка ошибок
 app.use((err, req, res, next) => {
-  logger.error(err.stack);
+  console.error(err.stack);
   res.status(500).json({ message: 'Внутренняя ошибка сервера' });
 });
 
-// Запуск сервера
+// Запуск сервера в локальной среде
 const PORT = process.env.PORT || 5000;
-
-// Проверка, не запущен ли сервер в среде Vercel
 if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => {
-    logger.info(`Сервер запущен на порту ${PORT}`);
+    console.log(`Сервер запущен на порту ${PORT}`);
   });
 }
 
