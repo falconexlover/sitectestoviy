@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* В этом проекте мы используем styled-components и CSS переменные */
 
 /* Основные переменные и цвета */

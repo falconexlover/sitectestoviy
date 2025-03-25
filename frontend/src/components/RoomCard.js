@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import ImageWithFallback from './ImageWithFallback';
 
 const Card = styled.div`
   position: relative;
@@ -183,10 +184,23 @@ const Button = styled(Link)`
 `;
 
 const RoomCard = ({ room }) => {
-  // Используем первое изображение из массива или placeholder
-  const imageUrl = room.images && room.images.length > 0
-    ? room.images[0]
-    : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80';
+  // Преобразуем массив изображений, если он в виде строки
+  let images = room.images || [];
+  if (typeof images === 'string') {
+    try {
+      images = JSON.parse(images);
+    } catch (e) {
+      images = [];
+    }
+  }
+  
+  // Получаем URL основного изображения
+  const mainImage = images.length > 0 
+    ? `${process.env.REACT_APP_API_URL}/uploads/rooms/${images[0]}`
+    : '/images/room-placeholder.jpg';
+  
+  // Если есть оптимизированные версии, используем их
+  const responsiveSources = room.optimizedImages?.[0] || null;
   
   // Русифицированные названия типов номеров
   const roomTypeNames = {
@@ -200,7 +214,13 @@ const RoomCard = ({ room }) => {
   return (
     <Card>
       <ImageContainer>
-        <Image src={imageUrl} alt={room.name} />
+        <ImageWithFallback
+          src={mainImage}
+          alt={`Номер ${room.name || room.roomType}`}
+          fallbackSrc="/images/room-placeholder.jpg"
+          height="250px"
+          responsiveSources={responsiveSources}
+        />
         <Badge type={room.roomType}>{roomTypeNames[room.roomType] || room.roomType}</Badge>
       </ImageContainer>
       

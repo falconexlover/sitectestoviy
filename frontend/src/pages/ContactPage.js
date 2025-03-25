@@ -292,6 +292,8 @@ const Alert = styled.div`
   }
 `;
 
+const phoneRegex = /^\+?[0-9()-]{10,15}$/;
+
 const ContactPage = () => {
   const [formStatus, setFormStatus] = useState(null);
   
@@ -304,11 +306,17 @@ const ContactPage = () => {
   };
   
   const validationSchema = Yup.object({
-    name: Yup.string().required('Пожалуйста, введите ваше имя'),
-    email: Yup.string().email('Некорректный email').required('Пожалуйста, введите ваш email'),
-    phone: Yup.string().matches(/^\+?[0-9\s\-\(\)]+$/, 'Некорректный номер телефона'),
+    name: Yup.string()
+      .required('Пожалуйста, введите ваше имя'),
+    email: Yup.string()
+      .email('Неверный формат email')
+      .required('Пожалуйста, введите email'),
+    phone: Yup.string()
+      .matches(phoneRegex, 'Неверный формат телефона')
+      .required('Пожалуйста, введите телефон'),
     subject: Yup.string().required('Пожалуйста, выберите тему сообщения'),
-    message: Yup.string().required('Пожалуйста, введите сообщение').min(10, 'Сообщение должно содержать не менее 10 символов')
+    message: Yup.string()
+      .required('Пожалуйста, введите сообщение')
   });
   
   const handleSubmit = (values, { resetForm, setSubmitting }) => {

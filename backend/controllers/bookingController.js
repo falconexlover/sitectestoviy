@@ -1,6 +1,7 @@
 const { Booking, Room, User } = require('../models');
 const { Op } = require('sequelize');
 const nodemailer = require('nodemailer');
+const emailService = require('../utils/emailService');
 require('dotenv').config();
 
 // Настройка транспорта для отправки email
@@ -126,7 +127,12 @@ exports.createBooking = async (req, res) => {
     const user = await User.findByPk(req.user.id);
     
     // Отправляем подтверждение на email
-    await sendBookingConfirmation(user.email, booking, room);
+    try {
+      await emailService.sendBookingConfirmation(booking, user, room, req.language);
+    } catch (emailError) {
+      // Логируем ошибку, но не прерываем выполнение
+      logger.error(`Ошибка при отправке email: ${emailError.message}`, { error: emailError });
+    }
     
     res.status(201).json(booking);
   } catch (err) {
@@ -210,16 +216,29 @@ exports.updateBookingStatus = async (req, res) => {
     
     await booking.update({ status });
     
-    // Если статус обновлен на "confirmed", отправляем email-подтверждение
-    if (status === 'confirmed') {
-      await sendBookingConfirmation(
-        booking.User.email, 
-        booking, 
-        booking.Room
-      );
-    }
+    // Получение информации о номере и пользователе для email
+    const room = await Room.findByPk(booking.roomId);
+    const user = await User.findByPk(booking.userId);
     
-    res.json(booking);
+    // Отправка соответствующего email в зависимости от нового статуса
+    try {
+      if (status === 'confirmed') {
+        await emailService.sendBookingConfirmation(booking, user, room, user.language || 'ru');
+      } else if (status === 'cancelled') {
+        // Для отмененных бронирований отправляем письмо об отмене
+        // await emailService.sendBookingCancellation(booking, user, room, user.language || 'ru');
+      } else if (status === 'completed') {
+        // Для завершенных бронирований можно отправить письмо с просьбой оставить отзыв
+        // await emailService.sendReviewRequest(booking, user, room, user.language || 'ru');
+      }
+    } catch (emailError) {
+      logger.error(`Ошибка при отправке email: ${emailError.message}`, { error: emailError });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: booking
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

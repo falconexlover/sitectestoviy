@@ -343,6 +343,42 @@ const translateStatus = (status) => {
   return statuses[status] || status;
 };
 
+const BookingStatusCell = ({ value }) => {
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'confirmed': return '#4CAF50';
+      case 'pending': return '#FFC107';
+      case 'cancelled': return '#F44336';
+      case 'completed': return '#2196F3';
+      default: return '#9E9E9E';
+    }
+  };
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case 'confirmed': return 'Подтверждено';
+      case 'pending': return 'Ожидает';
+      case 'cancelled': return 'Отменено';
+      case 'completed': return 'Завершено';
+      default: return 'Неизвестно';
+    }
+  };
+
+  return (
+    <div style={{ 
+      padding: '4px 8px', 
+      borderRadius: '4px', 
+      backgroundColor: getStatusColor(value), 
+      color: 'white',
+      display: 'inline-block',
+      fontWeight: 'bold',
+      fontSize: '0.85rem'
+    }}>
+      {getStatusText(value)}
+    </div>
+  );
+};
+
 const BookingsPage = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);

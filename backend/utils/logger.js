@@ -1,51 +1,76 @@
 const winston = require('winston');
 const path = require('path');
+const fs = require('fs');
 
-// Определение форматов логирования
-const formats = winston.format.combine(
-  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-  winston.format.errors({ stack: true }),
-  winston.format.splat(),
-  winston.format.json()
-);
-
-// Настройка транспортов
-const transports = [
-  // Запись критических ошибок в отдельный файл
-  new winston.transports.File({ 
-    filename: path.join(__dirname, '../logs/error.log'), 
-    level: 'error' 
-  }),
-  // Запись всех логов уровня info и выше
-  new winston.transports.File({ 
-    filename: path.join(__dirname, '../logs/combined.log') 
-  })
-];
-
-// В режиме разработки выводим логи в консоль
-if (process.env.NODE_ENV !== 'production') {
-  transports.push(
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple()
-      )
-    })
-  );
+// Создаем директорию для логов, если она не существует
+const logDir = path.join(__dirname, '../logs');
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir, { recursive: true });
 }
 
-// Создание экземпляра логгера
-const logger = winston.createLogger({
-  level: process.env.LOG_LEVEL || 'info',
-  format: formats,
-  transports
+// Форматирование для логов
+const { combine, timestamp, printf, colorize } = winston.format;
+const logFormat = printf(({ level, message, timestamp }) => {
+  return `${timestamp} ${level}: ${message}`;
 });
 
-// Создание обработчика для HTTP-запросов
-logger.stream = {
-  write: (message) => {
-    logger.info(message.trim());
-  }
-};
+// Создаем логгер
+const logger = winston.createLogger({
+  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+  format: combine(
+    timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    logFormat
+  ),
+  transports: [
+    // Консольный транспорт для разработки
+    new winston.transports.Console({
+      format: combine(
+        colorize(),
+        timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+        logFormat
+      ),
+    }),
+    // Файловый транспорт для всех логов
+    new winston.transports.File({ 
+      filename: path.join(logDir, 'combined.log'),
+      maxsize: 5242880, // 5MB
+      maxFiles: 5,
+    }),
+    // Файловый транспорт только для ошибок
+    new winston.transports.File({ 
+      filename: path.join(logDir, 'error.log'),
+      level: 'error',
+      maxsize: 5242880, // 5MB
+      maxFiles: 5,
+    }),
+  ],
+  exceptionHandlers: [
+    new winston.transports.File({ 
+      filename: path.join(logDir, 'exceptions.log'),
+      maxsize: 5242880, // 5MB
+      maxFiles: 5,
+    }),
+  ],
+  rejectionHandlers: [
+    new winston.transports.File({ 
+      filename: path.join(logDir, 'rejections.log'),
+      maxsize: 5242880, // 5MB
+      maxFiles: 5,
+    }),
+  ],
+  exitOnError: false,
+});
 
-module.exports = logger; 
+// Упрощенный интерфейс логгера
+module.exports = {
+  info: (message) => logger.info(message),
+  warn: (message) => logger.warn(message),
+  error: (message) => logger.error(message),
+  debug: (message) => logger.debug(message),
+  http: (message) => logger.http(message),
+  // Вывод объекта в лог в удобочитаемом формате
+  object: (obj, message = '') => {
+    const objString = JSON.stringify(obj, null, 2);
+    logger.info(`${message ? message + ': ' : ''}${objString}`);
+  },
+}; 

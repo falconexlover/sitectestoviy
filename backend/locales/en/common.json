@@ -1,0 +1,36 @@
+{
+  "welcome": "Welcome to Lesnoy Dvorik",
+  "buttons": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "login": "Login",
+    "register": "Register",
+    "book": "Book",
+    "search": "Search",
+    "reset": "Reset",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "view": "View"
+  },
+  "navigation": {
+    "home": "Home",
+    "rooms": "Rooms",
+    "services": "Services",
+    "gallery": "Gallery",
+    "contacts": "Contacts",
+    "account": "Account",
+    "booking": "Booking",
+    "reviews": "Reviews",
+    "about": "About"
+  },
+  "form": {
+    "required": "Required field",
+    "email": "Enter a valid email",
+    "password": "Password must be at least 8 characters",
+    "passwordConfirm": "Passwords don't match",
+    "name": "Enter your name",
+    "phone": "Enter a valid phone number"
+  }
+} 

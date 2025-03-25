@@ -216,6 +216,89 @@ const MobileMenuButton = styled.button`
   }
 `;
 
+const MobileMenu = ({ isOpen, onClose }) => {
+  const { isAuthenticated, user, logout } = useAuth();
+  
+  const handleLogout = () => {
+    logout();
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <HeaderContainer className={isScrolled ? 'scrolled' : ''}>
+      <LogoContainer>
+        <Logo to="/">Лесной Дворик</Logo>
+        <HeaderContact>
+          <p>Забронировать номер</p>
+          <p>+7 (498) 483-19-41</p>
+        </HeaderContact>
+      </LogoContainer>
+      
+      <Nav>
+        <MobileMenuButton 
+          className={isMobileMenuOpen ? 'open' : ''} 
+          onClick={toggleMobileMenu}
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </MobileMenuButton>
+        
+        <NavLinks isOpen={isMobileMenuOpen}>
+          <NavItem>
+            <NavLink to="/" onClick={() => setIsMobileMenuOpen(false)}>Главная</NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink to="/rooms" onClick={() => setIsMobileMenuOpen(false)}>Номера</NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink to="/services" onClick={() => setIsMobileMenuOpen(false)}>Услуги</NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink to="/gallery" onClick={() => setIsMobileMenuOpen(false)}>Галерея</NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink to="/about" onClick={() => setIsMobileMenuOpen(false)}>О нас</NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink to="/contacts" onClick={() => setIsMobileMenuOpen(false)}>Контакты</NavLink>
+          </NavItem>
+          
+          {!user ? (
+            <>
+              <NavItem>
+                <NavLink to="/login" onClick={() => setIsMobileMenuOpen(false)}>Вход</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink to="/register" onClick={() => setIsMobileMenuOpen(false)}>Регистрация</NavLink>
+              </NavItem>
+            </>
+          ) : (
+            <>
+              <NavItem>
+                <NavLink to="/bookings" onClick={() => setIsMobileMenuOpen(false)}>Мои бронирования</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink to="/profile" onClick={() => setIsMobileMenuOpen(false)}>Профиль</NavLink>
+              </NavItem>
+              
+              {(user.role === 'admin' || user.role === 'manager') && (
+                <NavItem>
+                  <NavLink to="/admin/dashboard" onClick={() => setIsMobileMenuOpen(false)}>Админ-панель</NavLink>
+                </NavItem>
+              )}
+            </>
+          )}
+        </NavLinks>
+        
+        <BookButton to="/booking">Забронировать</BookButton>
+      </Nav>
+    </HeaderContainer>
+  );
+};
+
 const Header = () => {
   const { user } = useAuth();
   const navigate = useNavigate();

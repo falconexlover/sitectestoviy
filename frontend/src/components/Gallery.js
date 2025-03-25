@@ -299,16 +299,14 @@ const Gallery = () => {
   
   // Обработчик клавиш для навигации в лайтбоксе с помощью useCallback
   const handleKeyDown = useCallback((e) => {
-    if (!lightboxOpen) return;
-    
     if (e.key === 'ArrowLeft') {
-      prevImage(e);
+      prevImage();
     } else if (e.key === 'ArrowRight') {
-      nextImage(e);
+      nextImage();
     } else if (e.key === 'Escape') {
-      closeLightbox();
+      setLightboxOpen(false);
     }
-  }, [lightboxOpen]);
+  }, [prevImage, nextImage, setLightboxOpen]);
   
   // Добавляем слушатель событий клавиатуры при монтировании компонента
   React.useEffect(() => {

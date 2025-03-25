@@ -1,3 +1,47 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - username
+ *         - email
+ *         - password
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: Уникальный идентификатор пользователя
+ *         username:
+ *           type: string
+ *           description: Имя пользователя для входа в систему
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: Email пользователя
+ *         firstName:
+ *           type: string
+ *           description: Имя пользователя
+ *         lastName:
+ *           type: string
+ *           description: Фамилия пользователя
+ *         phone:
+ *           type: string
+ *           description: Телефон пользователя
+ *         role:
+ *           type: string
+ *           enum: [customer, admin, manager]
+ *           description: Роль пользователя
+ *       example:
+ *         id: 1
+ *         username: ivanov
+ *         email: ivanov@example.com
+ *         firstName: Иван
+ *         lastName: Иванов
+ *         phone: '+7 (999) 123-45-67'
+ *         role: customer
+ */
+
 const { DataTypes } = require('sequelize');
 const db = require('../config/db');
 const bcrypt = require('bcryptjs');

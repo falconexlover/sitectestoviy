@@ -1,0 +1,45 @@
+{
+  "general": {
+    "serverError": "Произошла ошибка сервера",
+    "notFound": "Ресурс не найден",
+    "validationError": "Ошибка валидации",
+    "unauthorized": "Требуется авторизация",
+    "forbidden": "Доступ запрещен",
+    "badRequest": "Некорректный запрос"
+  },
+  "auth": {
+    "invalidCredentials": "Неверный email или пароль",
+    "emailAlreadyExists": "Пользователь с таким email уже существует",
+    "accountLocked": "Аккаунт заблокирован",
+    "passwordResetExpired": "Срок действия ссылки для восстановления пароля истек",
+    "invalidToken": "Недействительный токен",
+    "emailNotVerified": "Email не подтвержден",
+    "sessionExpired": "Сессия истекла, пожалуйста, войдите снова"
+  },
+  "booking": {
+    "roomNotAvailable": "Номер недоступен на выбранные даты",
+    "invalidDates": "Некорректные даты бронирования",
+    "bookingNotFound": "Бронирование не найдено",
+    "bookingCancelled": "Бронирование уже отменено",
+    "cannotModify": "Невозможно изменить это бронирование"
+  },
+  "review": {
+    "alreadyReviewed": "Вы уже оставили отзыв об этом номере",
+    "reviewNotFound": "Отзыв не найден",
+    "cannotDelete": "Невозможно удалить этот отзыв"
+  },
+  "room": {
+    "roomNotFound": "Номер не найден",
+    "noAvailability": "Нет доступных номеров на выбранные даты"
+  },
+  "payment": {
+    "paymentFailed": "Ошибка обработки платежа",
+    "invalidPaymentMethod": "Недействительный способ оплаты",
+    "insufficientFunds": "Недостаточно средств"
+  },
+  "upload": {
+    "fileTooLarge": "Размер файла превышает лимит",
+    "invalidFileType": "Недопустимый тип файла",
+    "uploadFailed": "Ошибка загрузки файла"
+  }
+} 

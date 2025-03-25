@@ -1,0 +1,81 @@
+{
+  "welcome": {
+    "subject": "Welcome to Forest Courtyard",
+    "greeting": "Hello, {{name}}!",
+    "message": "Thank you for registering on Forest Courtyard website. We are glad to welcome you to our hotel!",
+    "ctaButton": "Visit Website",
+    "footer": "Best regards, Forest Courtyard Team"
+  },
+  "passwordReset": {
+    "subject": "Password Reset",
+    "greeting": "Hello, {{name}}!",
+    "message": "You requested a password reset on Forest Courtyard website. Click the button below to create a new password.",
+    "warning": "If you did not request a password reset, please ignore this email.",
+    "ctaButton": "Reset Password",
+    "expiry": "This link is valid for 24 hours.",
+    "footer": "Best regards, Forest Courtyard Team"
+  },
+  "bookingConfirmation": {
+    "subject": "Booking Confirmation #{{bookingId}}",
+    "greeting": "Hello, {{name}}!",
+    "thankYou": "Thank you for booking a room at Forest Courtyard hotel!",
+    "bookingDetails": "Booking details:",
+    "roomType": "Room type: {{roomType}}",
+    "checkIn": "Check-in date: {{checkIn}}",
+    "checkOut": "Check-out date: {{checkOut}}",
+    "guests": "Number of guests: {{guests}}",
+    "totalPrice": "Total price: {{totalPrice}} RUB",
+    "paymentStatus": "Payment status: {{paymentStatus}}",
+    "instructions": "Check-in instructions:",
+    "checkInTime": "Check-in time: after 2:00 PM",
+    "checkOutTime": "Check-out time: before 12:00 PM",
+    "cancellationPolicy": "Cancellation policy: free cancellation 48 hours before arrival.",
+    "ctaButton": "Manage Booking",
+    "questions": "If you have any questions, feel free to contact us.",
+    "footer": "Best regards, Forest Courtyard Team"
+  },
+  "bookingCancellation": {
+    "subject": "Booking Cancellation #{{bookingId}}",
+    "greeting": "Hello, {{name}}!",
+    "message": "Your booking at Forest Courtyard hotel has been successfully cancelled.",
+    "refundInfo": "Refund information: {{refundInfo}}",
+    "feedback": "We would be happy to see you again in the future!",
+    "ctaButton": "Book Another Room",
+    "footer": "Best regards, Forest Courtyard Team"
+  },
+  "checkInReminder": {
+    "subject": "Upcoming Check-in Reminder for Forest Courtyard",
+    "title": "Upcoming Check-in Reminder",
+    "greeting": "Hello",
+    "reminder": "We would like to remind you that your check-in date at Forest Courtyard hotel complex is approaching.",
+    "details": "Booking Details",
+    "instructions": "Check-in is available from 2:00 PM. You'll need your passport and booking number for check-in.",
+    "weather": "Weather forecast for your stay period:",
+    "activities": "We've prepared various activities for you:",
+    "transportation": "How to get to us:",
+    "contactInfo": "If you have any questions or need to modify your booking, please contact us at +7 (498) 483-19-41 or reply to this email.",
+    "footer": "All rights reserved."
+  },
+  "reviewRequest": {
+    "subject": "How was your stay at Forest Courtyard?",
+    "title": "Leave a Review About Your Stay",
+    "greeting": "Hello",
+    "request": "We hope you had a great time at our hotel complex. We would appreciate if you could share your experience and leave a review.",
+    "details": "Information About Your Stay",
+    "importance": "Your opinion is very important to us and helps improve our service for future guests.",
+    "buttonText": "Leave a Review",
+    "thanks": "Thank you for choosing Forest Courtyard and we hope to see you again!",
+    "footer": "All rights reserved."
+  },
+  "bookingModification": {
+    "subject": "Booking Modification at Forest Courtyard",
+    "title": "Your Booking has been Modified",
+    "greeting": "Hello",
+    "modified": "Your booking at Forest Courtyard hotel complex has been successfully modified according to your request.",
+    "oldDetails": "Previous Booking Details",
+    "newDetails": "New Booking Details",
+    "priceChange": "Price Change",
+    "contactInfo": "If you have any questions or need additional information, please contact us at +7 (498) 483-19-41 or reply to this email.",
+    "footer": "All rights reserved."
+  }
+} 

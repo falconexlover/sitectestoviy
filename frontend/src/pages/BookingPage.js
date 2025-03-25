@@ -437,6 +437,8 @@ const LoginPrompt = styled.div`
   }
 `;
 
+const phoneRegex = /^\+?[0-9()-]{10,15}$/;
+
 const BookingPage = () => {
   const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -484,7 +486,7 @@ const BookingPage = () => {
       .email('Неверный формат email')
       .required('Пожалуйста, введите email'),
     phone: Yup.string()
-      .matches(/^\+?[0-9\s\-\(\)]+$/, 'Неверный формат телефона')
+      .matches(phoneRegex, 'Неверный формат телефона')
       .required('Пожалуйста, введите номер телефона'),
   });
   

@@ -1,3 +1,71 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Booking:
+ *       type: object
+ *       required:
+ *         - checkIn
+ *         - checkOut
+ *         - adults
+ *         - totalPrice
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: Уникальный идентификатор бронирования
+ *         checkIn:
+ *           type: string
+ *           format: date-time
+ *           description: Дата и время заезда
+ *         checkOut:
+ *           type: string
+ *           format: date-time
+ *           description: Дата и время выезда
+ *         adults:
+ *           type: integer
+ *           description: Количество взрослых
+ *         children:
+ *           type: integer
+ *           description: Количество детей
+ *         totalPrice:
+ *           type: number
+ *           format: float
+ *           description: Общая стоимость бронирования
+ *         specialRequests:
+ *           type: string
+ *           description: Особые пожелания гостя
+ *         status:
+ *           type: string
+ *           enum: [pending, confirmed, canceled, completed]
+ *           description: Статус бронирования
+ *         paymentStatus:
+ *           type: string
+ *           enum: [unpaid, partial, paid]
+ *           description: Статус оплаты
+ *         paymentMethod:
+ *           type: string
+ *           description: Способ оплаты
+ *         UserId:
+ *           type: integer
+ *           description: ID пользователя, создавшего бронирование
+ *         RoomId:
+ *           type: integer
+ *           description: ID забронированного номера
+ *       example:
+ *         id: 1
+ *         checkIn: "2024-07-15T14:00:00.000Z"
+ *         checkOut: "2024-07-20T12:00:00.000Z"
+ *         adults: 2
+ *         children: 1
+ *         totalPrice: 27500
+ *         specialRequests: "Хотелось бы номер с видом на лес"
+ *         status: "confirmed"
+ *         paymentStatus: "paid"
+ *         paymentMethod: "card"
+ *         UserId: 5
+ *         RoomId: 3
+ */
+
 const { DataTypes } = require('sequelize');
 const db = require('../config/db');
 
