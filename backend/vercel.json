@@ -8,6 +8,10 @@
   ],
   "routes": [
     {
+      "src": "/api/v1/(.*)",
+      "dest": "server.js"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "server.js"
     },
@@ -30,7 +34,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://lesnoy-dvorik.vercel.app"
+          "value": "*"
         },
         {
           "key": "Access-Control-Allow-Credentials",
@@ -43,6 +47,22 @@
         {
           "key": "Access-Control-Allow-Headers",
           "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains; preload"
         }
       ]
     }
