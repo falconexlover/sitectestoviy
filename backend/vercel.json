@@ -24,11 +24,27 @@
       "dest": "server.js"
     }
   ],
-  "env": {
-    "NODE_ENV": "production",
-    "FRONTEND_URL": "https://lesnoy-dvorik.vercel.app",
-    "DATABASE_URL": "postgresql://postgres:@localhost:5432/hotel",
-    "JWT_SECRET": "${JWT_SECRET}",
-    "PORT": "3000"
-  }
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://lesnoy-dvorik.vercel.app"
+        },
+        {
+          "key": "Access-Control-Allow-Credentials",
+          "value": "true"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization"
+        }
+      ]
+    }
+  ]
 }
