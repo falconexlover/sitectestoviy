@@ -21,20 +21,8 @@ const reviewRoutes = require('./routes/reviewRoutes');
 const app = express();
 
 // Настройка CORS для работы с frontend на Vercel
-const allowedOrigins = process.env.FRONTEND_URL ? 
-  [process.env.FRONTEND_URL, 'http://localhost:3000'] : 
-  ['https://lesnoy-dvorik.vercel.app', 'http://localhost:3000'];
-
 const corsOptions = {
-  origin: function (origin, callback) {
-    // Разрешаем запросы без origin (например, от мобильных приложений или curl)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Не разрешено CORS'));
-    }
-  },
+  origin: process.env.FRONTEND_URL || ['http://localhost:3000', 'https://lesnoy-dvorik.vercel.app'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 204
@@ -103,11 +91,6 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api', reviewRoutes);
 
-// Проверка работоспособности сервера
-app.get('/health', (req, res) => {
-  res.status(200).send('Сервер работает');
-});
-
 // Добавляем middleware для логирования ошибок
 app.use(errorLogger);
 
@@ -119,13 +102,6 @@ app.use((err, req, res, next) => {
 
 // Запуск сервера
 const PORT = process.env.PORT || 5000;
-
-// Проверка, не запущен ли сервер в среде Vercel
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => {
-    logger.info(`Сервер запущен на порту ${PORT}`);
-  });
-}
-
-// Экспорт для Vercel
-module.exports = app; 
+app.listen(PORT, () => {
+  logger.info(`Сервер запущен на порту ${PORT}`);
+}); 

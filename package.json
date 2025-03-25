@@ -1,4 +1,19 @@
 {
+  "name": "lesnoy-dvorik",
+  "version": "1.0.0",
+  "description": "Гостиничный комплекс 'Лесной Дворик'",
+  "scripts": {
+    "frontend:dev": "cd frontend && npm run start",
+    "backend:dev": "cd backend && npm run dev",
+    "dev": "concurrently \"npm run frontend:dev\" \"npm run backend:dev\"",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "frontend:build": "cd frontend && npm run build",
+    "backend:deploy": "vercel --prod ./backend",
+    "frontend:deploy": "vercel --prod ./frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
   "dependencies": {
     "i18next": "^24.2.3",
     "i18next-fs-backend": "^2.6.0",

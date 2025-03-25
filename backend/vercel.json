@@ -1,0 +1,34 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "server.js"
+    },
+    {
+      "src": "/health",
+      "dest": "server.js"
+    },
+    {
+      "src": "/api-docs/(.*)",
+      "dest": "server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "server.js"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "FRONTEND_URL": "https://lesnoy-dvorik.vercel.app",
+    "DATABASE_URL": "postgresql://postgres:@localhost:5432/hotel",
+    "JWT_SECRET": "your-jwt-secret-key",
+    "PORT": "3000"
+  }
+}
