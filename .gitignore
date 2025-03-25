@@ -25,3 +25,8 @@ yarn-error.log*
 .idea
 .vscode
 
+node_modules/
+*/node_modules/
+*/logs/
+frontend/node_modules/.cache/
+backend/node_modules/.cache/
