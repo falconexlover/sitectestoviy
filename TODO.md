@@ -3,6 +3,7 @@
 ## 1. Добавление стилей (Tailwind CSS)
 
 ### Установка и настройка
+
 ```bash
 cd frontend
 npm install tailwindcss postcss autoprefixer
@@ -10,7 +11,9 @@ npx tailwindcss init -p
 ```
 
 ### Создание файла конфигурации
+
 Создайте файл `frontend/tailwind.config.js`:
+
 ```javascript
 module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
@@ -20,20 +23,22 @@ module.exports = {
         primary: '#003366',
         secondary: '#ffd700',
         light: '#f5f5f5',
-        dark: '#333333'
+        dark: '#333333',
       },
       fontFamily: {
         sans: ['Roboto', 'sans-serif'],
-        serif: ['Playfair Display', 'serif']
-      }
-    }
+        serif: ['Playfair Display', 'serif'],
+      },
+    },
   },
-  plugins: []
-}
+  plugins: [],
+};
 ```
 
 ### Обновление файла стилей
+
 Обновите `frontend/src/index.css`, добавив в начало директивы Tailwind:
+
 ```css
 @tailwind base;
 @tailwind components;
@@ -43,7 +48,9 @@ module.exports = {
 ```
 
 ### Применение к компонентам
+
 Пример применения классов Tailwind к компоненту:
+
 ```jsx
 <button className="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded">
   Забронировать
@@ -53,6 +60,7 @@ module.exports = {
 ## 2. Интеграция платежей через Stripe
 
 ### Установка зависимостей
+
 ```bash
 # Backend
 cd backend
@@ -64,14 +72,18 @@ npm install @stripe/stripe-js @stripe/react-stripe-js
 ```
 
 ### Настройка переменных окружения
+
 Добавьте в `backend/.env`:
+
 ```
 STRIPE_SECRET_KEY=sk_test_your_secret_key
 STRIPE_PUBLISHABLE_KEY=pk_test_your_publishable_key
 ```
 
 ### Создание контроллера платежей
+
 Создайте файл `backend/controllers/paymentController.js`:
+
 ```javascript
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { Booking } = require('../models');
@@ -81,36 +93,36 @@ const logger = require('../utils/logger');
 exports.createPaymentIntent = async (req, res) => {
   try {
     const { bookingId } = req.body;
-    
+
     if (!bookingId) {
       return res.status(400).json({ message: 'Идентификатор бронирования обязателен' });
     }
-    
+
     // Получаем бронирование
     const booking = await Booking.findByPk(bookingId);
-    
+
     if (!booking) {
       return res.status(404).json({ message: 'Бронирование не найдено' });
     }
-    
+
     if (booking.paymentStatus === 'paid') {
       return res.status(400).json({ message: 'Бронирование уже оплачено' });
     }
-    
+
     // Создаем платежное намерение в Stripe
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(booking.totalPrice * 100), // Конвертируем в копейки/центы
       currency: 'rub',
       metadata: {
         bookingId: booking.id.toString(),
-        userId: req.user.id.toString()
-      }
+        userId: req.user.id.toString(),
+      },
     });
-    
+
     // Возвращаем клиентский секрет
-    res.json({ 
+    res.json({
       clientSecret: paymentIntent.client_secret,
-      amount: booking.totalPrice
+      amount: booking.totalPrice,
     });
   } catch (err) {
     logger.error(`Ошибка при создании платежного намерения: ${err.message}`);
@@ -122,28 +134,28 @@ exports.createPaymentIntent = async (req, res) => {
 exports.handlePaymentSuccess = async (req, res) => {
   try {
     const { paymentIntentId } = req.body;
-    
+
     // Проверяем статус платежа в Stripe
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-    
+
     if (paymentIntent.status !== 'succeeded') {
       return res.status(400).json({ message: 'Платеж не завершен' });
     }
-    
+
     const bookingId = paymentIntent.metadata.bookingId;
-    
+
     // Обновляем статус оплаты в бронировании
     const booking = await Booking.findByPk(bookingId);
-    
+
     if (!booking) {
       return res.status(404).json({ message: 'Бронирование не найдено' });
     }
-    
+
     await booking.update({
       paymentStatus: 'paid',
-      paymentMethod: 'card'
+      paymentMethod: 'card',
     });
-    
+
     res.json({ message: 'Оплата успешно завершена', booking });
   } catch (err) {
     logger.error(`Ошибка при обработке успешного платежа: ${err.message}`);
@@ -155,22 +167,26 @@ exports.handlePaymentSuccess = async (req, res) => {
 exports.getPaymentStatus = async (req, res) => {
   try {
     const { bookingId } = req.params;
-    
+
     const booking = await Booking.findByPk(bookingId);
-    
+
     if (!booking) {
       return res.status(404).json({ message: 'Бронирование не найдено' });
     }
-    
+
     // Проверяем, что пользователь имеет право на просмотр
-    if (booking.UserId !== req.user.id && req.user.role !== 'admin' && req.user.role !== 'manager') {
+    if (
+      booking.UserId !== req.user.id &&
+      req.user.role !== 'admin' &&
+      req.user.role !== 'manager'
+    ) {
       return res.status(403).json({ message: 'Доступ запрещен' });
     }
-    
+
     res.json({
       bookingId: booking.id,
       totalPrice: booking.totalPrice,
-      paymentStatus: booking.paymentStatus
+      paymentStatus: booking.paymentStatus,
     });
   } catch (err) {
     logger.error(`Ошибка при получении статуса оплаты: ${err.message}`);
@@ -180,7 +196,9 @@ exports.getPaymentStatus = async (req, res) => {
 ```
 
 ### Создание маршрутов для платежей
+
 Создайте файл `backend/routes/paymentRoutes.js`:
+
 ```javascript
 const express = require('express');
 const router = express.Router();
@@ -196,7 +214,9 @@ module.exports = router;
 ```
 
 ### Подключение маршрутов в сервере
+
 Обновите `backend/server.js`, добавив:
+
 ```javascript
 const paymentRoutes = require('./routes/paymentRoutes');
 // ...
@@ -204,7 +224,9 @@ app.use('/api/payments', paymentRoutes);
 ```
 
 ### Создание компонента для оплаты на фронтенде
+
 Создайте файл `frontend/src/components/PaymentForm.js`:
+
 ```jsx
 import React, { useState, useEffect } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
@@ -249,7 +271,7 @@ const PaymentForm = ({ bookingId, amount, onSuccess }) => {
     }
   }, [bookingId]);
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async event => {
     event.preventDefault();
 
     if (!stripe || !elements) {
@@ -262,8 +284,8 @@ const PaymentForm = ({ bookingId, amount, onSuccess }) => {
     try {
       const result = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
-          card: elements.getElement(CardElement)
-        }
+          card: elements.getElement(CardElement),
+        },
       });
 
       if (result.error) {
@@ -271,7 +293,7 @@ const PaymentForm = ({ bookingId, amount, onSuccess }) => {
       } else if (result.paymentIntent.status === 'succeeded') {
         // Сообщаем серверу об успешной оплате
         await bookingService.handlePaymentSuccess(result.paymentIntent.id);
-        
+
         // Вызываем обработчик успешной оплаты
         if (onSuccess) {
           onSuccess();
@@ -289,10 +311,10 @@ const PaymentForm = ({ bookingId, amount, onSuccess }) => {
     <PaymentContainer>
       <h2>Оплата бронирования</h2>
       <p>Сумма к оплате: {amount} ₽</p>
-      
+
       <form onSubmit={handleSubmit}>
         <CardElementContainer>
-          <CardElement 
+          <CardElement
             options={{
               style: {
                 base: {
@@ -309,9 +331,9 @@ const PaymentForm = ({ bookingId, amount, onSuccess }) => {
             }}
           />
         </CardElementContainer>
-        
+
         {error && <div style={{ color: 'red', marginBottom: '1rem' }}>{error}</div>}
-        
+
         <button
           type="submit"
           disabled={!stripe || processing || !clientSecret}
@@ -322,7 +344,7 @@ const PaymentForm = ({ bookingId, amount, onSuccess }) => {
             borderRadius: '4px',
             border: 'none',
             cursor: 'pointer',
-            opacity: (!stripe || processing || !clientSecret) ? 0.7 : 1
+            opacity: !stripe || processing || !clientSecret ? 0.7 : 1,
           }}
         >
           {processing ? 'Обработка...' : 'Оплатить'}
@@ -336,22 +358,27 @@ export default PaymentForm;
 ```
 
 ### Обновление сервиса API
+
 Добавьте в `frontend/src/services/api.js`:
+
 ```javascript
 const paymentService = {
-  createPaymentIntent: (bookingId) => api.post('/payments/create-payment-intent', { bookingId }),
-  handlePaymentSuccess: (paymentIntentId) => api.post('/payments/payment-success', { paymentIntentId }),
-  getPaymentStatus: (bookingId) => api.get(`/payments/status/${bookingId}`)
+  createPaymentIntent: bookingId => api.post('/payments/create-payment-intent', { bookingId }),
+  handlePaymentSuccess: paymentIntentId =>
+    api.post('/payments/payment-success', { paymentIntentId }),
+  getPaymentStatus: bookingId => api.get(`/payments/status/${bookingId}`),
 };
 
 export {
   // ...другие экспорты
-  paymentService
+  paymentService,
 };
 ```
 
 ### Подключение Stripe в приложении
+
 Обновите `frontend/src/App.js`, добавив провайдер Stripe:
+
 ```jsx
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
@@ -362,9 +389,7 @@ function App() {
   return (
     <AuthProvider>
       <Elements stripe={stripePromise}>
-        <Router>
-          {/* Существующий код */}
-        </Router>
+        <Router>{/* Существующий код */}</Router>
       </Elements>
     </AuthProvider>
   );
@@ -374,18 +399,22 @@ function App() {
 ## 3. Добавление логирования с Winston
 
 ### Установка зависимостей
+
 ```bash
 cd backend
 npm install winston
 ```
 
 ### Создание утилиты логирования
+
 Создайте директорию `backend/logs` для хранения логов:
+
 ```bash
 mkdir -p backend/logs
 ```
 
 Создайте файл `backend/utils/logger.js`:
+
 ```javascript
 const winston = require('winston');
 const path = require('path');
@@ -401,24 +430,21 @@ const formats = winston.format.combine(
 // Настройка транспортов
 const transports = [
   // Запись критических ошибок в отдельный файл
-  new winston.transports.File({ 
-    filename: path.join(__dirname, '../logs/error.log'), 
-    level: 'error' 
+  new winston.transports.File({
+    filename: path.join(__dirname, '../logs/error.log'),
+    level: 'error',
   }),
   // Запись всех логов уровня info и выше
-  new winston.transports.File({ 
-    filename: path.join(__dirname, '../logs/combined.log') 
-  })
+  new winston.transports.File({
+    filename: path.join(__dirname, '../logs/combined.log'),
+  }),
 ];
 
 // В режиме разработки выводим логи в консоль
 if (process.env.NODE_ENV !== 'production') {
   transports.push(
     new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple()
-      )
+      format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
     })
   );
 }
@@ -427,21 +453,23 @@ if (process.env.NODE_ENV !== 'production') {
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
   format: formats,
-  transports
+  transports,
 });
 
 // Создание обработчика для HTTP-запросов
 logger.stream = {
-  write: (message) => {
+  write: message => {
     logger.info(message.trim());
-  }
+  },
 };
 
 module.exports = logger;
 ```
 
 ### Промежуточное ПО для логирования
+
 Создайте файл `backend/middlewares/loggerMiddleware.js`:
+
 ```javascript
 const logger = require('../utils/logger');
 
@@ -452,9 +480,9 @@ const requestLogger = (req, res, next) => {
     body: req.method === 'POST' || req.method === 'PUT' ? '[BODY]' : undefined,
     query: Object.keys(req.query).length ? req.query : undefined,
     ip: req.ip,
-    userId: req.user ? req.user.id : undefined
+    userId: req.user ? req.user.id : undefined,
   });
-  
+
   next();
 };
 
@@ -464,20 +492,22 @@ const errorLogger = (err, req, res, next) => {
     stack: err.stack,
     method: req.method,
     path: req.path,
-    userId: req.user ? req.user.id : undefined
+    userId: req.user ? req.user.id : undefined,
   });
-  
+
   next(err);
 };
 
 module.exports = {
   requestLogger,
-  errorLogger
+  errorLogger,
 };
 ```
 
 ### Интеграция логгера в сервер
+
 Обновите `backend/server.js`, добавив:
+
 ```javascript
 const { requestLogger, errorLogger } = require('./middlewares/loggerMiddleware');
 const logger = require('./utils/logger');
@@ -500,7 +530,9 @@ app.use((err, req, res, next) => {
 ```
 
 ### Использование логгера в контроллерах
+
 Пример использования в контроллере:
+
 ```javascript
 const logger = require('../utils/logger');
 
@@ -516,13 +548,16 @@ try {
 ## 4. Документация API с Swagger
 
 ### Установка зависимостей
+
 ```bash
 cd backend
 npm install swagger-jsdoc swagger-ui-express
 ```
 
 ### Настройка Swagger в сервере
+
 Обновите `backend/server.js`, добавив:
+
 ```javascript
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
@@ -534,28 +569,30 @@ const swaggerOptions = {
     info: {
       title: 'API гостиничного комплекса "Лесной Дворик"',
       version: '1.0.0',
-      description: 'API для управления бронированиями, номерами и клиентами'
+      description: 'API для управления бронированиями, номерами и клиентами',
     },
     servers: [
       {
         url: 'http://localhost:5000',
-        description: 'Сервер разработки'
-      }
+        description: 'Сервер разработки',
+      },
     ],
     components: {
       securitySchemes: {
         bearerAuth: {
           type: 'http',
           scheme: 'bearer',
-          bearerFormat: 'JWT'
-        }
-      }
+          bearerFormat: 'JWT',
+        },
+      },
     },
-    security: [{
-      bearerAuth: []
-    }]
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
   },
-  apis: ['./routes/*.js', './models/*.js']
+  apis: ['./routes/*.js', './models/*.js'],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -563,7 +600,9 @@ app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 ```
 
 ### Аннотирование маршрутов
+
 Пример для `backend/routes/authRoutes.js`:
+
 ```javascript
 /**
  * @swagger
@@ -643,6 +682,7 @@ router.post('/login', authController.login);
 ```
 
 Пример для моделей (`backend/models/User.js`):
+
 ```javascript
 /**
  * @swagger
@@ -684,7 +724,9 @@ router.post('/login', authController.login);
 ## 5. Резервное копирование базы данных
 
 ### Создание скрипта для бэкапа
+
 Создайте файл `backend/scripts/backup.sh`:
+
 ```bash
 #!/bin/bash
 
@@ -706,11 +748,11 @@ PGPASSWORD=$DB_PASSWORD pg_dump -h $DB_HOST -U $DB_USER -d $DB_NAME > "$BACKUP_F
 # Проверка результата
 if [ $? -eq 0 ]; then
   echo "Бэкап успешно создан: $BACKUP_FILE"
-  
+
   # Сжатие файла для экономии места
   gzip "$BACKUP_FILE"
   echo "Файл бэкапа сжат: $BACKUP_FILE.gz"
-  
+
   # Удаление старых бэкапов (оставляем только последние 10)
   find "$BACKUP_DIR" -name "backup_*.sql.gz" -type f | sort -r | tail -n +11 | xargs -r rm
   echo "Старые бэкапы удалены. Оставлены только последние 10 файлов."
@@ -721,12 +763,15 @@ fi
 ```
 
 ### Настройка прав на выполнение скрипта
+
 ```bash
 chmod +x backend/scripts/backup.sh
 ```
 
 ### Создание скрипта для восстановления из бэкапа
+
 Создайте файл `backend/scripts/restore.sh`:
+
 ```bash
 #!/bin/bash
 
@@ -769,36 +814,50 @@ fi
 ```
 
 ### Настройка прав на выполнение скрипта
+
 ```bash
 chmod +x backend/scripts/restore.sh
 ```
 
 ### Настройка автоматического запуска через cron
+
 Добавьте в crontab (запуск от имени пользователя):
+
 ```
 # Ежедневный бэкап в 2:00 утра
 0 2 * * * /path/to/backend/scripts/backup.sh >> /path/to/backend/logs/backup.log 2>&1
 ```
 
 ### Документирование процедур бэкапа и восстановления
+
 Добавьте раздел в README.md:
-```markdown
+
+````markdown
 ## Резервное копирование базы данных
 
 ### Автоматический бэкап
+
 Система настроена на ежедневное создание бэкапов базы данных в 2:00 утра. Файлы бэкапов хранятся в директории `backend/backups` в формате `backup_YYYY-MM-DD_HH-MM-SS.sql.gz`. Система автоматически удаляет старые бэкапы, оставляя только 10 последних.
 
 ### Ручной запуск бэкапа
+
 Для ручного создания бэкапа выполните:
+
 ```bash
 cd backend
 ./scripts/backup.sh
 ```
+````
 
 ### Восстановление из бэкапа
+
 Для восстановления базы данных из бэкапа выполните:
+
 ```bash
 cd backend
 ./scripts/restore.sh backups/backup_YYYY-MM-DD_HH-MM-SS.sql.gz
 ```
-``` 
+
+```
+
+```

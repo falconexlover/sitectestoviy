@@ -52,40 +52,40 @@ const Review = db.define('Review', {
     allowNull: false,
     validate: {
       min: 1,
-      max: 5
-    }
+      max: 5,
+    },
   },
   comment: {
     type: DataTypes.TEXT,
     allowNull: false,
     validate: {
-      len: [2, 1000]
-    }
+      len: [2, 1000],
+    },
   },
   // Дополнительные поля для отзыва
   stayDate: {
     type: DataTypes.DATE,
-    allowNull: true
+    allowNull: true,
   },
   pros: {
     type: DataTypes.TEXT,
-    allowNull: true
+    allowNull: true,
   },
   cons: {
     type: DataTypes.TEXT,
-    allowNull: true
+    allowNull: true,
   },
   response: {
     type: DataTypes.TEXT,
-    allowNull: true
+    allowNull: true,
   },
   responseDate: {
     type: DataTypes.DATE,
-    allowNull: true
+    allowNull: true,
   },
   isVerified: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false
+    defaultValue: false,
   },
   // Категории оценок
   cleanlinessRating: {
@@ -93,41 +93,41 @@ const Review = db.define('Review', {
     allowNull: true,
     validate: {
       min: 1,
-      max: 5
-    }
+      max: 5,
+    },
   },
   serviceRating: {
     type: DataTypes.INTEGER,
     allowNull: true,
     validate: {
       min: 1,
-      max: 5
-    }
+      max: 5,
+    },
   },
   comfortRating: {
     type: DataTypes.INTEGER,
     allowNull: true,
     validate: {
       min: 1,
-      max: 5
-    }
+      max: 5,
+    },
   },
   locationRating: {
     type: DataTypes.INTEGER,
     allowNull: true,
     validate: {
       min: 1,
-      max: 5
-    }
+      max: 5,
+    },
   },
   valueRating: {
     type: DataTypes.INTEGER,
     allowNull: true,
     validate: {
       min: 1,
-      max: 5
-    }
-  }
+      max: 5,
+    },
+  },
 });
 
-module.exports = Review; 
+module.exports = Review;

@@ -1,64 +1,237 @@
-import React, { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import './App.css';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
+import ErrorBoundary from './components/ErrorBoundary';
+import HomePage from './pages/HomePage';
+import HomePageDebug from './pages/HomePageDebug';
+import RoomsPage from './pages/RoomsPage';
+import RoomDetailPage from './pages/RoomDetailPage';
+import BookingPage from './pages/BookingPage';
+import BookingDetailPage from './pages/BookingDetailPage';
+import BookingsPage from './pages/BookingsPage';
+import ProfilePage from './pages/ProfilePage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import ContactPage from './pages/ContactPage';
+import AboutPage from './pages/AboutPage';
+import GalleryPage from './pages/GalleryPage';
+import ServicePage from './pages/ServicePage';
+import NotFoundPage from './pages/NotFoundPage';
+import Dashboard from './pages/admin/Dashboard';
+import UsersPage from './pages/admin/UsersPage';
+import DiagnosticsPage from './components/DiagnosticsPage';
+import logger from './utils/logger';
+import debugUtils, { DebugPanel } from './utils/debugUtils';
 
-// Лениво загружаемые компоненты
-const HomePage = lazy(() => import('./pages/HomePage'));
-const AboutPage = lazy(() => import('./pages/AboutPage'));
-const RoomsPage = lazy(() => import('./pages/RoomsPage'));
-const RoomDetailPage = lazy(() => import('./pages/RoomDetailPage'));
-const BookingPage = lazy(() => import('./pages/BookingPage'));
-const ContactPage = lazy(() => import('./pages/ContactPage'));
-const GalleryPage = lazy(() => import('./pages/GalleryPage'));
-const LoginPage = lazy(() => import('./pages/LoginPage'));
-const RegisterPage = lazy(() => import('./pages/RegisterPage'));
-const ProfilePage = lazy(() => import('./pages/ProfilePage'));
-const BookingsPage = lazy(() => import('./pages/BookingsPage'));
-const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
-const AdminRoomsPage = lazy(() => import('./pages/admin/RoomsPage'));
-const AdminBookingsPage = lazy(() => import('./pages/admin/BookingsPage'));
-const AdminUsersPage = lazy(() => import('./pages/admin/UsersPage'));
-const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
-
-// Компонент загрузки
-const Loading = () => <div className="loading">Загрузка...</div>;
+// Инициализация логгера при запуске приложения
+logger.info('Приложение запущено в режиме:', process.env.NODE_ENV);
+logger.debug('API URL:', process.env.REACT_APP_API_URL);
 
 function App() {
+  // Инициализация отладчиков
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      logger.group('Инициализация отладочных инструментов', true);
+      debugUtils.setupDebugListeners();
+
+      // Собираем и логируем информацию о среде
+      const envInfo = debugUtils.getEnvironmentInfo();
+      logger.debug('Информация о среде:', envInfo);
+
+      // Проверка соединения с API
+      fetch(`${process.env.REACT_APP_API_URL}/health`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          logger.info('Соединение с API установлено:', data);
+        })
+        .catch(error => {
+          logger.error('Ошибка соединения с API:', error);
+          // Показываем уведомление об ошибке только в режиме разработки
+          if (process.env.NODE_ENV === 'development') {
+            console.error('Ошибка соединения с API. Убедитесь, что бэкенд запущен и доступен.');
+          }
+        });
+
+      logger.groupEnd();
+    }
+  }, []);
+
   return (
-    <AuthProvider>
-      <Router>
-        <Suspense fallback={<Loading />}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/rooms" element={<RoomsPage />} />
-            <Route path="/rooms/:id" element={<RoomDetailPage />} />
-            <Route path="/booking/:roomId?" element={<BookingPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/gallery" element={<GalleryPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            
-            {/* Защищенные маршруты для пользователей */}
-            <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-            <Route path="/my-bookings" element={<ProtectedRoute><BookingsPage /></ProtectedRoute>} />
-            
-            {/* Маршруты администратора */}
-            <Route path="/admin" element={<ProtectedRoute adminOnly={true}><AdminDashboard /></ProtectedRoute>} />
-            <Route path="/admin/rooms" element={<ProtectedRoute adminOnly={true}><AdminRoomsPage /></ProtectedRoute>} />
-            <Route path="/admin/bookings" element={<ProtectedRoute adminOnly={true}><AdminBookingsPage /></ProtectedRoute>} />
-            <Route path="/admin/users" element={<ProtectedRoute adminOnly={true}><AdminUsersPage /></ProtectedRoute>} />
-            
-            {/* Обработка несуществующих маршрутов */}
-            <Route path="/404" element={<NotFoundPage />} />
-            <Route path="*" element={<Navigate to="/404" />} />
-          </Routes>
-        </Suspense>
-      </Router>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <Router>
+          <Layout>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <ErrorBoundary>
+                    <HomePage />
+                  </ErrorBoundary>
+                }
+              />
+              <Route
+                path="/debug"
+                element={
+                  <ErrorBoundary showDetails={true}>
+                    <HomePageDebug />
+                  </ErrorBoundary>
+                }
+              />
+              <Route
+                path="/rooms"
+                element={
+                  <ErrorBoundary>
+                    <RoomsPage />
+                  </ErrorBoundary>
+                }
+              />
+              <Route
+                path="/rooms/:id"
+                element={
+                  <ErrorBoundary>
+                    <RoomDetailPage />
+                  </ErrorBoundary>
+                }
+              />
+              <Route
+                path="/booking/:roomId"
+                element={
+                  <ErrorBoundary>
+                    <BookingPage />
+                  </ErrorBoundary>
+                }
+              />
+              <Route
+                path="/bookings"
+                element={
+                  <ErrorBoundary>
+                    <BookingsPage />
+                  </ErrorBoundary>
+                }
+              />
+              <Route
+                path="/bookings/:id"
+                element={
+                  <ErrorBoundary>
+                    <BookingDetailPage />
+                  </ErrorBoundary>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <ErrorBoundary>
+                      <ProfilePage />
+                    </ErrorBoundary>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/login"
+                element={
+                  <ErrorBoundary>
+                    <LoginPage />
+                  </ErrorBoundary>
+                }
+              />
+              <Route
+                path="/register"
+                element={
+                  <ErrorBoundary>
+                    <RegisterPage />
+                  </ErrorBoundary>
+                }
+              />
+              <Route
+                path="/contact"
+                element={
+                  <ErrorBoundary>
+                    <ContactPage />
+                  </ErrorBoundary>
+                }
+              />
+              <Route
+                path="/about"
+                element={
+                  <ErrorBoundary>
+                    <AboutPage />
+                  </ErrorBoundary>
+                }
+              />
+              <Route
+                path="/gallery"
+                element={
+                  <ErrorBoundary>
+                    <GalleryPage />
+                  </ErrorBoundary>
+                }
+              />
+              <Route
+                path="/services"
+                element={
+                  <ErrorBoundary>
+                    <ServicePage />
+                  </ErrorBoundary>
+                }
+              />
+
+              {/* Страница диагностики (только в development) */}
+              <Route
+                path="/diagnostics"
+                element={
+                  <ErrorBoundary showDetails={true}>
+                    <DiagnosticsPage />
+                  </ErrorBoundary>
+                }
+              />
+
+              {/* Административные маршруты */}
+              <Route
+                path="/admin/dashboard"
+                element={
+                  <ProtectedRoute roles={['admin']}>
+                    <ErrorBoundary>
+                      <Dashboard />
+                    </ErrorBoundary>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/users"
+                element={
+                  <ProtectedRoute roles={['admin']}>
+                    <ErrorBoundary>
+                      <UsersPage />
+                    </ErrorBoundary>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="*"
+                element={
+                  <ErrorBoundary>
+                    <NotFoundPage />
+                  </ErrorBoundary>
+                }
+              />
+            </Routes>
+            {/* Отладочная панель (отображается только в режиме разработки) */}
+            {process.env.NODE_ENV === 'development' && <DebugPanel />}
+          </Layout>
+        </Router>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
-export default App; 
+export default App;

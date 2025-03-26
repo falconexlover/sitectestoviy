@@ -13,7 +13,7 @@ const Card = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  
+
   &:hover {
     transform: translateY(-10px);
     box-shadow: var(--shadow-lg);
@@ -24,7 +24,7 @@ const ImageContainer = styled.div`
   height: 260px;
   overflow: hidden;
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -32,19 +32,8 @@ const ImageContainer = styled.div`
     left: 0;
     width: 100%;
     height: 50%;
-    background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 100%);
     pointer-events: none;
-  }
-`;
-
-const Image = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s ease-in-out;
-  
-  ${Card}:hover & {
-    transform: scale(1.1);
   }
 `;
 
@@ -52,13 +41,16 @@ const Badge = styled.span`
   position: absolute;
   top: 16px;
   right: 16px;
-  background-color: ${({ type }) => (
-    type === 'standard' ? 'var(--success-color)' :
-    type === 'deluxe' ? 'var(--primary-color)' :
-    type === 'suite' ? 'var(--secondary-color)' :
-    type === 'family' ? 'var(--warning-color)' :
-    'var(--accent-color)'
-  )};
+  background-color: ${({ type }) =>
+    type === 'standard'
+      ? 'var(--success-color)'
+      : type === 'deluxe'
+        ? 'var(--primary-color)'
+        : type === 'suite'
+          ? 'var(--secondary-color)'
+          : type === 'family'
+            ? 'var(--warning-color)'
+            : 'var(--accent-color)'};
   color: white;
   padding: 6px 12px;
   border-radius: var(--radius-pill);
@@ -67,7 +59,7 @@ const Badge = styled.span`
   font-weight: 600;
   letter-spacing: 0.5px;
   z-index: 10;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 `;
 
 const Content = styled.div`
@@ -85,7 +77,7 @@ const Title = styled.h3`
   font-weight: 600;
   position: relative;
   padding-bottom: 0.75rem;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -113,7 +105,7 @@ const Price = styled.div`
   color: var(--primary-color);
   margin-bottom: 1rem;
   font-family: 'Playfair Display', serif;
-  
+
   span {
     font-size: 1rem;
     font-weight: 400;
@@ -139,7 +131,7 @@ const Feature = styled.div`
   padding: 5px 10px;
   border-radius: var(--radius-sm);
   background-color: var(--light-color);
-  
+
   i {
     font-size: 1rem;
     color: var(--accent-color);
@@ -161,7 +153,7 @@ const Button = styled(Link)`
   position: relative;
   overflow: hidden;
   z-index: 1;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -173,11 +165,11 @@ const Button = styled(Link)`
     transition: var(--transition);
     z-index: -1;
   }
-  
+
   &:hover {
     color: var(--primary-color);
   }
-  
+
   &:hover::before {
     width: 100%;
   }
@@ -193,24 +185,25 @@ const RoomCard = ({ room }) => {
       images = [];
     }
   }
-  
+
   // Получаем URL основного изображения
-  const mainImage = images.length > 0 
-    ? `${process.env.REACT_APP_API_URL}/uploads/rooms/${images[0]}`
-    : '/images/room-placeholder.jpg';
-  
+  const mainImage =
+    images.length > 0
+      ? `${process.env.REACT_APP_API_URL}/uploads/rooms/${images[0]}`
+      : '/images/room-placeholder.jpg';
+
   // Если есть оптимизированные версии, используем их
   const responsiveSources = room.optimizedImages?.[0] || null;
-  
+
   // Русифицированные названия типов номеров
   const roomTypeNames = {
     standard: 'Стандарт',
     deluxe: 'Делюкс',
     suite: 'Люкс',
     family: 'Семейный',
-    executive: 'Премиум'
+    executive: 'Премиум',
   };
-  
+
   return (
     <Card>
       <ImageContainer>
@@ -223,16 +216,19 @@ const RoomCard = ({ room }) => {
         />
         <Badge type={room.roomType}>{roomTypeNames[room.roomType] || room.roomType}</Badge>
       </ImageContainer>
-      
+
       <Content>
         <Title>{room.name}</Title>
         <Description>{room.description}</Description>
-        
-        <Price>{room.price.toLocaleString()} ₽ <span>/ ночь</span></Price>
-        
+
+        <Price>
+          {room.price.toLocaleString()} ₽ <span>/ ночь</span>
+        </Price>
+
         <Features>
           <Feature>
-            <i className="fas fa-user"></i> {room.capacity} {room.capacity === 1 ? 'гость' : 'гостей'}
+            <i className="fas fa-user"></i> {room.capacity}{' '}
+            {room.capacity === 1 ? 'гость' : 'гостей'}
           </Feature>
           <Feature>
             <i className="fas fa-building"></i> {room.floor} этаж
@@ -241,11 +237,11 @@ const RoomCard = ({ room }) => {
             <i className="fas fa-door-open"></i> №{room.roomNumber}
           </Feature>
         </Features>
-        
+
         <Button to={`/rooms/${room.id}`}>Забронировать</Button>
       </Content>
     </Card>
   );
 };
 
-export default RoomCard; 
+export default RoomCard;

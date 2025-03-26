@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { roomService } from '../services/api';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { roomService, bookingService } from '../services/api';
 import styled from 'styled-components';
 import { useAuth } from '../context/AuthContext';
 import { Formik, Form, ErrorMessage } from 'formik';
@@ -12,7 +12,7 @@ const PageContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-  
+
   @media (max-width: 768px) {
     padding: 1rem;
   }
@@ -26,11 +26,11 @@ const BackLink = styled(Link)`
   text-decoration: none;
   font-weight: 600;
   transition: var(--transition);
-  
+
   i {
     margin-right: 0.5rem;
   }
-  
+
   &:hover {
     color: var(--accent-color);
     transform: translateX(-5px);
@@ -41,7 +41,7 @@ const MainContent = styled.div`
   display: grid;
   grid-template-columns: 1fr 400px;
   gap: 2.5rem;
-  
+
   @media (max-width: 992px) {
     grid-template-columns: 1fr;
   }
@@ -58,18 +58,18 @@ const MainImage = styled.div`
   border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: var(--shadow-md);
-  
+
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.6s ease;
   }
-  
+
   &:hover img {
     transform: scale(1.05);
   }
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -77,7 +77,7 @@ const MainImage = styled.div`
     left: 0;
     width: 100%;
     height: 30%;
-    background: linear-gradient(to top, rgba(0,0,0,0.5), rgba(0,0,0,0));
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
     pointer-events: none;
   }
 `;
@@ -87,7 +87,7 @@ const ThumbnailsContainer = styled.div`
   grid-template-columns: repeat(5, 1fr);
   gap: 1rem;
   margin-top: 1rem;
-  
+
   @media (max-width: 576px) {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -98,17 +98,17 @@ const Thumbnail = styled.div`
   border-radius: var(--radius-sm);
   overflow: hidden;
   cursor: pointer;
-  opacity: ${props => props.active ? 1 : 0.6};
-  box-shadow: ${props => props.active ? 'var(--shadow-md)' : 'var(--shadow-sm)'};
+  opacity: ${props => (props.active ? 1 : 0.6)};
+  box-shadow: ${props => (props.active ? 'var(--shadow-md)' : 'var(--shadow-sm)')};
   transition: var(--transition);
-  border: ${props => props.active ? '2px solid var(--primary-color)' : 'none'};
-  
+  border: ${props => (props.active ? '2px solid var(--primary-color)' : 'none')};
+
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
-  
+
   &:hover {
     opacity: 1;
     transform: translateY(-3px);
@@ -125,7 +125,7 @@ const RoomTitle = styled.h1`
   margin-bottom: 1rem;
   font-family: 'Playfair Display', serif;
   font-size: 2.5rem;
-  
+
   @media (max-width: 768px) {
     font-size: 2rem;
   }
@@ -160,7 +160,7 @@ const RoomDescription = styled.div`
   margin-bottom: 2rem;
   color: var(--text-color);
   line-height: 1.7;
-  
+
   p {
     margin-bottom: 1rem;
   }
@@ -172,7 +172,7 @@ const RoomPrice = styled.div`
   color: var(--primary-color);
   margin: 1rem 0;
   font-family: 'Playfair Display', serif;
-  
+
   span {
     font-size: 1rem;
     font-weight: 400;
@@ -185,7 +185,7 @@ const InfoGrid = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   margin-bottom: 2rem;
-  
+
   @media (max-width: 576px) {
     grid-template-columns: 1fr;
   }
@@ -198,7 +198,7 @@ const InfoItem = styled.div`
   background-color: var(--light-color);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
-  
+
   i {
     width: 40px;
     height: 40px;
@@ -211,7 +211,7 @@ const InfoItem = styled.div`
     margin-right: 1rem;
     font-size: 1.2rem;
   }
-  
+
   div {
     span:first-child {
       display: block;
@@ -219,7 +219,7 @@ const InfoItem = styled.div`
       font-size: 0.85rem;
       margin-bottom: 0.25rem;
     }
-    
+
     span:last-child {
       font-weight: 600;
       color: var(--dark-color);
@@ -233,7 +233,7 @@ const SectionTitle = styled.h2`
   font-family: 'Playfair Display', serif;
   font-size: 1.8rem;
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -259,13 +259,13 @@ const AmenityItem = styled.div`
   background-color: var(--light-color);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
-  
+
   i {
     color: var(--accent-color);
     margin-right: 0.75rem;
     font-size: 1.1rem;
   }
-  
+
   span {
     font-size: 0.95rem;
   }
@@ -279,7 +279,7 @@ const BookingBox = styled.div`
   height: fit-content;
   position: sticky;
   top: 100px;
-  
+
   h3 {
     font-family: 'Playfair Display', serif;
     color: var(--dark-color);
@@ -287,7 +287,7 @@ const BookingBox = styled.div`
     margin-bottom: 1.5rem;
     text-align: center;
   }
-  
+
   @media (max-width: 992px) {
     position: static;
     margin-top: 2rem;
@@ -296,7 +296,7 @@ const BookingBox = styled.div`
 
 const BookingDate = styled.div`
   margin-bottom: 1.5rem;
-  
+
   label {
     display: block;
     margin-bottom: 0.5rem;
@@ -312,7 +312,7 @@ const StyledDatePicker = styled(DatePicker)`
   border-radius: var(--radius-sm);
   background-color: var(--light-color);
   transition: var(--transition);
-  
+
   &:focus {
     outline: none;
     border-color: var(--primary-color);
@@ -346,7 +346,7 @@ const BookButton = styled.button`
   position: relative;
   overflow: hidden;
   z-index: 1;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -358,16 +358,16 @@ const BookButton = styled.button`
     transition: var(--transition);
     z-index: -1;
   }
-  
+
   &:hover {
     transform: translateY(-3px);
     box-shadow: var(--shadow-md);
   }
-  
+
   &:hover::before {
     width: 100%;
   }
-  
+
   &:disabled {
     background-color: var(--border-color);
     cursor: not-allowed;
@@ -379,7 +379,7 @@ const LoginPrompt = styled.div`
   margin-top: 1.5rem;
   padding-top: 1.5rem;
   border-top: 1px solid var(--border-color);
-  
+
   p {
     margin-bottom: 1rem;
     color: var(--text-color);
@@ -396,7 +396,7 @@ const LoginButton = styled(Link)`
   font-weight: 600;
   margin-right: 1rem;
   transition: var(--transition);
-  
+
   &:hover {
     transform: translateY(-3px);
     box-shadow: var(--shadow-sm);
@@ -414,11 +414,27 @@ const RegisterButton = styled(Link)`
   text-decoration: none;
   font-weight: 600;
   transition: var(--transition);
-  
+
   &:hover {
     background-color: var(--light-color);
     transform: translateY(-3px);
     box-shadow: var(--shadow-sm);
+  }
+`;
+
+const StatusMessage = styled.div`
+  background-color: ${props =>
+    props.type === 'success' ? 'var(--success-color)' : 'var(--error-color)'};
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    margin-right: 0.5rem;
   }
 `;
 
@@ -428,7 +444,7 @@ const bookingSchema = Yup.object().shape({
     .min(new Date(), 'Дата не может быть в прошлом'),
   checkOut: Yup.date()
     .required('Выберите дату выезда')
-    .min(Yup.ref('checkIn'), 'Дата выезда должна быть после даты заезда')
+    .min(Yup.ref('checkIn'), 'Дата выезда должна быть после даты заезда'),
 });
 
 const RoomDetailPage = () => {
@@ -438,24 +454,27 @@ const RoomDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
-  
+  const [status, setStatus] = useState(null);
+  const navigate = useNavigate();
+
   // Placeholder изображения
-  const placeholderImage = 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80';
-  
+  const placeholderImage =
+    'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80';
+
   // Генерация дополнительных изображений для галереи, если их недостаточно
-  const generateImages = (mainImage) => {
+  const generateImages = mainImage => {
     return [
       mainImage,
       'https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
       'https://images.unsplash.com/photo-1618773928121-c32242e63f39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
       'https://images.unsplash.com/photo-1582719508461-905c673771fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1925&q=80',
-      'https://images.unsplash.com/photo-1540518614846-7eded433c457?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1739&q=80'
+      'https://images.unsplash.com/photo-1540518614846-7eded433c457?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1739&q=80',
     ];
   };
-  
+
   useEffect(() => {
     console.log('RoomDetailPage: Загрузка комнаты с ID:', id);
-    
+
     const fetchRoom = async () => {
       try {
         console.log('Отправка запроса к API для комнаты с ID:', id);
@@ -469,28 +488,75 @@ const RoomDetailPage = () => {
         setLoading(false);
       }
     };
-    
+
     fetchRoom();
   }, [id]);
-  
-  const handleImageChange = (index) => {
+
+  const handleImageChange = index => {
     setSelectedImage(index);
   };
-  
+
   const calculateDays = (checkIn, checkOut) => {
     if (!checkIn || !checkOut) return 1;
     const diffTime = Math.abs(checkOut - checkIn);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays || 1;
   };
-  
-  const handleSubmit = (values, { setSubmitting }) => {
-    console.log('Отправка формы бронирования:', values);
-    // TODO: Реализовать бронирование
-    
-    setSubmitting(false);
+
+  const handleSubmit = (values, { setSubmitting, setStatus: formikSetStatus }) => {
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: `/rooms/${id}` } });
+      setSubmitting(false);
+      return;
+    }
+
+    const bookingData = {
+      roomId: id,
+      checkIn: values.checkIn.toISOString(),
+      checkOut: values.checkOut.toISOString(),
+      adults: room.capacity, // Используем вместимость номера как кол-во взрослых по умолчанию
+      children: 0, // По умолчанию без детей
+      specialRequests: '',
+      totalPrice: calculateTotalPrice(room, values.checkIn, values.checkOut),
+    };
+
+    bookingService
+      .createBooking(bookingData)
+      .then(response => {
+        // Устанавливаем статус как в Formik, так и в компоненте
+        const successStatus = {
+          type: 'success',
+          message: 'Бронирование успешно создано!',
+        };
+        formikSetStatus(successStatus);
+        setStatus(successStatus);
+
+        // Перенаправление на страницу с деталями бронирования
+        setTimeout(() => {
+          navigate(`/bookings/${response.data.id}`);
+        }, 2000);
+      })
+      .catch(error => {
+        console.error('Ошибка при создании бронирования:', error);
+        const errorStatus = {
+          type: 'error',
+          message:
+            error.response?.data?.message ||
+            'Произошла ошибка при бронировании. Пожалуйста, попробуйте позже.',
+        };
+        formikSetStatus(errorStatus);
+        setStatus(errorStatus);
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
   };
-  
+
+  const calculateTotalPrice = (room, checkIn, checkOut) => {
+    const days = calculateDays(checkIn, checkOut);
+    return room.price * days;
+  };
+
   if (loading) {
     return (
       <PageContainer>
@@ -498,30 +564,31 @@ const RoomDetailPage = () => {
       </PageContainer>
     );
   }
-  
+
   if (error || !room) {
     return (
       <PageContainer>
-        <BackLink to="/rooms"><i className="fas fa-chevron-left"></i> Назад к списку номеров</BackLink>
+        <BackLink to="/rooms">
+          <i className="fas fa-chevron-left"></i> Назад к списку номеров
+        </BackLink>
         <div>{error || 'Номер не найден'}</div>
       </PageContainer>
     );
   }
-  
+
   // Преобразование типа номера для отображения
   const roomTypeNames = {
-    'standard': 'Стандарт',
-    'deluxe': 'Делюкс',
-    'suite': 'Люкс',
-    'family': 'Семейный',
-    'executive': 'Премиум'
+    standard: 'Стандарт',
+    deluxe: 'Делюкс',
+    suite: 'Люкс',
+    family: 'Семейный',
+    executive: 'Премиум',
   };
-  
+
   // Создание массива изображений
-  const roomImages = room.images && room.images.length > 0 ? 
-    room.images : 
-    generateImages(placeholderImage);
-  
+  const roomImages =
+    room.images && room.images.length > 0 ? room.images : generateImages(placeholderImage);
+
   // Дополнительные удобства, если они отсутствуют в данных
   const defaultAmenities = [
     'Бесплатный Wi-Fi',
@@ -530,17 +597,26 @@ const RoomDetailPage = () => {
     'Холодильник',
     'Сейф',
     'Фен',
-    'Ванные принадлежности'
+    'Ванные принадлежности',
   ];
-  
-  const amenities = room.amenities && room.amenities.length > 0 ? 
-    room.amenities : 
-    defaultAmenities;
-  
+
+  const amenities = room.amenities && room.amenities.length > 0 ? room.amenities : defaultAmenities;
+
   return (
     <PageContainer>
-      <BackLink to="/rooms"><i className="fas fa-chevron-left"></i> Назад к списку номеров</BackLink>
-      
+      <BackLink to="/rooms">
+        <i className="fas fa-chevron-left"></i> Назад к списку номеров
+      </BackLink>
+
+      {status && (
+        <StatusMessage type={status.type}>
+          <i
+            className={`fas ${status.type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}`}
+          ></i>
+          {status.message}
+        </StatusMessage>
+      )}
+
       <MainContent>
         <div>
           <RoomGallery>
@@ -549,8 +625,8 @@ const RoomDetailPage = () => {
             </MainImage>
             <ThumbnailsContainer>
               {roomImages.map((image, index) => (
-                <Thumbnail 
-                  key={index} 
+                <Thumbnail
+                  key={index}
                   active={selectedImage === index}
                   onClick={() => handleImageChange(index)}
                 >
@@ -559,33 +635,36 @@ const RoomDetailPage = () => {
               ))}
             </ThumbnailsContainer>
           </RoomGallery>
-          
+
           <RoomDetails>
             <RoomTitle>{room.name}</RoomTitle>
-            
+
             <div>
-              <RoomType>
-                {roomTypeNames[room.roomType] || room.roomType}
-              </RoomType>
+              <RoomType>{roomTypeNames[room.roomType] || room.roomType}</RoomType>
               <RoomNumber>
                 <i className="fas fa-door-open"></i> Номер {room.roomNumber}
               </RoomNumber>
             </div>
-            
+
             <RoomPrice>
               {room.price.toLocaleString()} ₽ <span>за ночь</span>
             </RoomPrice>
-            
+
             <RoomDescription>
-              <p>{room.description || `Уютный ${roomTypeNames[room.roomType].toLowerCase()} номер с современным дизайном и всеми необходимыми удобствами для комфортного проживания. Наслаждайтесь прекрасным видом и качественным сервисом.`}</p>
+              <p>
+                {room.description ||
+                  `Уютный ${roomTypeNames[room.roomType].toLowerCase()} номер с современным дизайном и всеми необходимыми удобствами для комфортного проживания. Наслаждайтесь прекрасным видом и качественным сервисом.`}
+              </p>
             </RoomDescription>
-            
+
             <InfoGrid>
               <InfoItem>
                 <i className="fas fa-user"></i>
                 <div>
                   <span>Вместимость</span>
-                  <span>{room.capacity} {room.capacity === 1 ? 'гость' : 'гостей'}</span>
+                  <span>
+                    {room.capacity} {room.capacity === 1 ? 'гость' : 'гостей'}
+                  </span>
                 </div>
               </InfoItem>
               <InfoItem>
@@ -610,7 +689,7 @@ const RoomDetailPage = () => {
                 </div>
               </InfoItem>
             </InfoGrid>
-            
+
             <SectionTitle>Удобства и сервисы</SectionTitle>
             <AmenitiesList>
               {amenities.map((amenity, index) => (
@@ -622,11 +701,11 @@ const RoomDetailPage = () => {
             </AmenitiesList>
           </RoomDetails>
         </div>
-        
+
         <aside>
           <BookingBox>
             <h3>Забронировать номер</h3>
-            
+
             {isAuthenticated ? (
               <Formik
                 initialValues={{
@@ -636,10 +715,19 @@ const RoomDetailPage = () => {
                 validationSchema={bookingSchema}
                 onSubmit={handleSubmit}
               >
-                {({ values, setFieldValue, isSubmitting }) => {
+                {({ values, setFieldValue, isSubmitting, status: formikStatus }) => {
                   const calculatedDays = calculateDays(values.checkIn, values.checkOut);
                   return (
                     <Form>
+                      {formikStatus && (
+                        <StatusMessage type={formikStatus.type}>
+                          <i
+                            className={`fas ${formikStatus.type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}`}
+                          ></i>
+                          {formikStatus.message}
+                        </StatusMessage>
+                      )}
+
                       <BookingDate>
                         <label htmlFor="checkIn">Дата заезда</label>
                         <StyledDatePicker
@@ -656,7 +744,7 @@ const RoomDetailPage = () => {
                         />
                         <ErrorMessage name="checkIn" component={Error} />
                       </BookingDate>
-                      
+
                       <BookingDate>
                         <label htmlFor="checkOut">Дата выезда</label>
                         <StyledDatePicker
@@ -673,12 +761,15 @@ const RoomDetailPage = () => {
                         />
                         <ErrorMessage name="checkOut" component={Error} />
                       </BookingDate>
-                      
+
                       <TotalPrice>
-                        <span>Итого за {calculatedDays} {calculatedDays === 1 ? 'ночь' : calculatedDays < 5 ? 'ночи' : 'ночей'}</span>
+                        <span>
+                          Итого за {calculatedDays}{' '}
+                          {calculatedDays === 1 ? 'ночь' : calculatedDays < 5 ? 'ночи' : 'ночей'}
+                        </span>
                         <span>{(room.price * calculatedDays).toLocaleString()} ₽</span>
                       </TotalPrice>
-                      
+
                       <BookButton type="submit" disabled={isSubmitting}>
                         {isSubmitting ? 'Бронирование...' : 'Забронировать'}
                       </BookButton>
@@ -702,4 +793,4 @@ const RoomDetailPage = () => {
   );
 };
 
-export default RoomDetailPage; 
+export default RoomDetailPage;

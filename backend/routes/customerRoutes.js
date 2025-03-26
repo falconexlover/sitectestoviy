@@ -8,7 +8,9 @@
 const express = require('express');
 const router = express.Router();
 const customerController = require('../controllers/customerController');
-const { auth, adminOnly, staffOnly } = require('../middlewares/authMiddleware');
+const { auth } = require('../middlewares/authMiddleware');
+
+router.use(auth);
 
 /**
  * @swagger
@@ -37,7 +39,7 @@ const { auth, adminOnly, staffOnly } = require('../middlewares/authMiddleware');
  *       403:
  *         description: Нет прав для доступа
  */
-router.get('/', auth, staffOnly, customerController.getAllCustomers);
+router.get('/', customerController.getAllCustomers);
 
 /**
  * @swagger
@@ -61,7 +63,7 @@ router.get('/', auth, staffOnly, customerController.getAllCustomers);
  *       403:
  *         description: Нет прав для доступа
  */
-router.get('/search', auth, staffOnly, customerController.searchCustomers);
+router.get('/search', customerController.searchCustomers);
 
 /**
  * @swagger
@@ -88,7 +90,7 @@ router.get('/search', auth, staffOnly, customerController.searchCustomers);
  *       404:
  *         description: Клиент не найден
  */
-router.get('/:id', auth, staffOnly, customerController.getCustomerById);
+router.get('/:id', customerController.getCustomerById);
 
 /**
  * @swagger
@@ -115,6 +117,9 @@ router.get('/:id', auth, staffOnly, customerController.getCustomerById);
  *       404:
  *         description: Клиент не найден
  */
-router.get('/:id/stats', auth, staffOnly, customerController.getCustomerStats);
+router.get('/:id/stats', customerController.getCustomerStats);
 
-module.exports = router; 
+router.put('/:id', customerController.updateCustomer);
+router.delete('/:id', customerController.deleteCustomer);
+
+module.exports = router;

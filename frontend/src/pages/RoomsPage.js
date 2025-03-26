@@ -10,7 +10,7 @@ const PageContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-  
+
   @media (max-width: 768px) {
     padding: 1rem;
   }
@@ -20,7 +20,7 @@ const PageHeader = styled.div`
   margin-bottom: 3rem;
   text-align: center;
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -39,7 +39,7 @@ const Title = styled.h1`
   color: var(--dark-color);
   font-family: 'Playfair Display', serif;
   font-weight: 600;
-  
+
   @media (max-width: 768px) {
     font-size: 2.2rem;
   }
@@ -60,7 +60,7 @@ const FiltersContainer = styled.div`
   margin-bottom: 3rem;
   box-shadow: var(--shadow-lg);
   position: relative;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -85,7 +85,7 @@ const StyledForm = styled(Form)`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1.5rem;
-  
+
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
@@ -115,7 +115,7 @@ const Select = styled(Field)`
   background-position: right 0.7rem center;
   background-size: 1em;
   transition: var(--transition);
-  
+
   &:focus {
     outline: none;
     border-color: var(--primary-color);
@@ -130,13 +130,13 @@ const StyledDatePicker = styled(DatePicker)`
   border-radius: var(--radius-sm);
   background-color: var(--light-color);
   transition: var(--transition);
-  
+
   &:focus {
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(33, 113, 72, 0.2);
   }
-  
+
   &::placeholder {
     color: var(--text-muted);
   }
@@ -159,7 +159,7 @@ const Button = styled.button`
   text-transform: uppercase;
   display: block;
   width: 100%;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -171,12 +171,12 @@ const Button = styled.button`
     transition: var(--transition);
     z-index: -1;
   }
-  
+
   &:hover {
     transform: translateY(-3px);
     box-shadow: var(--shadow-md);
   }
-  
+
   &:hover::before {
     width: 100%;
   }
@@ -186,7 +186,7 @@ const RoomsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 2rem;
-  
+
   @media (max-width: 768px) {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
@@ -198,19 +198,19 @@ const NoRooms = styled.div`
   background-color: white;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
-  
+
   h3 {
     font-size: 1.8rem;
     margin-bottom: 1rem;
     color: var(--dark-color);
     font-family: 'Playfair Display', serif;
   }
-  
+
   p {
     color: var(--text-color);
     margin-bottom: 2rem;
   }
-  
+
   button {
     background-color: var(--accent-color);
     color: white;
@@ -226,9 +226,9 @@ const NoRooms = styled.div`
 const LoadingSpinner = styled.div`
   text-align: center;
   padding: 3rem;
-  
+
   &::after {
-    content: "";
+    content: '';
     display: block;
     width: 50px;
     height: 50px;
@@ -238,7 +238,7 @@ const LoadingSpinner = styled.div`
     border-top-color: var(--primary-color);
     animation: spinner 1s linear infinite;
   }
-  
+
   @keyframes spinner {
     to {
       transform: rotate(360deg);
@@ -257,7 +257,7 @@ const ClearFilters = styled.button`
   display: block;
   margin-left: auto;
   transition: var(--transition);
-  
+
   &:hover {
     color: var(--accent-color);
   }
@@ -268,7 +268,7 @@ const RoomsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isFiltered, setIsFiltered] = useState(false);
-  
+
   useEffect(() => {
     const fetchRooms = async () => {
       try {
@@ -281,26 +281,26 @@ const RoomsPage = () => {
         console.error('Ошибка при загрузке номеров:', err);
       }
     };
-    
+
     fetchRooms();
   }, []);
-  
-  const handleFilter = async (values) => {
+
+  const handleFilter = async values => {
     try {
       setLoading(true);
       setIsFiltered(true);
-      
+
       // Форматируем даты для API
       const formattedCheckIn = values.checkIn ? values.checkIn.toISOString() : '';
       const formattedCheckOut = values.checkOut ? values.checkOut.toISOString() : '';
-      
+
       const params = {
         ...(formattedCheckIn && { checkIn: formattedCheckIn }),
         ...(formattedCheckOut && { checkOut: formattedCheckOut }),
         ...(values.capacity && { capacity: values.capacity }),
-        ...(values.roomType !== '' && { roomType: values.roomType })
+        ...(values.roomType !== '' && { roomType: values.roomType }),
       };
-      
+
       // Если есть даты, используем эндпоинт для доступных номеров
       if (formattedCheckIn && formattedCheckOut) {
         const response = await roomService.getAvailableRooms(params);
@@ -309,7 +309,7 @@ const RoomsPage = () => {
         // Иначе получаем все номера
         const response = await roomService.getRooms();
         setRooms(response.data);
-        
+
         // Фильтруем на клиенте если нужно
         if (values.capacity || values.roomType) {
           const filtered = response.data.filter(room => {
@@ -321,7 +321,7 @@ const RoomsPage = () => {
           setRooms(filtered);
         }
       }
-      
+
       setLoading(false);
     } catch (err) {
       setError('Не удалось отфильтровать номера');
@@ -329,12 +329,12 @@ const RoomsPage = () => {
       console.error('Ошибка при фильтрации номеров:', err);
     }
   };
-  
+
   const clearFilters = async () => {
     try {
       setLoading(true);
       setIsFiltered(false);
-      
+
       const response = await roomService.getRooms();
       setRooms(response.data);
       setLoading(false);
@@ -343,14 +343,17 @@ const RoomsPage = () => {
       setLoading(false);
     }
   };
-  
+
   return (
     <PageContainer>
       <PageHeader>
         <Title>Наши номера</Title>
-        <Subtitle>Выберите идеальный номер для вашего отдыха в "Лесном Дворике". У нас есть варианты для любых предпочтений и бюджета.</Subtitle>
+        <Subtitle>
+          Выберите идеальный номер для вашего отдыха в "Лесном Дворике". У нас есть варианты для
+          любых предпочтений и бюджета.
+        </Subtitle>
       </PageHeader>
-      
+
       <FiltersContainer>
         <FilterTitle>Найдите подходящий номер</FilterTitle>
         <Formik
@@ -358,7 +361,7 @@ const RoomsPage = () => {
             checkIn: null,
             checkOut: null,
             capacity: '',
-            roomType: ''
+            roomType: '',
           }}
           onSubmit={handleFilter}
         >
@@ -378,7 +381,7 @@ const RoomsPage = () => {
                   minDate={new Date()}
                 />
               </FormGroup>
-              
+
               <FormGroup>
                 <Label htmlFor="checkOut">Дата выезда</Label>
                 <StyledDatePicker
@@ -393,7 +396,7 @@ const RoomsPage = () => {
                   placeholderText="Выберите дату"
                 />
               </FormGroup>
-              
+
               <FormGroup>
                 <Label htmlFor="capacity">Кол-во гостей</Label>
                 <Select as="select" id="capacity" name="capacity">
@@ -405,7 +408,7 @@ const RoomsPage = () => {
                   <option value="5">5+ гостей</option>
                 </Select>
               </FormGroup>
-              
+
               <FormGroup>
                 <Label htmlFor="roomType">Тип номера</Label>
                 <Select as="select" id="roomType" name="roomType">
@@ -417,7 +420,7 @@ const RoomsPage = () => {
                   <option value="executive">Премиум</option>
                 </Select>
               </FormGroup>
-              
+
               <FormGroup>
                 <Label style={{ opacity: 0 }}>.</Label>
                 <Button type="submit">Найти номер</Button>
@@ -425,14 +428,10 @@ const RoomsPage = () => {
             </StyledForm>
           )}
         </Formik>
-        
-        {isFiltered && (
-          <ClearFilters onClick={clearFilters}>
-            Сбросить фильтры
-          </ClearFilters>
-        )}
+
+        {isFiltered && <ClearFilters onClick={clearFilters}>Сбросить фильтры</ClearFilters>}
       </FiltersContainer>
-      
+
       {loading ? (
         <LoadingSpinner />
       ) : error ? (
@@ -458,4 +457,4 @@ const RoomsPage = () => {
   );
 };
 
-export default RoomsPage; 
+export default RoomsPage;

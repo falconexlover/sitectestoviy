@@ -33,12 +33,12 @@
 }
 
 .btn-primary {
-  background-color: #3B7302;
+  background-color: #3b7302;
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: #2A5501;
+  background-color: #2a5501;
 }
 
 .btn-secondary {
@@ -86,4 +86,4 @@
   .container {
     padding: 0 0.5rem;
   }
-} 
+}

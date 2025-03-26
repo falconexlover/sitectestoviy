@@ -12,7 +12,7 @@ const PageContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 3rem 2rem;
-  
+
   @media (max-width: 768px) {
     padding: 2rem 1rem;
   }
@@ -22,7 +22,7 @@ const PageHeader = styled.div`
   text-align: center;
   margin-bottom: 3rem;
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -40,7 +40,7 @@ const PageTitle = styled.h1`
   font-size: 2.5rem;
   color: var(--primary-color);
   margin-bottom: 1rem;
-  
+
   @media (max-width: 768px) {
     font-size: 2rem;
   }
@@ -57,7 +57,7 @@ const BookingContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 3rem;
-  
+
   @media (max-width: 992px) {
     grid-template-columns: 1fr;
   }
@@ -76,7 +76,7 @@ const SectionTitle = styled.h2`
   color: var(--dark-color);
   margin-bottom: 1.5rem;
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -106,7 +106,7 @@ const Input = styled(Field)`
   border-radius: var(--radius-sm);
   background-color: var(--light-color);
   transition: var(--transition);
-  
+
   &:focus {
     outline: none;
     border-color: var(--primary-color);
@@ -116,16 +116,16 @@ const Input = styled(Field)`
 
 const Select = styled(Field)`
   width: 100%;
-  padding: 0.9rem 1rem;
+  padding: 0.8rem;
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  background-color: var(--light-color);
-  transition: var(--transition);
-  
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+
   &:focus {
-    outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(33, 113, 72, 0.2);
+    box-shadow: 0 0 0 2px rgba(74, 124, 89, 0.1);
   }
 `;
 
@@ -133,7 +133,7 @@ const DatePickerWrapper = styled.div`
   .react-datepicker-wrapper {
     width: 100%;
   }
-  
+
   .react-datepicker__input-container input {
     width: 100%;
     padding: 0.9rem 1rem;
@@ -141,32 +141,32 @@ const DatePickerWrapper = styled.div`
     border-radius: var(--radius-sm);
     background-color: var(--light-color);
     transition: var(--transition);
-    
+
     &:focus {
       outline: none;
       border-color: var(--primary-color);
       box-shadow: 0 0 0 3px rgba(33, 113, 72, 0.2);
     }
   }
-  
+
   .react-datepicker {
     font-family: 'Montserrat', sans-serif;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
   }
-  
+
   .react-datepicker__header {
     background-color: var(--primary-color);
     border-bottom: none;
     color: white;
   }
-  
-  .react-datepicker__current-month, 
+
+  .react-datepicker__current-month,
   .react-datepicker-time__header,
   .react-datepicker__day-name {
     color: white;
   }
-  
+
   .react-datepicker__day--selected {
     background-color: var(--accent-color);
   }
@@ -182,7 +182,7 @@ const ButtonContainer = styled.div`
   display: flex;
   gap: 1rem;
   margin-top: 2rem;
-  
+
   @media (max-width: 576px) {
     flex-direction: column;
   }
@@ -199,13 +199,13 @@ const Button = styled.button`
   cursor: pointer;
   transition: var(--transition);
   flex: 1;
-  
+
   &:hover {
     background-color: var(--accent-color);
     transform: translateY(-3px);
     box-shadow: var(--shadow-md);
   }
-  
+
   &:disabled {
     background-color: var(--border-color);
     cursor: not-allowed;
@@ -218,7 +218,7 @@ const CancelButton = styled(Button)`
   background-color: white;
   color: var(--dark-color);
   border: 1px solid var(--border-color);
-  
+
   &:hover {
     background-color: var(--light-color);
     color: var(--dark-color);
@@ -229,7 +229,7 @@ const FormRow = styled.div`
   display: grid;
   grid-template-columns: ${props => props.columns || '1fr 1fr'};
   gap: 1rem;
-  
+
   @media (max-width: 576px) {
     grid-template-columns: 1fr;
   }
@@ -257,14 +257,16 @@ const RoomCard = styled.div`
   overflow: hidden;
   transition: var(--transition);
   cursor: pointer;
-  
+
   &:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-md);
     border-color: var(--primary-color);
   }
-  
-  ${props => props.selected && `
+
+  ${props =>
+    props.selected &&
+    `
     border-color: var(--primary-color);
     box-shadow: 0 0 0 2px var(--primary-color);
   `}
@@ -273,7 +275,7 @@ const RoomCard = styled.div`
 const RoomImage = styled.div`
   height: 200px;
   overflow: hidden;
-  
+
   img {
     width: 100%;
     height: 100%;
@@ -313,7 +315,7 @@ const RoomFeature = styled.span`
   align-items: center;
   font-size: 0.85rem;
   color: var(--text-color);
-  
+
   i {
     color: var(--primary-color);
     margin-right: 0.3rem;
@@ -325,13 +327,13 @@ const RoomPrice = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  
+
   span:first-child {
     font-size: 1.2rem;
     font-weight: 600;
     color: var(--primary-color);
   }
-  
+
   span:last-child {
     font-size: 0.9rem;
     color: var(--text-muted);
@@ -345,8 +347,9 @@ const AvailabilityBadge = styled.div`
   font-weight: 600;
   border-radius: var(--radius-sm);
   margin-top: 0.5rem;
-  background-color: ${props => props.available ? 'rgba(33, 113, 72, 0.1)' : 'rgba(220, 53, 69, 0.1)'};
-  color: ${props => props.available ? 'var(--success-color)' : 'var(--danger-color)'};
+  background-color: ${props =>
+    props.available ? 'rgba(33, 113, 72, 0.1)' : 'rgba(220, 53, 69, 0.1)'};
+  color: ${props => (props.available ? 'var(--success-color)' : 'var(--danger-color)')};
 `;
 
 const CheckoutSummary = styled.div`
@@ -359,7 +362,7 @@ const SummaryRow = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 0.8rem;
-  
+
   &.total {
     font-weight: 600;
     font-size: 1.1rem;
@@ -374,7 +377,7 @@ const Alert = styled.div`
   margin-bottom: 1.5rem;
   border-radius: var(--radius-sm);
   background-color: ${props => {
-    switch(props.type) {
+    switch (props.type) {
       case 'success':
         return 'rgba(33, 113, 72, 0.1)';
       case 'error':
@@ -386,7 +389,7 @@ const Alert = styled.div`
     }
   }};
   color: ${props => {
-    switch(props.type) {
+    switch (props.type) {
       case 'success':
         return 'var(--success-color)';
       case 'error':
@@ -399,7 +402,7 @@ const Alert = styled.div`
   }};
   display: flex;
   align-items: center;
-  
+
   i {
     margin-right: 0.5rem;
     font-size: 1.2rem;
@@ -412,25 +415,25 @@ const LoginPrompt = styled.div`
   background-color: white;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
-  
+
   h3 {
     font-family: 'Playfair Display', serif;
     font-size: 1.5rem;
     color: var(--dark-color);
     margin-bottom: 1rem;
   }
-  
+
   p {
     margin-bottom: 2rem;
     color: var(--text-color);
   }
-  
+
   a {
     color: var(--primary-color);
     text-decoration: underline;
     font-weight: 600;
     transition: var(--transition);
-    
+
     &:hover {
       color: var(--accent-color);
     }
@@ -445,10 +448,9 @@ const BookingPage = () => {
   const [rooms, setRooms] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [dateRange, setDateRange] = useState({ checkIn: null, checkOut: null });
   const [availableRooms, setAvailableRooms] = useState([]);
   const [status, setStatus] = useState(null);
-  
+
   // Начальные значения для формы бронирования
   const initialValues = {
     roomId: '',
@@ -462,16 +464,13 @@ const BookingPage = () => {
     email: user ? user.email || '' : '',
     phone: user ? user.phone || '' : '',
   };
-  
+
   // Схема валидации для формы бронирования
   const validationSchema = Yup.object({
     checkIn: Yup.date().required('Пожалуйста, выберите дату заезда'),
     checkOut: Yup.date()
       .required('Пожалуйста, выберите дату выезда')
-      .min(
-        Yup.ref('checkIn'),
-        'Дата выезда должна быть позже даты заезда'
-      ),
+      .min(Yup.ref('checkIn'), 'Дата выезда должна быть позже даты заезда'),
     adults: Yup.number()
       .required('Укажите количество взрослых')
       .min(1, 'Минимум 1 взрослый')
@@ -482,14 +481,12 @@ const BookingPage = () => {
       .max(10, 'Максимум 10 детей'),
     firstName: Yup.string().required('Пожалуйста, введите имя'),
     lastName: Yup.string().required('Пожалуйста, введите фамилию'),
-    email: Yup.string()
-      .email('Неверный формат email')
-      .required('Пожалуйста, введите email'),
+    email: Yup.string().email('Неверный формат email').required('Пожалуйста, введите email'),
     phone: Yup.string()
       .matches(phoneRegex, 'Неверный формат телефона')
       .required('Пожалуйста, введите номер телефона'),
   });
-  
+
   // Загрузка всех номеров при монтировании компонента
   useEffect(() => {
     const fetchRooms = async () => {
@@ -501,27 +498,27 @@ const BookingPage = () => {
         console.error('Ошибка при загрузке номеров:', error);
         setStatus({
           type: 'error',
-          message: 'Не удалось загрузить доступные номера. Пожалуйста, попробуйте позже.'
+          message: 'Не удалось загрузить доступные номера. Пожалуйста, попробуйте позже.',
         });
       } finally {
         setLoading(false);
       }
     };
-    
+
     fetchRooms();
   }, []);
-  
+
   // Функция для обработки отправки формы
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     if (!selectedRoom) {
       setStatus({
         type: 'error',
-        message: 'Пожалуйста, выберите номер для бронирования'
+        message: 'Пожалуйста, выберите номер для бронирования',
       });
       setSubmitting(false);
       return;
     }
-    
+
     try {
       const bookingData = {
         roomId: selectedRoom._id,
@@ -534,63 +531,64 @@ const BookingPage = () => {
           firstName: values.firstName,
           lastName: values.lastName,
           email: values.email,
-          phone: values.phone
-        }
+          phone: values.phone,
+        },
       };
-      
+
       const response = await bookingService.createBooking(bookingData);
-      
+
       setStatus({
         type: 'success',
-        message: 'Бронирование успешно создано! Номер бронирования: ' + response.data.bookingNumber
+        message: 'Бронирование успешно создано! Номер бронирования: ' + response.data.bookingNumber,
       });
-      
+
       resetForm();
       setSelectedRoom(null);
-      
+
       // Перенаправление на страницу с бронированиями через 3 секунды
       setTimeout(() => {
         navigate('/bookings');
       }, 3000);
-      
     } catch (error) {
       console.error('Ошибка при создании бронирования:', error);
       setStatus({
         type: 'error',
-        message: error.response?.data?.message || 'Произошла ошибка при бронировании. Пожалуйста, попробуйте позже.'
+        message:
+          error.response?.data?.message ||
+          'Произошла ошибка при бронировании. Пожалуйста, попробуйте позже.',
       });
     } finally {
       setSubmitting(false);
     }
   };
-  
+
   // Функция для расчета количества дней
   const calculateDays = (startDate, endDate) => {
     if (!startDate || !endDate) return 0;
     const diffTime = Math.abs(endDate - startDate);
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
-  
+
   // Функция для расчета общей стоимости
   const calculateTotalPrice = (room, checkIn, checkOut) => {
     if (!room || !checkIn || !checkOut) return 0;
     const days = calculateDays(checkIn, checkOut);
     return room.price * days;
   };
-  
+
   // Поиск доступных номеров по датам
   const searchAvailableRooms = async (checkIn, checkOut) => {
     if (!checkIn || !checkOut) return;
-    
+
     try {
       setLoading(true);
       const response = await roomService.getAvailableRooms({
         checkIn: checkIn.toISOString(),
-        checkOut: checkOut.toISOString()
+        checkOut: checkOut.toISOString(),
       });
-      
+
       setAvailableRooms(response.data);
-      
+
       // Если выбранный номер больше не доступен, снимаем выбор
       if (selectedRoom && !response.data.find(room => room._id === selectedRoom._id)) {
         setSelectedRoom(null);
@@ -599,45 +597,46 @@ const BookingPage = () => {
       console.error('Ошибка при поиске доступных номеров:', error);
       setStatus({
         type: 'error',
-        message: 'Не удалось проверить доступность номеров. Пожалуйста, попробуйте позже.'
+        message: 'Не удалось проверить доступность номеров. Пожалуйста, попробуйте позже.',
       });
     } finally {
       setLoading(false);
     }
   };
-  
+
   // Перевод типа номера на русский
-  const getRoomTypeName = (type) => {
+  const getRoomTypeName = type => {
     const types = {
       standard: 'Стандартный',
       deluxe: 'Делюкс',
       suite: 'Люкс',
       family: 'Семейный',
       penthouse: 'Пентхаус',
-      economy: 'Эконом'
+      economy: 'Эконом',
     };
-    
+
     return types[type] || type;
   };
-  
+
   // Проверка, доступен ли номер
-  const isRoomAvailable = (roomId) => {
+  const isRoomAvailable = roomId => {
     return availableRooms.some(room => room._id === roomId);
   };
-  
+
   // Если пользователь не авторизован, показываем сообщение с предложением войти
   if (!isAuthenticated) {
     return (
       <PageContainer>
         <PageHeader>
           <PageTitle>Бронирование номера</PageTitle>
-          <PageSubtitle>
-            Выберите номер и даты проживания для создания бронирования
-          </PageSubtitle>
+          <PageSubtitle>Выберите номер и даты проживания для создания бронирования</PageSubtitle>
         </PageHeader>
-        
+
         <LoginPrompt>
-          <i className="fas fa-user-lock" style={{ fontSize: '3rem', color: 'var(--primary-color)', marginBottom: '1rem' }}></i>
+          <i
+            className="fas fa-user-lock"
+            style={{ fontSize: '3rem', color: 'var(--primary-color)', marginBottom: '1rem' }}
+          ></i>
           <h3>Требуется авторизация</h3>
           <p>Для бронирования номера необходимо войти в аккаунт или зарегистрироваться</p>
           <ButtonContainer>
@@ -648,23 +647,23 @@ const BookingPage = () => {
       </PageContainer>
     );
   }
-  
+
   return (
     <PageContainer>
       <PageHeader>
         <PageTitle>Бронирование номера</PageTitle>
-        <PageSubtitle>
-          Выберите номер и даты проживания для создания бронирования
-        </PageSubtitle>
+        <PageSubtitle>Выберите номер и даты проживания для создания бронирования</PageSubtitle>
       </PageHeader>
-      
+
       {status && (
         <Alert type={status.type}>
-          <i className={`fas ${status.type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}`}></i>
+          <i
+            className={`fas ${status.type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}`}
+          ></i>
           {status.message}
         </Alert>
       )}
-      
+
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -675,7 +674,7 @@ const BookingPage = () => {
             <BookingContainer>
               <BookingForm>
                 <SectionTitle>Информация о бронировании</SectionTitle>
-                
+
                 <FormGroup>
                   <Label>Даты проживания</Label>
                   <FormRow>
@@ -695,7 +694,7 @@ const BookingPage = () => {
                       />
                       <ErrorMessage name="checkIn" component={Error} />
                     </DatePickerWrapper>
-                    
+
                     <DatePickerWrapper>
                       <DatePicker
                         selected={values.checkOut}
@@ -714,51 +713,84 @@ const BookingPage = () => {
                     </DatePickerWrapper>
                   </FormRow>
                 </FormGroup>
-                
+
                 <FormRow>
                   <FormGroup>
                     <Label htmlFor="adults">Взрослые</Label>
-                    <Input type="number" id="adults" name="adults" min="1" max="10" />
+                    <Select as="select" name="adults" id="adults">
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                    </Select>
                     <ErrorMessage name="adults" component={Error} />
                   </FormGroup>
-                  
+
                   <FormGroup>
-                    <Label htmlFor="children">Дети (до 12 лет)</Label>
-                    <Input type="number" id="children" name="children" min="0" max="10" />
+                    <Label htmlFor="children">Дети</Label>
+                    <Select as="select" name="children" id="children">
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                    </Select>
                     <ErrorMessage name="children" component={Error} />
                   </FormGroup>
                 </FormRow>
-                
+
                 <SectionTitle>Информация о госте</SectionTitle>
-                
+
                 <FormRow>
                   <FormGroup>
                     <Label htmlFor="firstName">Имя</Label>
-                    <Input type="text" id="firstName" name="firstName" placeholder="Введите ваше имя" />
+                    <Input
+                      type="text"
+                      id="firstName"
+                      name="firstName"
+                      placeholder="Введите ваше имя"
+                    />
                     <ErrorMessage name="firstName" component={Error} />
                   </FormGroup>
-                  
+
                   <FormGroup>
                     <Label htmlFor="lastName">Фамилия</Label>
-                    <Input type="text" id="lastName" name="lastName" placeholder="Введите вашу фамилию" />
+                    <Input
+                      type="text"
+                      id="lastName"
+                      name="lastName"
+                      placeholder="Введите вашу фамилию"
+                    />
                     <ErrorMessage name="lastName" component={Error} />
                   </FormGroup>
                 </FormRow>
-                
+
                 <FormRow>
                   <FormGroup>
                     <Label htmlFor="email">Email</Label>
                     <Input type="email" id="email" name="email" placeholder="Введите ваш email" />
                     <ErrorMessage name="email" component={Error} />
                   </FormGroup>
-                  
+
                   <FormGroup>
                     <Label htmlFor="phone">Телефон</Label>
-                    <Input type="tel" id="phone" name="phone" placeholder="Введите ваш номер телефона" />
+                    <Input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      placeholder="Введите ваш номер телефона"
+                    />
                     <ErrorMessage name="phone" component={Error} />
                   </FormGroup>
                 </FormRow>
-                
+
                 <FormGroup>
                   <Label htmlFor="specialRequests">Особые пожелания</Label>
                   <Input
@@ -769,7 +801,7 @@ const BookingPage = () => {
                     style={{ minHeight: '100px', resize: 'vertical' }}
                   />
                 </FormGroup>
-                
+
                 {selectedRoom && (
                   <CheckoutSummary>
                     <SectionTitle>Итоговая информация</SectionTitle>
@@ -780,14 +812,16 @@ const BookingPage = () => {
                     <SummaryRow>
                       <span>Даты:</span>
                       <span>
-                        {values.checkIn && values.checkIn.toLocaleDateString('ru-RU')} - {values.checkOut && values.checkOut.toLocaleDateString('ru-RU')}
-                        {' '} ({calculateDays(values.checkIn, values.checkOut)} дн.)
+                        {values.checkIn && values.checkIn.toLocaleDateString('ru-RU')} -{' '}
+                        {values.checkOut && values.checkOut.toLocaleDateString('ru-RU')} (
+                        {calculateDays(values.checkIn, values.checkOut)} дн.)
                       </span>
                     </SummaryRow>
                     <SummaryRow>
                       <span>Гости:</span>
                       <span>
-                        {values.adults} взр. {values.children > 0 ? `+ ${values.children} дет.` : ''}
+                        {values.adults} взр.{' '}
+                        {values.children > 0 ? `+ ${values.children} дет.` : ''}
                       </span>
                     </SummaryRow>
                     <SummaryRow>
@@ -796,11 +830,18 @@ const BookingPage = () => {
                     </SummaryRow>
                     <SummaryRow className="total">
                       <span>Итого:</span>
-                      <span>{calculateTotalPrice(selectedRoom, values.checkIn, values.checkOut).toLocaleString()} ₽</span>
+                      <span>
+                        {calculateTotalPrice(
+                          selectedRoom,
+                          values.checkIn,
+                          values.checkOut
+                        ).toLocaleString()}{' '}
+                        ₽
+                      </span>
                     </SummaryRow>
                   </CheckoutSummary>
                 )}
-                
+
                 <ButtonContainer>
                   <Button type="submit" disabled={isSubmitting || !selectedRoom}>
                     {isSubmitting ? 'Отправка...' : 'Забронировать'}
@@ -810,13 +851,16 @@ const BookingPage = () => {
                   </CancelButton>
                 </ButtonContainer>
               </BookingForm>
-              
+
               <RoomPreview>
                 <SectionTitle>Выберите номер</SectionTitle>
-                
+
                 {loading ? (
                   <div style={{ textAlign: 'center', padding: '2rem' }}>
-                    <i className="fas fa-spinner fa-spin" style={{ fontSize: '2rem', color: 'var(--primary-color)' }}></i>
+                    <i
+                      className="fas fa-spinner fa-spin"
+                      style={{ fontSize: '2rem', color: 'var(--primary-color)' }}
+                    ></i>
                     <p style={{ marginTop: '1rem' }}>Загрузка номеров...</p>
                   </div>
                 ) : (
@@ -824,32 +868,33 @@ const BookingPage = () => {
                     {values.checkIn && values.checkOut ? (
                       <>
                         <p style={{ marginBottom: '1rem' }}>
-                          {availableRooms.length > 0 
-                            ? `Доступно ${availableRooms.length} номеров на выбранные даты` 
+                          {availableRooms.length > 0
+                            ? `Доступно ${availableRooms.length} номеров на выбранные даты`
                             : 'Нет доступных номеров на выбранные даты. Пожалуйста, выберите другие даты.'}
                         </p>
-                        
+
                         <RoomList>
                           {rooms.map(room => (
-                            <RoomCard 
-                              key={room._id} 
+                            <RoomCard
+                              key={room._id}
                               selected={selectedRoom && selectedRoom._id === room._id}
                               onClick={() => isRoomAvailable(room._id) && setSelectedRoom(room)}
                               style={{ opacity: isRoomAvailable(room._id) ? 1 : 0.6 }}
                             >
                               <RoomImage>
-                                <img 
-                                  src={room.images && room.images.length > 0 
-                                    ? room.images[0] 
-                                    : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80'
-                                  } 
-                                  alt={room.name} 
+                                <img
+                                  src={
+                                    room.images && room.images.length > 0
+                                      ? room.images[0]
+                                      : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80'
+                                  }
+                                  alt={room.name}
                                 />
                               </RoomImage>
                               <RoomInfo>
                                 <RoomName>{room.name}</RoomName>
                                 <RoomType>{getRoomTypeName(room.roomType)}</RoomType>
-                                
+
                                 <RoomFeatures>
                                   <RoomFeature>
                                     <i className="fas fa-user"></i> {room.capacity} чел.
@@ -861,11 +906,13 @@ const BookingPage = () => {
                                     <i className="fas fa-bed"></i> {room.beds || '1 двуспальная'}
                                   </RoomFeature>
                                 </RoomFeatures>
-                                
+
                                 <AvailabilityBadge available={isRoomAvailable(room._id)}>
-                                  {isRoomAvailable(room._id) ? 'Доступен' : 'Не доступен на выбранные даты'}
+                                  {isRoomAvailable(room._id)
+                                    ? 'Доступен'
+                                    : 'Не доступен на выбранные даты'}
                                 </AvailabilityBadge>
-                                
+
                                 <RoomPrice>
                                   <span>{room.price.toLocaleString()} ₽</span>
                                   <span>за ночь</span>
@@ -876,7 +923,9 @@ const BookingPage = () => {
                         </RoomList>
                       </>
                     ) : (
-                      <p>Пожалуйста, выберите даты заезда и выезда, чтобы увидеть доступные номера</p>
+                      <p>
+                        Пожалуйста, выберите даты заезда и выезда, чтобы увидеть доступные номера
+                      </p>
                     )}
                   </>
                 )}
@@ -889,4 +938,4 @@ const BookingPage = () => {
   );
 };
 
-export default BookingPage; 
+export default BookingPage;

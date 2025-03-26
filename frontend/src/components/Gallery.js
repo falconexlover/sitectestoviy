@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 
 const GallerySection = styled.section`
@@ -10,7 +10,7 @@ const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
-  
+
   @media (max-width: 768px) {
     padding: 0 1rem;
   }
@@ -20,7 +20,7 @@ const SectionHeader = styled.div`
   text-align: center;
   margin-bottom: 3rem;
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -38,7 +38,7 @@ const SectionTitle = styled.h2`
   font-size: 2.5rem;
   color: var(--dark-color);
   margin-bottom: 1rem;
-  
+
   @media (max-width: 768px) {
     font-size: 2rem;
   }
@@ -55,11 +55,11 @@ const GalleryGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
-  
+
   @media (max-width: 992px) {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   @media (max-width: 576px) {
     grid-template-columns: 1fr;
   }
@@ -70,23 +70,23 @@ const GalleryItem = styled.div`
   overflow: hidden;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
-  height: ${props => props.featured ? '400px' : '250px'};
-  grid-column: ${props => props.featured ? 'span 2' : 'span 1'};
+  height: ${props => (props.featured ? '400px' : '250px')};
+  grid-column: ${props => (props.featured ? 'span 2' : 'span 1')};
   cursor: pointer;
   transition: transform 0.3s ease;
-  
+
   &:hover {
     transform: translateY(-5px);
-    
+
     img {
       transform: scale(1.05);
     }
-    
+
     .overlay {
       opacity: 1;
     }
   }
-  
+
   @media (max-width: 992px) {
     grid-column: span 1;
     height: 250px;
@@ -113,14 +113,14 @@ const GalleryOverlay = styled.div`
   padding: 1.5rem;
   opacity: 0;
   transition: opacity 0.3s ease;
-  
+
   h3 {
     color: white;
     font-size: 1.25rem;
     margin-bottom: 0.5rem;
     font-weight: 600;
   }
-  
+
   p {
     color: rgba(255, 255, 255, 0.9);
     font-size: 0.9rem;
@@ -144,12 +144,12 @@ const ViewButton = styled.button`
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.3s ease;
-  
+
   i {
     color: var(--primary-color);
     font-size: 1.2rem;
   }
-  
+
   ${GalleryItem}:hover & {
     opacity: 1;
   }
@@ -166,9 +166,11 @@ const LightboxOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  opacity: ${props => props.isOpen ? '1' : '0'};
-  visibility: ${props => props.isOpen ? 'visible' : 'hidden'};
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  opacity: ${props => (props.isOpen ? '1' : '0')};
+  visibility: ${props => (props.isOpen ? 'visible' : 'hidden')};
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
 `;
 
 const LightboxContent = styled.div`
@@ -201,7 +203,7 @@ const CloseButton = styled.button`
   color: white;
   font-size: 1.5rem;
   cursor: pointer;
-  
+
   &:hover {
     color: var(--primary-color);
   }
@@ -211,20 +213,20 @@ const NavigationButton = styled.button`
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  ${props => props.direction === 'prev' ? 'left: -50px' : 'right: -50px'};
+  ${props => (props.direction === 'prev' ? 'left: -50px' : 'right: -50px')};
   background: transparent;
   border: none;
   color: white;
   font-size: 2rem;
   cursor: pointer;
   transition: color 0.3s ease;
-  
+
   &:hover {
     color: var(--primary-color);
   }
-  
+
   @media (max-width: 992px) {
-    ${props => props.direction === 'prev' ? 'left: -30px' : 'right: -30px'};
+    ${props => (props.direction === 'prev' ? 'left: -30px' : 'right: -30px')};
     font-size: 1.5rem;
   }
 `;
@@ -232,90 +234,105 @@ const NavigationButton = styled.button`
 const Gallery = () => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
-  
+
   const galleryItems = [
     {
       id: 1,
-      image: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
+      image:
+        'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
       title: 'Уютный интерьер',
       description: 'Комфортная атмосфера для вашего отдыха',
-      featured: true
+      featured: true,
     },
     {
       id: 2,
-      image: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
+      image:
+        'https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
       title: 'Современный номер',
-      description: 'Стильный дизайн и все удобства'
+      description: 'Стильный дизайн и все удобства',
     },
     {
       id: 3,
-      image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80',
+      image:
+        'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80',
       title: 'Просторная ванная',
-      description: 'Современная сантехника и аксессуары'
+      description: 'Современная сантехника и аксессуары',
     },
     {
       id: 4,
-      image: 'https://images.unsplash.com/photo-1584132967334-10e028bd69f7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
+      image:
+        'https://images.unsplash.com/photo-1584132967334-10e028bd69f7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
       title: 'Вид из окна',
-      description: 'Панорамные виды на природу'
+      description: 'Панорамные виды на природу',
     },
     {
       id: 5,
-      image: 'https://images.unsplash.com/photo-1540518614846-7eded433c457?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1739&q=80',
+      image:
+        'https://images.unsplash.com/photo-1540518614846-7eded433c457?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1739&q=80',
       title: 'Зона отдыха',
-      description: 'Место для релаксации и общения'
+      description: 'Место для релаксации и общения',
     },
     {
       id: 6,
-      image: 'https://images.unsplash.com/photo-1560624052-449f5ddf0c31?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
+      image:
+        'https://images.unsplash.com/photo-1560624052-449f5ddf0c31?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
       title: 'Территория',
       description: 'Зелёный уголок для прогулок',
-      featured: true
-    }
+      featured: true,
+    },
   ];
-  
-  const openLightbox = (index) => {
+
+  const openLightbox = index => {
     setCurrentImage(index);
     setLightboxOpen(true);
     // Предотвращаем прокрутку страницы при открытом лайтбоксе
     document.body.style.overflow = 'hidden';
   };
-  
+
   const closeLightbox = () => {
     setLightboxOpen(false);
     // Восстанавливаем прокрутку страницы
     document.body.style.overflow = 'auto';
   };
-  
-  const nextImage = (e) => {
-    e.stopPropagation();
-    setCurrentImage((prev) => (prev === galleryItems.length - 1 ? 0 : prev + 1));
-  };
-  
-  const prevImage = (e) => {
-    e.stopPropagation();
-    setCurrentImage((prev) => (prev === 0 ? galleryItems.length - 1 : prev - 1));
-  };
-  
+
+  const nextImage = useCallback(
+    e => {
+      if (e) e.stopPropagation();
+      setCurrentImage(prev => (prev === galleryItems.length - 1 ? 0 : prev + 1));
+    },
+    [galleryItems.length]
+  );
+
+  const prevImage = useCallback(
+    e => {
+      if (e) e.stopPropagation();
+      setCurrentImage(prev => (prev === 0 ? galleryItems.length - 1 : prev - 1));
+    },
+    [galleryItems.length]
+  );
+
   // Обработчик клавиш для навигации в лайтбоксе с помощью useCallback
-  const handleKeyDown = useCallback((e) => {
-    if (e.key === 'ArrowLeft') {
-      prevImage();
-    } else if (e.key === 'ArrowRight') {
-      nextImage();
-    } else if (e.key === 'Escape') {
-      setLightboxOpen(false);
-    }
-  }, [prevImage, nextImage, setLightboxOpen]);
-  
+  const handleKeyDown = useCallback(
+    e => {
+      if (e.key === 'ArrowLeft') {
+        prevImage();
+      } else if (e.key === 'ArrowRight') {
+        nextImage();
+      } else if (e.key === 'Escape') {
+        setLightboxOpen(false);
+      }
+    },
+    [prevImage, nextImage, setLightboxOpen]
+  );
+
   // Добавляем слушатель событий клавиатуры при монтировании компонента
-  React.useEffect(() => {
+  useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [handleKeyDown]);
-  
+
   return (
     <GallerySection id="gallery">
       <Container>
@@ -325,7 +342,7 @@ const Gallery = () => {
             Погрузитесь в атмосферу отеля "Лесной Дворик" через нашу фотогалерею
           </SectionSubtitle>
         </SectionHeader>
-        
+
         <GalleryGrid>
           {galleryItems.map((item, index) => (
             <GalleryItem key={item.id} featured={item.featured}>
@@ -341,15 +358,15 @@ const Gallery = () => {
           ))}
         </GalleryGrid>
       </Container>
-      
+
       <LightboxOverlay isOpen={lightboxOpen} onClick={closeLightbox}>
-        <LightboxContent onClick={(e) => e.stopPropagation()}>
+        <LightboxContent onClick={e => e.stopPropagation()}>
           <CloseButton onClick={closeLightbox}>
             <i className="fas fa-times"></i>
           </CloseButton>
-          <LightboxImage 
-            src={galleryItems[currentImage].image} 
-            alt={galleryItems[currentImage].title} 
+          <LightboxImage
+            src={galleryItems[currentImage].image}
+            alt={galleryItems[currentImage].title}
           />
           <LightboxCaption>
             <h3>{galleryItems[currentImage].title}</h3>
@@ -367,4 +384,4 @@ const Gallery = () => {
   );
 };
 
-export default Gallery; 
+export default Gallery;

@@ -21,13 +21,13 @@ const StyledImage = styled.img`
   object-fit: ${props => props.objectFit || 'cover'};
   object-position: center;
   transition: transform 0.3s ease;
-  transform: ${props => props.isHovered ? 'scale(1.05)' : 'scale(1)'};
+  transform: ${props => (props.isHovered ? 'scale(1.05)' : 'scale(1)')};
 `;
 
 /**
  * Компонент для отображения изображений с возможностью использования
  * оптимизированных версий и резервного изображения при ошибке загрузки.
- * 
+ *
  * @param {Object} props - Свойства компонента
  * @param {string} props.src - Основной источник изображения
  * @param {string} props.fallbackSrc - Резервный источник изображения при ошибке загрузки основного
@@ -44,27 +44,28 @@ const ImageWithFallback = ({
   height = 'auto',
   objectFit = 'cover',
   responsiveSources = null,
-  hover = false
+  hover = false,
 }) => {
   const [isError, setIsError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  
+
   // Обработчик ошибки загрузки изображения
   const handleError = () => {
     if (!isError) {
       setIsError(true);
     }
   };
-  
+
   // Источник изображения с учетом ошибки загрузки
   const imageSrc = isError ? fallbackSrc : src;
-  
+
   // Проверяем наличие оптимизированных версий
-  const hasResponsiveSources = responsiveSources && 
+  const hasResponsiveSources =
+    responsiveSources &&
     (responsiveSources.small || responsiveSources.medium || responsiveSources.large);
-  
+
   return (
-    <ImageContainer 
+    <ImageContainer
       height={height}
       onMouseEnter={hover ? () => setIsHovered(true) : undefined}
       onMouseLeave={hover ? () => setIsHovered(false) : undefined}
@@ -72,22 +73,13 @@ const ImageWithFallback = ({
       {hasResponsiveSources ? (
         <picture>
           {responsiveSources.small && (
-            <source 
-              media="(max-width: 576px)" 
-              srcSet={responsiveSources.small}
-            />
+            <source media="(max-width: 576px)" srcSet={responsiveSources.small} />
           )}
           {responsiveSources.medium && (
-            <source 
-              media="(max-width: 992px)" 
-              srcSet={responsiveSources.medium}
-            />
+            <source media="(max-width: 992px)" srcSet={responsiveSources.medium} />
           )}
           {responsiveSources.large && (
-            <source 
-              media="(min-width: 993px)" 
-              srcSet={responsiveSources.large}
-            />
+            <source media="(min-width: 993px)" srcSet={responsiveSources.large} />
           )}
           <StyledImage
             src={imageSrc}
@@ -119,9 +111,9 @@ ImageWithFallback.propTypes = {
   responsiveSources: PropTypes.shape({
     small: PropTypes.string,
     medium: PropTypes.string,
-    large: PropTypes.string
+    large: PropTypes.string,
   }),
-  hover: PropTypes.bool
+  hover: PropTypes.bool,
 };
 
-export default ImageWithFallback; 
+export default ImageWithFallback;

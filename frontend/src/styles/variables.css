@@ -1,0 +1,84 @@
+:root {
+  /* Основные цвета */
+  --primary-color: #4a7c59;
+  --primary-dark: #3a6749;
+  --primary-light: #6a9c79;
+  --accent-color: #e6a157;
+  --accent-dark: #d69147;
+  --accent-light: #f6b167;
+
+  /* Нейтральные цвета */
+  --dark-color: #2d3436;
+  --muted-color: #636e72;
+  --light-color: #f5f5f5;
+  --white-color: #ffffff;
+
+  /* Функциональные цвета */
+  --success-color: #66bb6a;
+  --warning-color: #ffa726;
+  --error-color: #e53935;
+  --info-color: #42a5f5;
+
+  /* Текст */
+  --text-primary: #2d3436;
+  --text-secondary: #636e72;
+  --text-muted: #b2b2b2;
+  --text-light: #e0e0e0;
+
+  /* Тени */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+
+  /* Радиусы */
+  --radius-sm: 0.125rem;
+  --radius-md: 0.25rem;
+  --radius-lg: 0.5rem;
+  --radius-full: 9999px;
+
+  /* Переходы */
+  --transition-fast: 150ms ease-in-out;
+  --transition-normal: 300ms ease-in-out;
+  --transition-slow: 500ms ease-in-out;
+
+  /* Размеры шрифтов */
+  --font-xs: 0.75rem;
+  --font-sm: 0.875rem;
+  --font-md: 1rem;
+  --font-lg: 1.125rem;
+  --font-xl: 1.25rem;
+  --font-2xl: 1.5rem;
+  --font-3xl: 1.875rem;
+  --font-4xl: 2.25rem;
+  --font-5xl: 3rem;
+
+  /* Отступы */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  --spacing-3xl: 4rem;
+
+  /* Макеты */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+
+  /* Шрифты */
+  --font-primary: 'Montserrat', sans-serif;
+  --font-heading: 'Playfair Display', serif;
+  --font-mono: 'Roboto Mono', monospace;
+
+  /* Z-индексы */
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-fixed: 30;
+  --z-modal: 40;
+  --z-popover: 50;
+  --z-tooltip: 60;
+  --z-overlay: 100;
+}

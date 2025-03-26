@@ -27,7 +27,7 @@ const FooterTitle = styled.h3`
   font-size: 1.5rem;
   color: white;
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -54,7 +54,7 @@ const FooterLink = styled(Link)`
   text-decoration: none;
   transition: var(--transition);
   display: inline-block;
-  
+
   &:hover {
     color: white;
     padding-left: 5px;
@@ -83,7 +83,7 @@ const SocialIcon = styled.a`
   justify-content: center;
   transition: var(--transition);
   font-size: 1.2rem;
-  
+
   &:hover {
     background-color: var(--primary-color);
     transform: translateY(-3px);
@@ -118,15 +118,15 @@ const Copyright = styled.div`
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  
+
   return (
     <FooterContainer>
       <FooterContent>
         <FooterSection>
           <FooterTitle>О нас</FooterTitle>
           <FooterText>
-            Гостиничный комплекс "Лесной Дворик" расположен в живописном месте, окруженном сосновым лесом.
-            Мы предлагаем комфортный отдых в уютных номерах с современными удобствами.
+            Гостиничный комплекс "Лесной Дворик" расположен в живописном месте, окруженном сосновым
+            лесом. Мы предлагаем комфортный отдых в уютных номерах с современными удобствами.
           </FooterText>
           <SocialLinks>
             <SocialIcon href="https://facebook.com" target="_blank" rel="noopener noreferrer">
@@ -143,7 +143,7 @@ const Footer = () => {
             </SocialIcon>
           </SocialLinks>
         </FooterSection>
-        
+
         <FooterSection>
           <FooterTitle>Навигация</FooterTitle>
           <FooterNav>
@@ -167,7 +167,7 @@ const Footer = () => {
             </FooterNavItem>
           </FooterNav>
         </FooterSection>
-        
+
         <FooterSection>
           <FooterTitle>Информация</FooterTitle>
           <FooterNav>
@@ -185,7 +185,7 @@ const Footer = () => {
             </FooterNavItem>
           </FooterNav>
         </FooterSection>
-        
+
         <FooterSection>
           <FooterTitle>Контакты</FooterTitle>
           <FooterContact>
@@ -197,7 +197,7 @@ const Footer = () => {
               <p>г. Жуковский, Московская область, 140180</p>
             </ContactInfo>
           </FooterContact>
-          
+
           <FooterContact>
             <ContactIcon>
               <i className="fas fa-phone-alt"></i>
@@ -206,7 +206,7 @@ const Footer = () => {
               <p>+7 (498) 483-19-41</p>
             </ContactInfo>
           </FooterContact>
-          
+
           <FooterContact>
             <ContactIcon>
               <i className="fas fa-envelope"></i>
@@ -217,7 +217,7 @@ const Footer = () => {
           </FooterContact>
         </FooterSection>
       </FooterContent>
-      
+
       <Copyright>
         © {currentYear} Гостиничный комплекс "Лесной Дворик" | Все права защищены
       </Copyright>
@@ -225,4 +225,4 @@ const Footer = () => {
   );
 };
 
-export default Footer; 
+export default Footer;

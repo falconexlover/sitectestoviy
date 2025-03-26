@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Gallery from '../components/Gallery';
 import Testimonials from '../components/Testimonials';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const HeroSection = styled.section`
   height: 100vh;
@@ -11,7 +12,7 @@ const HeroSection = styled.section`
   position: relative;
   display: flex;
   align-items: center;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -32,7 +33,7 @@ const HeroContainer = styled.div`
   margin: 0 auto;
   padding: 0 2rem;
   z-index: 1;
-  
+
   @media (max-width: 768px) {
     padding: 0 1rem;
   }
@@ -49,7 +50,7 @@ const HeroTitle = styled.h1`
   margin-bottom: 1.5rem;
   line-height: 1.2;
   font-family: 'Playfair Display', serif;
-  
+
   @media (max-width: 768px) {
     font-size: 2.5rem;
   }
@@ -60,7 +61,7 @@ const HeroSubtitle = styled.p`
   margin-bottom: 2rem;
   opacity: 0.9;
   line-height: 1.6;
-  
+
   @media (max-width: 768px) {
     font-size: 1.1rem;
   }
@@ -69,7 +70,7 @@ const HeroSubtitle = styled.p`
 const ButtonGroup = styled.div`
   display: flex;
   gap: 1rem;
-  
+
   @media (max-width: 576px) {
     flex-direction: column;
   }
@@ -86,7 +87,7 @@ const PrimaryButton = styled(Link)`
   transition: var(--transition);
   box-shadow: var(--shadow-md);
   border: none;
-  
+
   &:hover {
     background-color: var(--dark-color);
     transform: translateY(-3px);
@@ -104,7 +105,7 @@ const SecondaryButton = styled(Link)`
   text-decoration: none;
   font-weight: 600;
   transition: var(--transition);
-  
+
   &:hover {
     background-color: white;
     color: var(--dark-color);
@@ -122,7 +123,7 @@ const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
-  
+
   @media (max-width: 768px) {
     padding: 0 1rem;
   }
@@ -133,7 +134,7 @@ const AboutGrid = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 3rem;
   align-items: center;
-  
+
   @media (max-width: 992px) {
     grid-template-columns: 1fr;
   }
@@ -142,7 +143,7 @@ const AboutGrid = styled.div`
 const AboutImage = styled.div`
   position: relative;
   height: 500px;
-  
+
   img {
     width: 100%;
     height: 100%;
@@ -150,7 +151,7 @@ const AboutImage = styled.div`
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-lg);
   }
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -162,7 +163,7 @@ const AboutImage = styled.div`
     background-color: var(--light-color);
     z-index: -1;
   }
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -175,7 +176,7 @@ const AboutImage = styled.div`
     opacity: 0.1;
     z-index: -1;
   }
-  
+
   @media (max-width: 992px) {
     height: 400px;
   }
@@ -199,7 +200,7 @@ const SectionTitle = styled.h2`
   font-size: 2.5rem;
   color: var(--dark-color);
   margin-bottom: 1.5rem;
-  
+
   @media (max-width: 768px) {
     font-size: 2rem;
   }
@@ -221,7 +222,7 @@ const FeatureItem = styled.li`
   display: flex;
   align-items: center;
   margin-bottom: 1rem;
-  
+
   i {
     width: 30px;
     height: 30px;
@@ -234,7 +235,7 @@ const FeatureItem = styled.li`
     margin-right: 1rem;
     font-size: 0.9rem;
   }
-  
+
   span {
     font-weight: 500;
   }
@@ -249,7 +250,7 @@ const SectionHeader = styled.div`
   text-align: center;
   margin-bottom: 3rem;
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -274,11 +275,11 @@ const ServicesGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
-  
+
   @media (max-width: 992px) {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   @media (max-width: 576px) {
     grid-template-columns: 1fr;
   }
@@ -290,12 +291,12 @@ const ServiceCard = styled.div`
   padding: 2rem;
   box-shadow: var(--shadow-md);
   transition: var(--transition);
-  
+
   &:hover {
     transform: translateY(-10px);
     box-shadow: var(--shadow-lg);
   }
-  
+
   i {
     font-size: 2.5rem;
     color: var(--primary-color);
@@ -325,11 +326,11 @@ const RoomGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
-  
+
   @media (max-width: 992px) {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   @media (max-width: 576px) {
     grid-template-columns: 1fr;
   }
@@ -341,11 +342,11 @@ const RoomCard = styled.div`
   box-shadow: var(--shadow-md);
   transition: var(--transition);
   background-color: white;
-  
+
   &:hover {
     transform: translateY(-10px);
     box-shadow: var(--shadow-lg);
-    
+
     img {
       transform: scale(1.05);
     }
@@ -355,7 +356,7 @@ const RoomCard = styled.div`
 const RoomImage = styled.div`
   height: 240px;
   overflow: hidden;
-  
+
   img {
     width: 100%;
     height: 100%;
@@ -390,7 +391,7 @@ const RoomDetail = styled.div`
   display: flex;
   align-items: center;
   color: var(--text-muted);
-  
+
   i {
     margin-right: 0.5rem;
     color: var(--primary-color);
@@ -401,7 +402,7 @@ const RoomPrice = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  
+
   span {
     font-size: 1.5rem;
     font-weight: 700;
@@ -418,7 +419,7 @@ const RoomButton = styled(Link)`
   font-weight: 600;
   transition: var(--transition);
   display: inline-block;
-  
+
   &:hover {
     background-color: var(--dark-color);
     transform: translateY(-3px);
@@ -431,7 +432,7 @@ const CtaSection = styled.section`
   text-align: center;
   position: relative;
   overflow: hidden;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -453,7 +454,7 @@ const CtaContainer = styled.div`
   padding: 0 2rem;
   position: relative;
   z-index: 1;
-  
+
   @media (max-width: 768px) {
     padding: 0 1rem;
   }
@@ -464,7 +465,7 @@ const CtaTitle = styled.h2`
   font-size: 3rem;
   color: white;
   margin-bottom: 1.5rem;
-  
+
   @media (max-width: 768px) {
     font-size: 2.5rem;
   }
@@ -478,7 +479,7 @@ const CtaDescription = styled.p`
   max-width: 700px;
   margin-left: auto;
   margin-right: auto;
-  
+
   @media (max-width: 768px) {
     font-size: 1.1rem;
   }
@@ -495,7 +496,7 @@ const CtaButton = styled(Link)`
   font-size: 1.1rem;
   transition: var(--transition);
   box-shadow: var(--shadow-md);
-  
+
   &:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-lg);
@@ -509,32 +510,35 @@ const HomePage = () => {
       id: 1,
       name: 'Стандартный номер',
       description: 'Уютный номер с современным дизайном для комфортного пребывания.',
-      image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80',
+      image:
+        'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80',
       price: 4500,
       capacity: 2,
       area: 25,
-      beds: '1 двуспальная'
+      beds: '1 двуспальная',
     },
     {
       id: 2,
       name: 'Люкс',
       description: 'Просторный номер с отдельной гостиной и всеми необходимыми удобствами.',
-      image: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
+      image:
+        'https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
       price: 7500,
       capacity: 3,
       area: 40,
-      beds: '1 king-size'
+      beds: '1 king-size',
     },
     {
       id: 3,
       name: 'Семейный номер',
       description: 'Идеален для семейного отдыха, с дополнительной спальней для детей.',
-      image: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
+      image:
+        'https://images.unsplash.com/photo-1618773928121-c32242e63f39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
       price: 8500,
       capacity: 4,
       area: 55,
-      beds: '2 двуспальные'
-    }
+      beds: '2 двуспальные',
+    },
   ];
 
   return (
@@ -544,7 +548,8 @@ const HomePage = () => {
           <HeroContent>
             <HeroTitle>Уютный отдых в отеле "Лесной Дворик"</HeroTitle>
             <HeroSubtitle>
-              Откройте для себя идеальное место для отдыха и релаксации среди природы, с комфортными номерами и первоклассным сервисом.
+              Откройте для себя идеальное место для отдыха и релаксации среди природы, с комфортными
+              номерами и первоклассным сервисом.
             </HeroSubtitle>
             <ButtonGroup>
               <PrimaryButton to="/rooms">Посмотреть номера</PrimaryButton>
@@ -558,32 +563,39 @@ const HomePage = () => {
         <Container>
           <AboutGrid>
             <AboutImage>
-              <img src="https://images.unsplash.com/photo-1560624052-449f5ddf0c31?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="Лесной Дворик" />
+              <img
+                src="https://images.unsplash.com/photo-1560624052-449f5ddf0c31?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80"
+                alt="Лесной Дворик"
+              />
             </AboutImage>
             <AboutContent>
               <SectionSubtitle>О нас</SectionSubtitle>
               <SectionTitle>Гостеприимство и комфорт в каждой детали</SectionTitle>
               <Paragraph>
-                "Лесной Дворик" – это уютный отель, расположенный в живописном месте среди природы. Мы предлагаем нашим гостям комфортные номера, приветливый персонал и первоклассный сервис, чтобы сделать ваш отдых незабываемым.
+                "Лесной Дворик" – это уютный отель, расположенный в живописном месте среди природы.
+                Мы предлагаем нашим гостям комфортные номера, приветливый персонал и первоклассный
+                сервис, чтобы сделать ваш отдых незабываемым.
               </Paragraph>
               <Paragraph>
-                С момента открытия в 2010 году, наш отель остается любимым местом отдыха для многих семей и бизнес-путешественников, которые ценят комфорт, тишину и красоту окружающей природы.
+                С момента открытия в 2010 году, наш отель остается любимым местом отдыха для многих
+                семей и бизнес-путешественников, которые ценят комфорт, тишину и красоту окружающей
+                природы.
               </Paragraph>
               <FeatureList>
                 <FeatureItem>
-                  <i className="fas fa-check"></i>
+                  <FontAwesomeIcon icon="check" />
                   <span>Современные и комфортные номера</span>
                 </FeatureItem>
                 <FeatureItem>
-                  <i className="fas fa-check"></i>
+                  <FontAwesomeIcon icon="check" />
                   <span>Ресторан с изысканной кухней</span>
                 </FeatureItem>
                 <FeatureItem>
-                  <i className="fas fa-check"></i>
+                  <FontAwesomeIcon icon="check" />
                   <span>Удобное расположение и парковка</span>
                 </FeatureItem>
                 <FeatureItem>
-                  <i className="fas fa-check"></i>
+                  <FontAwesomeIcon icon="check" />
                   <span>Бесплатный Wi-Fi на всей территории</span>
                 </FeatureItem>
               </FeatureList>
@@ -599,56 +611,63 @@ const HomePage = () => {
             <SectionSubtitle>Наши услуги</SectionSubtitle>
             <SectionTitle>Что мы предлагаем</SectionTitle>
             <SectionDescription>
-              В отеле "Лесной Дворик" мы стремимся сделать ваше пребывание максимально комфортным и предлагаем широкий спектр услуг
+              В отеле "Лесной Дворик" мы стремимся сделать ваше пребывание максимально комфортным и
+              предлагаем широкий спектр услуг
             </SectionDescription>
           </SectionHeader>
-          
+
           <ServicesGrid>
             <ServiceCard>
-              <i className="fas fa-utensils"></i>
+              <FontAwesomeIcon icon="utensils" />
               <ServiceTitle>Ресторан</ServiceTitle>
               <ServiceDescription>
-                Наш ресторан предлагает изысканные блюда русской и европейской кухни из свежих местных продуктов.
+                Наш ресторан предлагает изысканные блюда русской и европейской кухни из свежих
+                местных продуктов.
               </ServiceDescription>
             </ServiceCard>
-            
+
             <ServiceCard>
-              <i className="fas fa-spa"></i>
+              <FontAwesomeIcon icon="spa" />
               <ServiceTitle>СПА центр</ServiceTitle>
               <ServiceDescription>
-                Расслабьтесь в нашем СПА центре с сауной, джакузи и широким выбором массажей и процедур.
+                Расслабьтесь в нашем СПА центре с сауной, джакузи и широким выбором массажей и
+                процедур.
               </ServiceDescription>
             </ServiceCard>
-            
+
             <ServiceCard>
-              <i className="fas fa-dumbbell"></i>
+              <FontAwesomeIcon icon="dumbbell" />
               <ServiceTitle>Фитнес-зал</ServiceTitle>
               <ServiceDescription>
-                Поддерживайте форму в нашем современном фитнес-зале, оснащенном новейшим оборудованием.
+                Поддерживайте форму в нашем современном фитнес-зале, оснащенном новейшим
+                оборудованием.
               </ServiceDescription>
             </ServiceCard>
-            
+
             <ServiceCard>
-              <i className="fas fa-swimming-pool"></i>
+              <FontAwesomeIcon icon="swimming-pool" />
               <ServiceTitle>Бассейн</ServiceTitle>
               <ServiceDescription>
-                Насладитесь плаванием в нашем крытом бассейне с подогревом, доступным для гостей круглый год.
+                Насладитесь плаванием в нашем крытом бассейне с подогревом, доступным для гостей
+                круглый год.
               </ServiceDescription>
             </ServiceCard>
-            
+
             <ServiceCard>
-              <i className="fas fa-child"></i>
+              <FontAwesomeIcon icon="child" />
               <ServiceTitle>Детская площадка</ServiceTitle>
               <ServiceDescription>
-                Для маленьких гостей предусмотрена детская площадка и игровая комната с анимационными программами.
+                Для маленьких гостей предусмотрена детская площадка и игровая комната с
+                анимационными программами.
               </ServiceDescription>
             </ServiceCard>
-            
+
             <ServiceCard>
-              <i className="fas fa-concierge-bell"></i>
+              <FontAwesomeIcon icon="concierge-bell" />
               <ServiceTitle>Консьерж-сервис</ServiceTitle>
               <ServiceDescription>
-                Наш консьерж-сервис поможет вам организовать экскурсии, трансфер и решить любые вопросы во время пребывания.
+                Наш консьерж-сервис поможет вам организовать экскурсии, трансфер и решить любые
+                вопросы во время пребывания.
               </ServiceDescription>
             </ServiceCard>
           </ServicesGrid>
@@ -661,10 +680,11 @@ const HomePage = () => {
             <SectionSubtitle>Номера</SectionSubtitle>
             <SectionTitle>Выберите свой идеальный номер</SectionTitle>
             <SectionDescription>
-              Мы предлагаем различные категории номеров, чтобы удовлетворить потребности каждого гостя
+              Мы предлагаем различные категории номеров, чтобы удовлетворить потребности каждого
+              гостя
             </SectionDescription>
           </SectionHeader>
-          
+
           <RoomGrid>
             {featuredRooms.map(room => (
               <RoomCard key={room.id}>
@@ -676,13 +696,13 @@ const HomePage = () => {
                   <RoomDescription>{room.description}</RoomDescription>
                   <RoomDetails>
                     <RoomDetail>
-                      <i className="fas fa-user"></i> {room.capacity} гостей
+                      <FontAwesomeIcon icon="user" /> {room.capacity} гостей
                     </RoomDetail>
                     <RoomDetail>
-                      <i className="fas fa-expand"></i> {room.area} м²
+                      <FontAwesomeIcon icon="expand" /> {room.area} м²
                     </RoomDetail>
                     <RoomDetail>
-                      <i className="fas fa-bed"></i> {room.beds}
+                      <FontAwesomeIcon icon="bed" /> {room.beds}
                     </RoomDetail>
                   </RoomDetails>
                   <RoomPrice>
@@ -693,7 +713,7 @@ const HomePage = () => {
               </RoomCard>
             ))}
           </RoomGrid>
-          
+
           <div style={{ textAlign: 'center', marginTop: '3rem' }}>
             <PrimaryButton to="/rooms">Смотреть все номера</PrimaryButton>
           </div>
@@ -701,14 +721,15 @@ const HomePage = () => {
       </RoomsSection>
 
       <Gallery />
-      
+
       <Testimonials />
 
       <CtaSection>
         <CtaContainer>
           <CtaTitle>Готовы забронировать идеальный отдых?</CtaTitle>
           <CtaDescription>
-            Забронируйте номер прямо сейчас и получите лучшую цену, а также ряд дополнительных преимуществ для вашего незабываемого отдыха в "Лесном Дворике".
+            Забронируйте номер прямо сейчас и получите лучшую цену, а также ряд дополнительных
+            преимуществ для вашего незабываемого отдыха в "Лесном Дворике".
           </CtaDescription>
           <CtaButton to="/rooms">Забронировать номер</CtaButton>
         </CtaContainer>
@@ -717,4 +738,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage; 
+export default HomePage;

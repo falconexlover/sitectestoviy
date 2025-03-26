@@ -11,8 +11,10 @@ const PageWrapper = styled.div`
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), 
-              url('https://images.unsplash.com/photo-1582719508461-905c673771fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1925&q=80') center/cover no-repeat fixed;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+    url('https://images.unsplash.com/photo-1582719508461-905c673771fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1925&q=80')
+      center/cover no-repeat fixed;
 `;
 
 const Container = styled.div`
@@ -24,7 +26,7 @@ const Container = styled.div`
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
   position: relative;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -45,7 +47,7 @@ const Title = styled.h1`
   font-family: 'Playfair Display', serif;
   position: relative;
   padding-bottom: 1rem;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -84,13 +86,13 @@ const Input = styled(Field)`
   font-size: 1rem;
   width: 100%;
   background-color: var(--light-color);
-  
+
   &:focus {
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(33, 113, 72, 0.2);
   }
-  
+
   &::placeholder {
     color: var(--text-muted);
     opacity: 0.8;
@@ -119,7 +121,7 @@ const Button = styled.button`
   font-size: 1rem;
   box-shadow: var(--shadow-sm);
   text-transform: uppercase;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -131,16 +133,16 @@ const Button = styled.button`
     transition: var(--transition);
     z-index: -1;
   }
-  
+
   &:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-3px);
   }
-  
+
   &:hover::before {
     width: 100%;
   }
-  
+
   &:disabled {
     background-color: var(--border-color);
     cursor: not-allowed;
@@ -152,14 +154,14 @@ const LinkText = styled.div`
   margin-top: 1.5rem;
   font-size: 1rem;
   color: var(--text-color);
-  
+
   a {
     color: var(--primary-color);
     text-decoration: none;
     font-weight: 600;
     position: relative;
     transition: var(--transition);
-    
+
     &::after {
       content: '';
       position: absolute;
@@ -170,11 +172,11 @@ const LinkText = styled.div`
       background-color: var(--primary-color);
       transition: var(--transition);
     }
-    
+
     &:hover {
       color: var(--accent-color);
     }
-    
+
     &:hover::after {
       width: 100%;
     }
@@ -192,42 +194,39 @@ const Alert = styled.div`
 `;
 
 const LoginSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Некорректный email')
-    .required('Обязательное поле'),
-  password: Yup.string()
-    .required('Обязательное поле')
+  email: Yup.string().email('Некорректный email').required('Обязательное поле'),
+  password: Yup.string().required('Обязательное поле'),
 });
 
 const LoginPage = () => {
   const { login, error } = useAuth();
   const navigate = useNavigate();
   const [loginError, setLoginError] = useState('');
-  
+
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     setLoginError('');
-    
+
     const success = await login({
       email: values.email,
-      password: values.password
+      password: values.password,
     });
-    
+
     if (success) {
       navigate('/');
     } else {
       setLoginError(error || 'Не удалось войти. Проверьте ваши учетные данные.');
     }
-    
+
     setSubmitting(false);
   };
-  
+
   return (
     <PageWrapper>
       <Container>
         <Title>Вход в систему</Title>
-        
+
         {loginError && <Alert>{loginError}</Alert>}
-        
+
         <Formik
           initialValues={{ email: '', password: '' }}
           validationSchema={LoginSchema}
@@ -240,20 +239,25 @@ const LoginPage = () => {
                 <Input type="email" id="email" name="email" placeholder="Введите ваш email" />
                 <ErrorMessage name="email" component={Error} />
               </FormGroup>
-              
+
               <FormGroup>
                 <Label htmlFor="password">Пароль</Label>
-                <Input type="password" id="password" name="password" placeholder="Введите ваш пароль" />
+                <Input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="Введите ваш пароль"
+                />
                 <ErrorMessage name="password" component={Error} />
               </FormGroup>
-              
+
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? 'Вход...' : 'Войти'}
               </Button>
             </StyledForm>
           )}
         </Formik>
-        
+
         <LinkText>
           Еще нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
         </LinkText>
@@ -262,4 +266,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage; 
+export default LoginPage;

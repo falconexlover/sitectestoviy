@@ -101,4 +101,4 @@ router.post('/payment-success', auth, paymentController.handlePaymentSuccess);
  */
 router.get('/status/:bookingId', auth, paymentController.getPaymentStatus);
 
-module.exports = router; 
+module.exports = router;

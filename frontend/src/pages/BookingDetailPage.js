@@ -7,7 +7,7 @@ const PageContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 3rem 2rem;
-  
+
   @media (max-width: 768px) {
     padding: 2rem 1rem;
   }
@@ -17,7 +17,7 @@ const PageHeader = styled.div`
   text-align: center;
   margin-bottom: 3rem;
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -35,7 +35,7 @@ const PageTitle = styled.h1`
   font-size: 2.5rem;
   color: var(--primary-color);
   margin-bottom: 1rem;
-  
+
   @media (max-width: 768px) {
     font-size: 2rem;
   }
@@ -52,7 +52,7 @@ const BookingDetailContainer = styled.div`
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 2rem;
-  
+
   @media (max-width: 992px) {
     grid-template-columns: 1fr;
   }
@@ -72,7 +72,7 @@ const BookingHeader = styled.div`
   align-items: center;
   background-color: var(--light-color);
   border-bottom: 1px solid var(--border-color);
-  
+
   @media (max-width: 576px) {
     flex-direction: column;
     align-items: flex-start;
@@ -87,7 +87,7 @@ const BookingNumber = styled.div`
     color: var(--dark-color);
     margin-bottom: 0.5rem;
   }
-  
+
   p {
     color: var(--text-muted);
     font-size: 0.9rem;
@@ -101,7 +101,7 @@ const BookingStatus = styled.div`
   font-weight: 600;
   border-radius: var(--radius-sm);
   background-color: ${props => {
-    switch(props.status) {
+    switch (props.status) {
       case 'confirmed':
         return 'rgba(33, 113, 72, 0.1)';
       case 'pending':
@@ -113,7 +113,7 @@ const BookingStatus = styled.div`
     }
   }};
   color: ${props => {
-    switch(props.status) {
+    switch (props.status) {
       case 'confirmed':
         return 'var(--success-color)';
       case 'pending':
@@ -132,7 +132,7 @@ const BookingContent = styled.div`
 
 const BookingSection = styled.div`
   margin-bottom: 2rem;
-  
+
   &:last-child {
     margin-bottom: 0;
   }
@@ -144,7 +144,7 @@ const SectionTitle = styled.h3`
   color: var(--dark-color);
   margin-bottom: 1rem;
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -160,7 +160,7 @@ const RoomInfo = styled.div`
   display: flex;
   gap: 1.5rem;
   margin-top: 1.5rem;
-  
+
   @media (max-width: 576px) {
     flex-direction: column;
   }
@@ -171,13 +171,13 @@ const RoomImage = styled.div`
   height: 180px;
   border-radius: var(--radius-sm);
   overflow: hidden;
-  
+
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
-  
+
   @media (max-width: 576px) {
     flex: 0 0 auto;
   }
@@ -185,14 +185,14 @@ const RoomImage = styled.div`
 
 const RoomDetails = styled.div`
   flex: 1;
-  
+
   h4 {
     font-family: 'Playfair Display', serif;
     font-size: 1.2rem;
     color: var(--dark-color);
     margin-bottom: 0.5rem;
   }
-  
+
   p {
     color: var(--text-muted);
     margin-bottom: 0.5rem;
@@ -211,7 +211,7 @@ const RoomFeature = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  
+
   i {
     color: var(--primary-color);
   }
@@ -222,7 +222,7 @@ const DetailGrid = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
   margin-top: 1.5rem;
-  
+
   @media (max-width: 576px) {
     grid-template-columns: 1fr;
   }
@@ -230,7 +230,7 @@ const DetailGrid = styled.div`
 
 const DetailGroup = styled.div`
   margin-bottom: 1.5rem;
-  
+
   &:last-child {
     margin-bottom: 0;
   }
@@ -251,7 +251,7 @@ const GuestInfo = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
   margin-top: 1.5rem;
-  
+
   @media (max-width: 576px) {
     grid-template-columns: 1fr;
   }
@@ -268,7 +268,7 @@ const PriceRow = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 1rem;
-  
+
   &.total {
     font-weight: 600;
     font-size: 1.1rem;
@@ -285,13 +285,13 @@ const QrCode = styled.div`
   padding: 1.5rem;
   margin-top: 2rem;
   text-align: center;
-  
+
   img {
     max-width: 200px;
     height: auto;
     margin-bottom: 1rem;
   }
-  
+
   p {
     color: var(--text-muted);
     font-size: 0.9rem;
@@ -302,7 +302,7 @@ const ButtonContainer = styled.div`
   display: flex;
   gap: 1rem;
   margin-top: 2rem;
-  
+
   @media (max-width: 576px) {
     flex-direction: column;
   }
@@ -310,20 +310,21 @@ const ButtonContainer = styled.div`
 
 const Button = styled.button`
   padding: 0.8rem 1.5rem;
-  background-color: ${props => props.primary ? 'var(--primary-color)' : 'white'};
-  color: ${props => props.primary ? 'white' : 'var(--danger-color)'};
-  border: 1px solid ${props => props.primary ? 'var(--primary-color)' : 'var(--danger-color)'};
+  background-color: ${props => (props.primary ? 'var(--primary-color)' : 'white')};
+  color: ${props => (props.primary ? 'white' : 'var(--danger-color)')};
+  border: 1px solid ${props => (props.primary ? 'var(--primary-color)' : 'var(--danger-color)')};
   border-radius: var(--radius-sm);
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
-  
+
   &:hover {
-    background-color: ${props => props.primary ? 'var(--accent-color)' : 'rgba(220, 53, 69, 0.1)'};
+    background-color: ${props =>
+      props.primary ? 'var(--accent-color)' : 'rgba(220, 53, 69, 0.1)'};
     transform: translateY(-2px);
   }
-  
+
   &:disabled {
     background-color: var(--border-color);
     border-color: var(--border-color);
@@ -335,18 +336,18 @@ const Button = styled.button`
 
 const LinkButton = styled(Link)`
   padding: 0.8rem 1.5rem;
-  background-color: ${props => props.secondary ? 'white' : 'var(--primary-color)'};
-  color: ${props => props.secondary ? 'var(--dark-color)' : 'white'};
-  border: 1px solid ${props => props.secondary ? 'var(--border-color)' : 'var(--primary-color)'};
+  background-color: ${props => (props.secondary ? 'white' : 'var(--primary-color)')};
+  color: ${props => (props.secondary ? 'var(--dark-color)' : 'white')};
+  border: 1px solid ${props => (props.secondary ? 'var(--border-color)' : 'var(--primary-color)')};
   border-radius: var(--radius-sm);
   font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
   text-align: center;
   transition: var(--transition);
-  
+
   &:hover {
-    background-color: ${props => props.secondary ? 'var(--light-color)' : 'var(--accent-color)'};
+    background-color: ${props => (props.secondary ? 'var(--light-color)' : 'var(--accent-color)')};
     transform: translateY(-2px);
   }
 `;
@@ -356,7 +357,7 @@ const Alert = styled.div`
   margin-bottom: 1.5rem;
   border-radius: var(--radius-sm);
   background-color: ${props => {
-    switch(props.type) {
+    switch (props.type) {
       case 'success':
         return 'rgba(33, 113, 72, 0.1)';
       case 'error':
@@ -368,7 +369,7 @@ const Alert = styled.div`
     }
   }};
   color: ${props => {
-    switch(props.type) {
+    switch (props.type) {
       case 'success':
         return 'var(--success-color)';
       case 'error':
@@ -381,7 +382,7 @@ const Alert = styled.div`
   }};
   display: flex;
   align-items: center;
-  
+
   i {
     margin-right: 0.5rem;
     font-size: 1.2rem;
@@ -391,7 +392,7 @@ const Alert = styled.div`
 const LoadingState = styled.div`
   text-align: center;
   padding: 3rem;
-  
+
   i {
     font-size: 2rem;
     color: var(--primary-color);
@@ -405,7 +406,7 @@ const BookingDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [status, setStatus] = useState(null);
-  
+
   // Загрузка информации о бронировании
   useEffect(() => {
     const fetchBookingDetails = async () => {
@@ -420,24 +421,24 @@ const BookingDetailPage = () => {
         setLoading(false);
       }
     };
-    
+
     fetchBookingDetails();
   }, [id]);
-  
+
   // Функция для отмены бронирования
   const handleCancelBooking = async () => {
     if (window.confirm('Вы уверены, что хотите отменить бронирование?')) {
       try {
         await bookingService.cancelBooking(id);
-        
+
         // Обновляем статус бронирования
         setBooking(prevBooking => ({ ...prevBooking, status: 'cancelled' }));
-        
+
         setStatus({
           type: 'success',
-          message: 'Бронирование успешно отменено'
+          message: 'Бронирование успешно отменено',
         });
-        
+
         // Сбросить статус через 5 секунд
         setTimeout(() => {
           setStatus(null);
@@ -446,55 +447,55 @@ const BookingDetailPage = () => {
         console.error('Ошибка при отмене бронирования:', error);
         setStatus({
           type: 'error',
-          message: 'Не удалось отменить бронирование. Пожалуйста, попробуйте позже.'
+          message: 'Не удалось отменить бронирование. Пожалуйста, попробуйте позже.',
         });
       }
     }
   };
-  
+
   // Перевод статуса бронирования на русский
-  const getStatusLabel = (status) => {
+  const getStatusLabel = status => {
     const statuses = {
       pending: 'Ожидает подтверждения',
       confirmed: 'Подтверждено',
       cancelled: 'Отменено',
-      completed: 'Завершено'
+      completed: 'Завершено',
     };
-    
+
     return statuses[status] || status;
   };
-  
+
   // Отображение даты в нужном формате
-  const formatDate = (dateString) => {
+  const formatDate = dateString => {
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
     return new Date(dateString).toLocaleDateString('ru-RU', options);
   };
-  
+
   // Отображение времени в нужном формате
-  const formatTime = (dateString) => {
+  const formatTime = dateString => {
     const options = { hour: '2-digit', minute: '2-digit' };
     return new Date(dateString).toLocaleTimeString('ru-RU', options);
   };
-  
+
   // Отображение полной даты и времени
-  const formatDateTime = (dateString) => {
+  const formatDateTime = dateString => {
     return `${formatDate(dateString)}, ${formatTime(dateString)}`;
   };
-  
+
   // Перевод типа номера на русский
-  const getRoomTypeName = (type) => {
+  const getRoomTypeName = type => {
     const types = {
       standard: 'Стандартный',
       deluxe: 'Делюкс',
       suite: 'Люкс',
       family: 'Семейный',
       penthouse: 'Пентхаус',
-      economy: 'Эконом'
+      economy: 'Эконом',
     };
-    
+
     return types[type] || type;
   };
-  
+
   // Подсчёт количества ночей
   const calculateNights = (checkIn, checkOut) => {
     const start = new Date(checkIn);
@@ -502,18 +503,16 @@ const BookingDetailPage = () => {
     const diffTime = Math.abs(end - start);
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
-  
+
   // Если загрузка еще идет, показываем индикатор загрузки
   if (loading) {
     return (
       <PageContainer>
         <PageHeader>
           <PageTitle>Детали бронирования</PageTitle>
-          <PageSubtitle>
-            Информация о вашем бронировании
-          </PageSubtitle>
+          <PageSubtitle>Информация о вашем бронировании</PageSubtitle>
         </PageHeader>
-        
+
         <LoadingState>
           <i className="fas fa-spinner fa-spin"></i>
           <p>Загрузка информации о бронировании...</p>
@@ -521,106 +520,113 @@ const BookingDetailPage = () => {
       </PageContainer>
     );
   }
-  
+
   // Если произошла ошибка, показываем сообщение об ошибке
   if (error) {
     return (
       <PageContainer>
         <PageHeader>
           <PageTitle>Детали бронирования</PageTitle>
-          <PageSubtitle>
-            Информация о вашем бронировании
-          </PageSubtitle>
+          <PageSubtitle>Информация о вашем бронировании</PageSubtitle>
         </PageHeader>
-        
+
         <Alert type="error">
           <i className="fas fa-exclamation-circle"></i>
           {error}
         </Alert>
-        
+
         <ButtonContainer>
-          <LinkButton to="/bookings" secondary>Вернуться к бронированиям</LinkButton>
+          <LinkButton to="/bookings" secondary>
+            Вернуться к бронированиям
+          </LinkButton>
         </ButtonContainer>
       </PageContainer>
     );
   }
-  
+
   // Если бронирование не найдено
   if (!booking) {
     return (
       <PageContainer>
         <PageHeader>
           <PageTitle>Детали бронирования</PageTitle>
-          <PageSubtitle>
-            Информация о вашем бронировании
-          </PageSubtitle>
+          <PageSubtitle>Информация о вашем бронировании</PageSubtitle>
         </PageHeader>
-        
+
         <Alert type="error">
           <i className="fas fa-exclamation-circle"></i>
           Бронирование не найдено
         </Alert>
-        
+
         <ButtonContainer>
-          <LinkButton to="/bookings" secondary>Вернуться к бронированиям</LinkButton>
+          <LinkButton to="/bookings" secondary>
+            Вернуться к бронированиям
+          </LinkButton>
         </ButtonContainer>
       </PageContainer>
     );
   }
-  
+
   // Вычисляем количество ночей
   const nights = calculateNights(booking.checkIn, booking.checkOut);
-  
+
   // Вычисляем общую стоимость
   const roomPrice = booking.room?.price || 0;
-  const totalPrice = booking.totalPrice || (roomPrice * nights);
-  
+  const totalPrice = booking.totalPrice || roomPrice * nights;
+
   return (
     <PageContainer>
       <PageHeader>
         <PageTitle>Детали бронирования</PageTitle>
-        <PageSubtitle>
-          Информация о вашем бронировании
-        </PageSubtitle>
+        <PageSubtitle>Информация о вашем бронировании</PageSubtitle>
       </PageHeader>
-      
+
       {status && (
         <Alert type={status.type}>
-          <i className={`fas ${status.type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}`}></i>
+          <i
+            className={`fas ${status.type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}`}
+          ></i>
           {status.message}
         </Alert>
       )}
-      
+
       <BookingDetailContainer>
         <div>
           <BookingInfoCard>
             <BookingHeader>
               <BookingNumber>
-                <h2>Бронирование #{booking.bookingNumber || 'БН-' + booking._id.substring(0, 8)}</h2>
+                <h2>
+                  Бронирование #{booking.bookingNumber || 'БН-' + booking._id.substring(0, 8)}
+                </h2>
                 <p>Создано: {formatDateTime(booking.createdAt)}</p>
               </BookingNumber>
               <BookingStatus status={booking.status}>
                 {getStatusLabel(booking.status)}
               </BookingStatus>
             </BookingHeader>
-            
+
             <BookingContent>
               <BookingSection>
                 <SectionTitle>Информация о номере</SectionTitle>
                 <RoomInfo>
                   <RoomImage>
-                    <img 
-                      src={booking.room?.images && booking.room.images.length > 0 
-                        ? booking.room.images[0] 
-                        : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80'
-                      } 
-                      alt={booking.room?.name || 'Номер'} 
+                    <img
+                      src={
+                        booking.room?.images && booking.room.images.length > 0
+                          ? booking.room.images[0]
+                          : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80'
+                      }
+                      alt={booking.room?.name || 'Номер'}
                     />
                   </RoomImage>
                   <RoomDetails>
                     <h4>{booking.room?.name || 'Номер'}</h4>
-                    <p>{booking.room ? getRoomTypeName(booking.room.roomType) : 'Информация о номере недоступна'}</p>
-                    
+                    <p>
+                      {booking.room
+                        ? getRoomTypeName(booking.room.roomType)
+                        : 'Информация о номере недоступна'}
+                    </p>
+
                     <RoomFeatures>
                       <RoomFeature>
                         <i className="fas fa-user"></i>
@@ -635,7 +641,7 @@ const BookingDetailPage = () => {
                         <span>{booking.room?.area || '25'} м²</span>
                       </RoomFeature>
                     </RoomFeatures>
-                    
+
                     {booking.room && (
                       <p style={{ marginTop: '1rem' }}>
                         <strong>Стоимость за ночь:</strong> {booking.room.price.toLocaleString()} ₽
@@ -644,7 +650,7 @@ const BookingDetailPage = () => {
                   </RoomDetails>
                 </RoomInfo>
               </BookingSection>
-              
+
               <BookingSection>
                 <SectionTitle>Детали бронирования</SectionTitle>
                 <DetailGrid>
@@ -685,7 +691,7 @@ const BookingDetailPage = () => {
                   </div>
                 </DetailGrid>
               </BookingSection>
-              
+
               <BookingSection>
                 <SectionTitle>Информация о госте</SectionTitle>
                 <GuestInfo>
@@ -713,15 +719,17 @@ const BookingDetailPage = () => {
               </BookingSection>
             </BookingContent>
           </BookingInfoCard>
-          
+
           <ButtonContainer>
-            <LinkButton to="/bookings" secondary>Вернуться к бронированиям</LinkButton>
+            <LinkButton to="/bookings" secondary>
+              Вернуться к бронированиям
+            </LinkButton>
             {booking.status !== 'cancelled' && booking.status !== 'completed' && (
               <Button onClick={handleCancelBooking}>Отменить бронирование</Button>
             )}
           </ButtonContainer>
         </div>
-        
+
         <div>
           <PriceSummary>
             <SectionTitle>Детали оплаты</SectionTitle>
@@ -735,13 +743,13 @@ const BookingDetailPage = () => {
             </PriceRow>
             <PriceRow>
               <span>Налог (НДС 20%)</span>
-              <span>{Math.round(totalPrice - (totalPrice / 1.2)).toLocaleString()} ₽</span>
+              <span>{Math.round(totalPrice - totalPrice / 1.2).toLocaleString()} ₽</span>
             </PriceRow>
             <PriceRow className="total">
               <span>Итого</span>
               <span>{totalPrice.toLocaleString()} ₽</span>
             </PriceRow>
-            
+
             <div style={{ marginTop: '1.5rem' }}>
               <DetailGroup>
                 <DetailLabel>Способ оплаты</DetailLabel>
@@ -753,9 +761,12 @@ const BookingDetailPage = () => {
               </DetailGroup>
             </div>
           </PriceSummary>
-          
+
           <QrCode>
-            <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=BOOKING:${booking._id}`} alt="QR-код бронирования" />
+            <img
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=BOOKING:${booking._id}`}
+              alt="QR-код бронирования"
+            />
             <h4>QR-код вашего бронирования</h4>
             <p>Предъявите этот код при заселении для быстрой регистрации</p>
           </QrCode>
@@ -765,4 +776,4 @@ const BookingDetailPage = () => {
   );
 };
 
-export default BookingDetailPage; 
+export default BookingDetailPage;

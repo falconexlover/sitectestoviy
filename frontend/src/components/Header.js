@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../context/AuthContext';
 
@@ -11,7 +11,7 @@ const HeaderContainer = styled.header`
   z-index: 100;
   box-shadow: var(--shadow-sm);
   transition: var(--transition);
-  
+
   &.scrolled {
     box-shadow: var(--shadow-md);
   }
@@ -23,7 +23,7 @@ const LogoContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
-  
+
   @media (max-width: 768px) {
     padding: 1rem;
   }
@@ -38,7 +38,7 @@ const Logo = styled(Link)`
   position: relative;
   display: inline-block;
   text-decoration: none;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -54,12 +54,12 @@ const Logo = styled(Link)`
 const HeaderContact = styled.div`
   text-align: right;
   font-size: 0.9rem;
-  
+
   p:first-child {
     font-weight: 600;
     color: var(--primary-color);
   }
-  
+
   @media (max-width: 768px) {
     display: none;
   }
@@ -73,7 +73,7 @@ const Nav = styled.nav`
   padding: 0 2rem;
   background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
   border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-  
+
   @media (max-width: 768px) {
     padding: 0 1rem;
   }
@@ -83,11 +83,11 @@ const Nav = styled.nav`
 const NavLinks = styled.ul`
   display: flex;
   list-style: none;
-  
+
   @media (max-width: 768px) {
     position: fixed;
     top: 0;
-    left: ${props => props.isOpen ? '0' : '-100%'};
+    left: ${props => (props.isOpen ? '0' : '-100%')};
     width: 80%;
     height: 100vh;
     background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
@@ -103,7 +103,7 @@ const NavLinks = styled.ul`
 // Элемент списка
 const NavItem = styled.li`
   position: relative;
-  
+
   @media (max-width: 768px) {
     text-align: center;
     margin: 1rem 0;
@@ -122,12 +122,12 @@ const NavLink = styled(Link)`
   transition: var(--transition);
   text-transform: uppercase;
   position: relative;
-  
+
   &:hover {
     color: white;
     background-color: rgba(255, 255, 255, 0.1);
   }
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -139,11 +139,11 @@ const NavLink = styled(Link)`
     transform: translateX(-50%);
     transition: var(--transition);
   }
-  
+
   &:hover::after {
     width: 30px;
   }
-  
+
   @media (max-width: 768px) {
     font-size: 1.1rem;
     width: 100%;
@@ -164,14 +164,14 @@ const BookButton = styled(Link)`
   letter-spacing: 0.5px;
   font-size: 0.9rem;
   text-decoration: none;
-  
+
   &:hover {
     background-color: var(--accent-color);
     color: white;
     transform: translateY(-3px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   }
-  
+
   @media (max-width: 768px) {
     display: none;
   }
@@ -187,7 +187,7 @@ const MobileMenuButton = styled.button`
   position: relative;
   cursor: pointer;
   z-index: 100;
-  
+
   span {
     display: block;
     width: 30px;
@@ -196,115 +196,31 @@ const MobileMenuButton = styled.button`
     margin: 6px auto;
     transition: all 0.3s ease;
   }
-  
+
   &.open {
     span:nth-child(1) {
       transform: rotate(45deg) translate(7px, 7px);
     }
-    
+
     span:nth-child(2) {
       opacity: 0;
     }
-    
+
     span:nth-child(3) {
       transform: rotate(-45deg) translate(7px, -7px);
     }
   }
-  
+
   @media (max-width: 768px) {
     display: block;
   }
 `;
 
-const MobileMenu = ({ isOpen, onClose }) => {
-  const { isAuthenticated, user, logout } = useAuth();
-  
-  const handleLogout = () => {
-    logout();
-    onClose();
-  };
-
-  if (!isOpen) return null;
-
-  return (
-    <HeaderContainer className={isScrolled ? 'scrolled' : ''}>
-      <LogoContainer>
-        <Logo to="/">Лесной Дворик</Logo>
-        <HeaderContact>
-          <p>Забронировать номер</p>
-          <p>+7 (498) 483-19-41</p>
-        </HeaderContact>
-      </LogoContainer>
-      
-      <Nav>
-        <MobileMenuButton 
-          className={isMobileMenuOpen ? 'open' : ''} 
-          onClick={toggleMobileMenu}
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </MobileMenuButton>
-        
-        <NavLinks isOpen={isMobileMenuOpen}>
-          <NavItem>
-            <NavLink to="/" onClick={() => setIsMobileMenuOpen(false)}>Главная</NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink to="/rooms" onClick={() => setIsMobileMenuOpen(false)}>Номера</NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink to="/services" onClick={() => setIsMobileMenuOpen(false)}>Услуги</NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink to="/gallery" onClick={() => setIsMobileMenuOpen(false)}>Галерея</NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink to="/about" onClick={() => setIsMobileMenuOpen(false)}>О нас</NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink to="/contacts" onClick={() => setIsMobileMenuOpen(false)}>Контакты</NavLink>
-          </NavItem>
-          
-          {!user ? (
-            <>
-              <NavItem>
-                <NavLink to="/login" onClick={() => setIsMobileMenuOpen(false)}>Вход</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink to="/register" onClick={() => setIsMobileMenuOpen(false)}>Регистрация</NavLink>
-              </NavItem>
-            </>
-          ) : (
-            <>
-              <NavItem>
-                <NavLink to="/bookings" onClick={() => setIsMobileMenuOpen(false)}>Мои бронирования</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink to="/profile" onClick={() => setIsMobileMenuOpen(false)}>Профиль</NavLink>
-              </NavItem>
-              
-              {(user.role === 'admin' || user.role === 'manager') && (
-                <NavItem>
-                  <NavLink to="/admin/dashboard" onClick={() => setIsMobileMenuOpen(false)}>Админ-панель</NavLink>
-                </NavItem>
-              )}
-            </>
-          )}
-        </NavLinks>
-        
-        <BookButton to="/booking">Забронировать</BookButton>
-      </Nav>
-    </HeaderContainer>
-  );
-};
-
 const Header = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
+  const { user, isAuthenticated, logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 50) {
@@ -313,101 +229,135 @@ const Header = () => {
         setIsScrolled(false);
       }
     };
-    
+
     window.addEventListener('scroll', handleScroll);
-    
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-  
+
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
     }
-    
+
     return () => {
       document.body.style.overflow = 'auto';
     };
   }, [isMobileMenuOpen]);
-  
+
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
-  
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <HeaderContainer className={isScrolled ? 'scrolled' : ''}>
       <LogoContainer>
         <Logo to="/">Лесной Дворик</Logo>
         <HeaderContact>
-          <p>Забронировать номер</p>
-          <p>+7 (498) 483-19-41</p>
+          <p>Забронировать номер:</p>
+          <p>+7 (999) 123-45-67</p>
         </HeaderContact>
       </LogoContainer>
-      
+
       <Nav>
-        <MobileMenuButton 
-          className={isMobileMenuOpen ? 'open' : ''} 
-          onClick={toggleMobileMenu}
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </MobileMenuButton>
-        
         <NavLinks isOpen={isMobileMenuOpen}>
           <NavItem>
-            <NavLink to="/" onClick={() => setIsMobileMenuOpen(false)}>Главная</NavLink>
+            <NavLink to="/" onClick={closeMobileMenu}>
+              Главная
+            </NavLink>
           </NavItem>
           <NavItem>
-            <NavLink to="/rooms" onClick={() => setIsMobileMenuOpen(false)}>Номера</NavLink>
+            <NavLink to="/rooms" onClick={closeMobileMenu}>
+              Номера
+            </NavLink>
           </NavItem>
           <NavItem>
-            <NavLink to="/services" onClick={() => setIsMobileMenuOpen(false)}>Услуги</NavLink>
+            <NavLink to="/services" onClick={closeMobileMenu}>
+              Услуги
+            </NavLink>
           </NavItem>
           <NavItem>
-            <NavLink to="/gallery" onClick={() => setIsMobileMenuOpen(false)}>Галерея</NavLink>
+            <NavLink to="/gallery" onClick={closeMobileMenu}>
+              Галерея
+            </NavLink>
           </NavItem>
           <NavItem>
-            <NavLink to="/about" onClick={() => setIsMobileMenuOpen(false)}>О нас</NavLink>
+            <NavLink to="/about" onClick={closeMobileMenu}>
+              О нас
+            </NavLink>
           </NavItem>
           <NavItem>
-            <NavLink to="/contacts" onClick={() => setIsMobileMenuOpen(false)}>Контакты</NavLink>
+            <NavLink to="/contact" onClick={closeMobileMenu}>
+              Контакты
+            </NavLink>
           </NavItem>
-          
-          {!user ? (
+          {isAuthenticated ? (
             <>
               <NavItem>
-                <NavLink to="/login" onClick={() => setIsMobileMenuOpen(false)}>Вход</NavLink>
+                <NavLink to="/profile" onClick={closeMobileMenu}>
+                  Профиль
+                </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink to="/register" onClick={() => setIsMobileMenuOpen(false)}>Регистрация</NavLink>
+                <NavLink to="/bookings" onClick={closeMobileMenu}>
+                  Мои бронирования
+                </NavLink>
+              </NavItem>
+              {user?.role === 'admin' && (
+                <NavItem>
+                  <NavLink to="/admin/dashboard" onClick={closeMobileMenu}>
+                    Админ панель
+                  </NavLink>
+                </NavItem>
+              )}
+              <NavItem>
+                <NavLink
+                  to="/"
+                  onClick={() => {
+                    logout();
+                    closeMobileMenu();
+                  }}
+                >
+                  Выход
+                </NavLink>
               </NavItem>
             </>
           ) : (
             <>
               <NavItem>
-                <NavLink to="/bookings" onClick={() => setIsMobileMenuOpen(false)}>Мои бронирования</NavLink>
+                <NavLink to="/login" onClick={closeMobileMenu}>
+                  Вход
+                </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink to="/profile" onClick={() => setIsMobileMenuOpen(false)}>Профиль</NavLink>
+                <NavLink to="/register" onClick={closeMobileMenu}>
+                  Регистрация
+                </NavLink>
               </NavItem>
-              
-              {(user.role === 'admin' || user.role === 'manager') && (
-                <NavItem>
-                  <NavLink to="/admin/dashboard" onClick={() => setIsMobileMenuOpen(false)}>Админ-панель</NavLink>
-                </NavItem>
-              )}
             </>
           )}
         </NavLinks>
-        
-        <BookButton to="/booking">Забронировать</BookButton>
+        <BookButton to="/rooms">Забронировать</BookButton>
+        <MobileMenuButton
+          className={isMobileMenuOpen ? 'open' : ''}
+          onClick={toggleMobileMenu}
+          aria-label="Меню"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </MobileMenuButton>
       </Nav>
     </HeaderContainer>
   );
 };
 
-export default Header; 
+export default Header;

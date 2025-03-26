@@ -5,7 +5,7 @@ const TestimonialsSection = styled.section`
   padding: 5rem 0;
   background-color: white;
   position: relative;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -27,7 +27,7 @@ const Container = styled.div`
   padding: 0 2rem;
   position: relative;
   z-index: 1;
-  
+
   @media (max-width: 768px) {
     padding: 0 1rem;
   }
@@ -37,7 +37,7 @@ const SectionHeader = styled.div`
   text-align: center;
   margin-bottom: 3rem;
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -55,7 +55,7 @@ const SectionTitle = styled.h2`
   font-size: 2.5rem;
   color: var(--dark-color);
   margin-bottom: 1rem;
-  
+
   @media (max-width: 768px) {
     font-size: 2rem;
   }
@@ -83,9 +83,11 @@ const TestimonialsTrack = styled.div`
 const TestimonialCard = styled.div`
   flex: 0 0 ${props => props.width}px;
   padding: 0 1rem;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  opacity: ${props => props.active ? 1 : 0.3};
-  transform: scale(${props => props.active ? 1 : 0.9});
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+  opacity: ${props => (props.active ? 1 : 0.3)};
+  transform: scale(${props => (props.active ? 1 : 0.9)});
 `;
 
 const TestimonialInner = styled.div`
@@ -97,7 +99,7 @@ const TestimonialInner = styled.div`
   min-height: 300px;
   display: flex;
   flex-direction: column;
-  
+
   &::before {
     content: '"';
     position: absolute;
@@ -114,7 +116,7 @@ const TestimonialInner = styled.div`
 const TestimonialContent = styled.div`
   margin-bottom: 1.5rem;
   flex-grow: 1;
-  
+
   p {
     color: var(--text-color);
     font-style: italic;
@@ -137,7 +139,7 @@ const AuthorImage = styled.div`
   overflow: hidden;
   margin-right: 1rem;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-  
+
   img {
     width: 100%;
     height: 100%;
@@ -151,7 +153,7 @@ const AuthorInfo = styled.div`
     margin-bottom: 0.25rem;
     color: var(--dark-color);
   }
-  
+
   p {
     font-size: 0.9rem;
     color: var(--text-muted);
@@ -170,20 +172,22 @@ const NavButton = styled.button`
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: ${props => props.disabled ? 'var(--light-color)' : 'white'};
+  background-color: ${props => (props.disabled ? 'var(--light-color)' : 'white')};
   border: none;
-  box-shadow: ${props => props.disabled ? 'none' : 'var(--shadow-md)'};
+  box-shadow: ${props => (props.disabled ? 'none' : 'var(--shadow-md)')};
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  
+  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
   i {
-    color: ${props => props.disabled ? 'var(--border-color)' : 'var(--primary-color)'};
+    color: ${props => (props.disabled ? 'var(--border-color)' : 'var(--primary-color)')};
     font-size: 1.2rem;
   }
-  
+
   &:hover:not(:disabled) {
     transform: translateY(-3px);
     box-shadow: var(--shadow-lg);
@@ -201,13 +205,15 @@ const Indicator = styled.button`
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background-color: ${props => props.active ? 'var(--primary-color)' : 'var(--border-color)'};
+  background-color: ${props => (props.active ? 'var(--primary-color)' : 'var(--border-color)')};
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s ease;
+
   &:hover {
-    background-color: ${props => props.active ? 'var(--primary-color)' : 'var(--text-muted)'};
+    background-color: ${props => (props.active ? 'var(--primary-color)' : 'var(--text-muted)')};
     transform: scale(1.2);
   }
 `;
@@ -217,72 +223,77 @@ const Testimonials = () => {
   const [slideWidth, setSlideWidth] = useState(0);
   const trackRef = useRef(null);
   const containerRef = useRef(null);
-  
+
   const testimonials = [
     {
       id: 1,
-      content: 'Прекрасный отель с уютной атмосферой. Очень понравился интерьер номера и внимательный персонал. Расположение тоже отличное — рядом парк и набережная. Обязательно приедем сюда снова, уже с семьёй!',
+      content:
+        'Прекрасный отель с уютной атмосферой. Очень понравился интерьер номера и внимательный персонал. Расположение тоже отличное — рядом парк и набережная. Обязательно приедем сюда снова, уже с семьёй!',
       author: 'Анна Смирнова',
       position: 'Постоянный гость',
-      image: 'https://randomuser.me/api/portraits/women/44.jpg'
+      image: 'https://randomuser.me/api/portraits/women/44.jpg',
     },
     {
       id: 2,
-      content: 'Мы с женой провели здесь выходные, и остались в полном восторге! Отличный сервис, превосходная кухня и комфортные номера. Особенно хочется отметить чистоту и тишину - то, что нужно для спокойного отдыха от городской суеты.',
+      content:
+        'Мы с женой провели здесь выходные, и остались в полном восторге! Отличный сервис, превосходная кухня и комфортные номера. Особенно хочется отметить чистоту и тишину - то, что нужно для спокойного отдыха от городской суеты.',
       author: 'Павел Иванов',
       position: 'Бизнес-путешественник',
-      image: 'https://randomuser.me/api/portraits/men/32.jpg'
+      image: 'https://randomuser.me/api/portraits/men/32.jpg',
     },
     {
       id: 3,
-      content: 'Отдыхали семьей с детьми. Для них здесь просто рай — детская площадка, анимация, удобный бассейн. Мы же наслаждались спокойствием и природой. Завтраки включены и очень вкусные. Обязательно вернёмся снова в этот уютный уголок!',
+      content:
+        'Отдыхали семьей с детьми. Для них здесь просто рай — детская площадка, анимация, удобный бассейн. Мы же наслаждались спокойствием и природой. Завтраки включены и очень вкусные. Обязательно вернёмся снова в этот уютный уголок!',
       author: 'Елена Козлова',
       position: 'Семейный отдых',
-      image: 'https://randomuser.me/api/portraits/women/68.jpg'
+      image: 'https://randomuser.me/api/portraits/women/68.jpg',
     },
     {
       id: 4,
-      content: 'Проводил здесь конференцию для нашей компании. Всё на высшем уровне: конференц-зал с современным оборудованием, кофе-брейки, обеды. Коллеги остались довольны и условиями размещения. Рекомендую как для бизнеса, так и для отдыха.',
+      content:
+        'Проводил здесь конференцию для нашей компании. Всё на высшем уровне: конференц-зал с современным оборудованием, кофе-брейки, обеды. Коллеги остались довольны и условиями размещения. Рекомендую как для бизнеса, так и для отдыха.',
       author: 'Алексей Петров',
       position: 'Директор по развитию',
-      image: 'https://randomuser.me/api/portraits/men/11.jpg'
+      image: 'https://randomuser.me/api/portraits/men/11.jpg',
     },
     {
       id: 5,
-      content: 'Приезжали на романтический уикенд. Выбрали люкс с видом на лес — это было идеальное решение! Порадовал СПА-комплекс и ресторан с местной кухней. Спасибо персоналу за создание особой атмосферы и внимание к деталям.',
+      content:
+        'Приезжали на романтический уикенд. Выбрали люкс с видом на лес — это было идеальное решение! Порадовал СПА-комплекс и ресторан с местной кухней. Спасибо персоналу за создание особой атмосферы и внимание к деталям.',
       author: 'Мария и Дмитрий',
       position: 'Молодожёны',
-      image: 'https://randomuser.me/api/portraits/women/90.jpg'
-    }
+      image: 'https://randomuser.me/api/portraits/women/90.jpg',
+    },
   ];
-  
+
   useEffect(() => {
     const handleResize = () => {
       if (containerRef.current) {
         setSlideWidth(containerRef.current.offsetWidth);
       }
     };
-    
+
     handleResize();
     window.addEventListener('resize', handleResize);
-    
+
     return () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-  
+
   const nextSlide = () => {
-    setCurrentSlide(prev => (prev === testimonials.length - 1) ? 0 : prev + 1);
+    setCurrentSlide(prev => (prev === testimonials.length - 1 ? 0 : prev + 1));
   };
-  
+
   const prevSlide = () => {
-    setCurrentSlide(prev => (prev === 0) ? testimonials.length - 1 : prev - 1);
+    setCurrentSlide(prev => (prev === 0 ? testimonials.length - 1 : prev - 1));
   };
-  
-  const goToSlide = (index) => {
+
+  const goToSlide = index => {
     setCurrentSlide(index);
   };
-  
+
   return (
     <TestimonialsSection id="testimonials">
       <Container>
@@ -292,14 +303,11 @@ const Testimonials = () => {
             Узнайте, что говорят о нас гости, которые уже побывали в нашем отеле
           </SectionSubtitle>
         </SectionHeader>
-        
+
         <TestimonialsContainer ref={containerRef}>
-          <TestimonialsTrack 
-            ref={trackRef}
-            offset={-currentSlide * slideWidth}
-          >
+          <TestimonialsTrack ref={trackRef} offset={-currentSlide * slideWidth}>
             {testimonials.map((testimonial, index) => (
-              <TestimonialCard 
+              <TestimonialCard
                 key={testimonial.id}
                 width={slideWidth}
                 active={index === currentSlide}
@@ -308,7 +316,7 @@ const Testimonials = () => {
                   <TestimonialContent>
                     <p>{testimonial.content}</p>
                   </TestimonialContent>
-                  
+
                   <TestimonialAuthor>
                     <AuthorImage>
                       <img src={testimonial.image} alt={testimonial.author} />
@@ -323,7 +331,7 @@ const Testimonials = () => {
             ))}
           </TestimonialsTrack>
         </TestimonialsContainer>
-        
+
         <NavigationButtons>
           <NavButton onClick={prevSlide}>
             <i className="fas fa-arrow-left"></i>
@@ -332,10 +340,10 @@ const Testimonials = () => {
             <i className="fas fa-arrow-right"></i>
           </NavButton>
         </NavigationButtons>
-        
+
         <Indicators>
           {testimonials.map((_, index) => (
-            <Indicator 
+            <Indicator
               key={index}
               active={index === currentSlide}
               onClick={() => goToSlide(index)}
@@ -347,4 +355,4 @@ const Testimonials = () => {
   );
 };
 
-export default Testimonials; 
+export default Testimonials;

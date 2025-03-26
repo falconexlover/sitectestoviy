@@ -37,22 +37,22 @@ const apiLimiter = rateLimit({
   max: isProduction ? 100 : 1000, // Ограничиваем количество запросов
   standardHeaders: true,
   legacyHeaders: false,
-  skip: (req) => !isProduction // Отключаем в режиме разработки
+  skip: (req) => !isProduction, // Отключаем в режиме разработки
 });
 
 // Применяем rate limiter ко всем маршрутам API
 app.use('/api', apiLimiter);
 
 // Настройка CORS для работы с frontend
-const allowedOrigins = process.env.FRONTEND_URL 
-  ? [process.env.FRONTEND_URL, 'http://localhost:3000'] 
+const allowedOrigins = process.env.FRONTEND_URL
+  ? [process.env.FRONTEND_URL, 'http://localhost:3000']
   : ['https://lesnoy-dvorik.vercel.app', 'http://localhost:3000'];
 
 const corsOptions = {
   origin: function (origin, callback) {
     // В режиме разработки разрешаем запросы без origin
     if (!origin && !isProduction) return callback(null, true);
-    
+
     // Проверяем origin на соответствие разрешенным
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
@@ -63,7 +63,7 @@ const corsOptions = {
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
   credentials: true,
   optionsSuccessStatus: 204,
-  maxAge: 86400 // 24 часа
+  maxAge: 86400, // 24 часа
 };
 
 // Middleware
@@ -97,35 +97,37 @@ if (!isVercel) {
 if (!isProduction) {
   const swaggerJsDoc = require('swagger-jsdoc');
   const swaggerUI = require('swagger-ui-express');
-  
+
   const swaggerOptions = {
     definition: {
       openapi: '3.0.0',
       info: {
         title: 'API гостиничного комплекса "Лесной Дворик"',
         version: '1.0.0',
-        description: 'API для управления бронированиями, номерами и клиентами'
+        description: 'API для управления бронированиями, номерами и клиентами',
       },
       servers: [
         {
           url: process.env.API_URL || 'http://localhost:5000',
-          description: 'Сервер API'
-        }
+          description: 'Сервер API',
+        },
       ],
       components: {
         securitySchemes: {
           bearerAuth: {
             type: 'http',
             scheme: 'bearer',
-            bearerFormat: 'JWT'
-          }
-        }
+            bearerFormat: 'JWT',
+          },
+        },
       },
-      security: [{
-        bearerAuth: []
-      }]
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
     },
-    apis: ['./routes/*.js', './models/*.js']
+    apis: ['./routes/*.js', './models/*.js'],
   };
 
   const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -138,12 +140,23 @@ try {
     db.authenticate()
       .then(() => {
         logger.info('Подключение к базе данных установлено успешно.');
-        return db.sync({ force: false, alter: false });
+
+        // Безопасная синхронизация схемы базы данных
+        // Отключаем ограничения внешних ключей перед синхронизацией для SQLite
+        if (db.getDialect() === 'sqlite') {
+          return db
+            .query('PRAGMA foreign_keys = OFF;')
+            .then(() => db.sync({ force: false, alter: false }))
+            .then(() => db.query('PRAGMA foreign_keys = ON;'));
+        } else {
+          // Для других баз данных используем стандартный подход
+          return db.sync({ force: false, alter: false });
+        }
       })
       .then(() => {
         logger.info('Модели синхронизированы с базой данных.');
       })
-      .catch(err => {
+      .catch((err) => {
         logger.error('Ошибка при работе с базой данных:', err);
       });
   }
@@ -169,15 +182,15 @@ app.use('/api/rooms', roomRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/analytics', analyticsRoutes);
-app.use('/api/payments', paymentRoutes); 
+app.use('/api/payments', paymentRoutes);
 app.use('/api/reviews', reviewRoutes);
 
 // Проверка работоспособности сервера
-app.get('/health', (req, res) => {
-  res.status(200).json({ 
+app.get('/health', (_req, res) => {
+  res.status(200).json({
     status: 'ok',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
   });
 });
 
@@ -185,9 +198,9 @@ app.get('/health', (req, res) => {
 app.get('/', (req, res) => {
   res.status(200).json({
     name: 'API гостиничного комплекса "Лесной Дворик"',
-    version: '1.0.0', 
+    version: '1.0.0',
     documentation: '/api-docs',
-    health: '/health'
+    health: '/health',
   });
 });
 
@@ -198,27 +211,27 @@ if (typeof errorLogger === 'function') {
 
 // Централизованная обработка 404 ошибок
 app.use((req, res, next) => {
-  res.status(404).json({ 
+  res.status(404).json({
     error: 'Маршрут не найден',
-    path: req.path
+    path: req.path,
   });
 });
 
 // Централизованная обработка ошибок
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
-  
+
   // Логирование через единый интерфейс
   const logError = logger.error || console.error;
-  logError(`[Ошибка ${statusCode}]: ${err.message}`, { 
+  logError(`[Ошибка ${statusCode}]: ${err.message}`, {
     stack: err.stack,
     path: req.path,
-    method: req.method
+    method: req.method,
   });
-  
-  res.status(statusCode).json({ 
+
+  res.status(statusCode).json({
     error: isProduction ? 'Внутренняя ошибка сервера' : err.message,
-    ...(isProduction ? {} : { stack: err.stack })
+    ...(isProduction ? {} : { stack: err.stack }),
   });
 });
 
@@ -231,4 +244,14 @@ if (!isVercel) {
 }
 
 // Экспорт для Vercel
-module.exports = app; 
+module.exports = app;
+
+process.on('uncaughtException', (err, _next) => {
+  logger.error('Необработанное исключение:', err);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (err, _next) => {
+  logger.error('Необработанное отклонение обещания:', err);
+  process.exit(1);
+});

@@ -21,5 +21,5 @@ module.exports = {
   User,
   Room,
   Booking,
-  Review
-}; 
+  Review,
+};

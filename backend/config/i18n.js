@@ -9,26 +9,26 @@ const fs = require('fs');
  */
 const loadTranslations = (dir) => {
   const resources = {};
-  
+
   // Получение списка поддерживаемых языков
-  const langDirs = fs.readdirSync(dir, { withFileTypes: true })
-    .filter(dirent => dirent.isDirectory())
-    .map(dirent => dirent.name);
-  
+  const langDirs = fs
+    .readdirSync(dir, { withFileTypes: true })
+    .filter((dirent) => dirent.isDirectory())
+    .map((dirent) => dirent.name);
+
   // Загрузка переводов для каждого языка
-  langDirs.forEach(lang => {
+  langDirs.forEach((lang) => {
     resources[lang] = {};
-    
+
     // Чтение JSON-файлов в директории языка
     const langPath = path.join(dir, lang);
-    const files = fs.readdirSync(langPath)
-      .filter(file => file.endsWith('.json'));
-    
+    const files = fs.readdirSync(langPath).filter((file) => file.endsWith('.json'));
+
     // Загрузка содержимого каждого файла
-    files.forEach(file => {
+    files.forEach((file) => {
       const namespace = file.replace('.json', '');
       const filePath = path.join(langPath, file);
-      
+
       try {
         const content = fs.readFileSync(filePath, 'utf8');
         resources[lang][namespace] = JSON.parse(content);
@@ -37,7 +37,7 @@ const loadTranslations = (dir) => {
       }
     });
   });
-  
+
   return resources;
 };
 
@@ -51,8 +51,8 @@ i18next.init({
   ns: ['common', 'errors', 'emails'],
   keySeparator: '.', // Разделитель для вложенных ключей
   interpolation: {
-    escapeValue: false // Не экранировать значения для HTML
-  }
+    escapeValue: false, // Не экранировать значения для HTML
+  },
 });
 
-module.exports = i18next; 
+module.exports = i18next;

@@ -6,7 +6,7 @@ const PageContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 3rem 2rem;
-  
+
   @media (max-width: 768px) {
     padding: 2rem 1rem;
   }
@@ -16,7 +16,7 @@ const PageHeader = styled.div`
   text-align: center;
   margin-bottom: 3rem;
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -34,7 +34,7 @@ const PageTitle = styled.h1`
   font-size: 2.5rem;
   color: var(--primary-color);
   margin-bottom: 1rem;
-  
+
   @media (max-width: 768px) {
     font-size: 2rem;
   }
@@ -56,20 +56,20 @@ const CategoryFilters = styled.div`
 `;
 
 const FilterButton = styled.button`
-  background-color: ${props => props.active ? 'var(--primary-color)' : 'white'};
-  color: ${props => props.active ? 'white' : 'var(--text-color)'};
+  background-color: ${props => (props.active ? 'var(--primary-color)' : 'white')};
+  color: ${props => (props.active ? 'white' : 'var(--text-color)')};
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   padding: 0.5rem 1.5rem;
   font-size: 0.9rem;
   cursor: pointer;
   transition: var(--transition);
-  
+
   &:hover {
-    background-color: ${props => props.active ? 'var(--primary-color)' : 'var(--light-color)'};
+    background-color: ${props => (props.active ? 'var(--primary-color)' : 'var(--light-color)')};
     transform: translateY(-2px);
   }
-  
+
   @media (max-width: 576px) {
     font-size: 0.8rem;
     padding: 0.4rem 1rem;
@@ -78,29 +78,30 @@ const FilterButton = styled.button`
 
 const GalleryPage = () => {
   const [activeCategory, setActiveCategory] = useState('all');
-  
+
   const categories = [
     { id: 'all', name: 'Все фото' },
     { id: 'rooms', name: 'Номера' },
     { id: 'restaurant', name: 'Ресторан' },
     { id: 'spa', name: 'СПА' },
     { id: 'territory', name: 'Территория' },
-    { id: 'activities', name: 'Развлечения' }
+    { id: 'activities', name: 'Развлечения' },
   ];
-  
-  const handleCategoryChange = (categoryId) => {
+
+  const handleCategoryChange = categoryId => {
     setActiveCategory(categoryId);
   };
-  
+
   return (
     <PageContainer>
       <PageHeader>
         <PageTitle>Фотогалерея</PageTitle>
         <PageSubtitle>
-          Погрузитесь в атмосферу нашего отеля через фотографии интерьеров, территории и окружающей природы
+          Погрузитесь в атмосферу нашего отеля через фотографии интерьеров, территории и окружающей
+          природы
         </PageSubtitle>
       </PageHeader>
-      
+
       <CategoryFilters>
         {categories.map(category => (
           <FilterButton
@@ -112,10 +113,10 @@ const GalleryPage = () => {
           </FilterButton>
         ))}
       </CategoryFilters>
-      
+
       <Gallery />
     </PageContainer>
   );
 };
 
-export default GalleryPage; 
+export default GalleryPage;

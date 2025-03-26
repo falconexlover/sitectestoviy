@@ -8,7 +8,9 @@
 const express = require('express');
 const router = express.Router();
 const analyticsController = require('../controllers/analyticsController');
-const { auth, adminOnly, staffOnly } = require('../middlewares/authMiddleware');
+const { authenticate } = require('../middlewares/authMiddleware');
+
+router.use(authenticate);
 
 /**
  * @swagger
@@ -26,7 +28,7 @@ const { auth, adminOnly, staffOnly } = require('../middlewares/authMiddleware');
  *       403:
  *         description: Нет прав для доступа
  */
-router.get('/overall', auth, staffOnly, analyticsController.getOverallStats);
+router.get('/overall', analyticsController.getOverallStats);
 
 /**
  * @swagger
@@ -61,7 +63,7 @@ router.get('/overall', auth, staffOnly, analyticsController.getOverallStats);
  *       403:
  *         description: Нет прав для доступа
  */
-router.get('/period', auth, staffOnly, analyticsController.getStatsByPeriod);
+router.get('/period', analyticsController.getStatsByPeriod);
 
 /**
  * @swagger
@@ -85,7 +87,7 @@ router.get('/period', auth, staffOnly, analyticsController.getStatsByPeriod);
  *       403:
  *         description: Нет прав для доступа
  */
-router.get('/forecast', auth, staffOnly, analyticsController.getOccupancyForecast);
+router.get('/forecast', analyticsController.getOccupancyForecast);
 
 /**
  * @swagger
@@ -109,6 +111,10 @@ router.get('/forecast', auth, staffOnly, analyticsController.getOccupancyForecas
  *       403:
  *         description: Нет прав для доступа
  */
-router.get('/popular-rooms', auth, staffOnly, analyticsController.getPopularRooms);
+router.get('/popular-rooms', analyticsController.getPopularRooms);
 
-module.exports = router; 
+router.get('/analytics/bookings', analyticsController.getBookingAnalytics);
+router.get('/analytics/revenue', analyticsController.getRevenueAnalytics);
+router.get('/analytics/occupancy', analyticsController.getOccupancyAnalytics);
+
+module.exports = router;

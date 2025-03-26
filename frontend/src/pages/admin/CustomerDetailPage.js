@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import userService from '../../services/userService';
-import bookingService from '../../services/bookingService';
 
 const PageContainer = styled.div`
   padding: 2rem;
@@ -34,11 +33,11 @@ const BackButton = styled(Link)`
   border-radius: 4px;
   font-weight: 500;
   transition: background-color 0.2s;
-  
+
   &:hover {
     background-color: #e0e0e0;
   }
-  
+
   i {
     margin-right: 0.5rem;
   }
@@ -48,7 +47,7 @@ const ContentWrapper = styled.div`
   display: grid;
   grid-template-columns: 350px 1fr;
   gap: 2rem;
-  
+
   @media (max-width: 992px) {
     grid-template-columns: 1fr;
   }
@@ -102,7 +101,7 @@ const ProfileDetails = styled.div`
 
 const DetailGroup = styled.div`
   margin-bottom: 1.5rem;
-  
+
   &:last-child {
     margin-bottom: 0;
   }
@@ -140,8 +139,8 @@ const ActionButton = styled.button`
   border-radius: 4px;
   font-size: 0.95rem;
   font-weight: 500;
-  background-color: ${props => props.danger ? '#fff0f0' : '#f0f0f0'};
-  color: ${props => props.danger ? '#e53935' : '#2c3e50'};
+  background-color: ${props => (props.danger ? '#fff0f0' : '#f0f0f0')};
+  color: ${props => (props.danger ? '#e53935' : '#2c3e50')};
   border: none;
   cursor: pointer;
   transition: background-color 0.2s;
@@ -149,11 +148,11 @@ const ActionButton = styled.button`
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
-  
+
   &:hover {
-    background-color: ${props => props.danger ? '#ffebee' : '#e0e0e0'};
+    background-color: ${props => (props.danger ? '#ffebee' : '#e0e0e0')};
   }
-  
+
   i {
     font-size: 1rem;
   }
@@ -177,19 +176,19 @@ const ErrorMessage = styled.div`
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  
+
   i {
     font-size: 3rem;
     color: #e74c3c;
     margin-bottom: 1rem;
   }
-  
+
   h3 {
     font-size: 1.5rem;
     color: #2c3e50;
     margin-bottom: 1rem;
   }
-  
+
   p {
     font-size: 1.1rem;
     color: #7f8c8d;
@@ -225,7 +224,7 @@ const StatCard = styled.div`
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  
+
   i {
     font-size: 2rem;
     color: #3498db;
@@ -257,7 +256,7 @@ const BookingsTable = styled.table`
 
 const TableHead = styled.thead`
   background-color: #f8f9fa;
-  
+
   th {
     padding: 1rem;
     text-align: left;
@@ -271,16 +270,16 @@ const TableBody = styled.tbody`
   tr {
     border-bottom: 1px solid #f0f0f0;
     transition: background-color 0.2s;
-    
+
     &:hover {
       background-color: #f8f9fa;
     }
-    
+
     &:last-child {
       border-bottom: none;
     }
   }
-  
+
   td {
     padding: 1rem;
     color: #2c3e50;
@@ -295,20 +294,30 @@ const StatusBadge = styled.span`
   font-weight: 500;
   background-color: ${props => {
     switch (props.status) {
-      case 'confirmed': return '#e3f7ed';
-      case 'completed': return '#e8f0fe';
-      case 'cancelled': return '#ffebee';
-      case 'pending': return '#fff8e6';
-      default: return '#f0f0f0';
+      case 'confirmed':
+        return '#e3f7ed';
+      case 'completed':
+        return '#e8f0fe';
+      case 'cancelled':
+        return '#ffebee';
+      case 'pending':
+        return '#fff8e6';
+      default:
+        return '#f0f0f0';
     }
   }};
   color: ${props => {
     switch (props.status) {
-      case 'confirmed': return '#1d8a4e';
-      case 'completed': return '#3f51b5';
-      case 'cancelled': return '#e53935';
-      case 'pending': return '#ff9800';
-      default: return '#7f8c8d';
+      case 'confirmed':
+        return '#1d8a4e';
+      case 'completed':
+        return '#3f51b5';
+      case 'cancelled':
+        return '#e53935';
+      case 'pending':
+        return '#ff9800';
+      default:
+        return '#7f8c8d';
     }
   }};
 `;
@@ -323,11 +332,11 @@ const ViewButton = styled(Link)`
   color: #2c3e50;
   text-decoration: none;
   transition: background-color 0.2s;
-  
+
   &:hover {
     background-color: #e0e0e0;
   }
-  
+
   i {
     margin-right: 0.25rem;
   }
@@ -417,13 +426,13 @@ const Tab = styled.button`
   padding: 1rem 1.5rem;
   background-color: transparent;
   border: none;
-  border-bottom: 2px solid ${props => props.active ? '#3498db' : 'transparent'};
-  color: ${props => props.active ? '#3498db' : '#7f8c8d'};
+  border-bottom: 2px solid ${props => (props.active ? '#3498db' : 'transparent')};
+  color: ${props => (props.active ? '#3498db' : '#7f8c8d')};
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
-  
+
   &:hover {
     color: #3498db;
   }
@@ -435,148 +444,101 @@ const NoDataMessage = styled.div`
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  
+
   i {
     font-size: 3rem;
     color: #95a5a6;
     margin-bottom: 1rem;
   }
-  
+
   p {
     font-size: 1.2rem;
     color: #7f8c8d;
   }
 `;
 
-const formatDate = (dateString) => {
+const formatDate = dateString => {
   const date = new Date(dateString);
   return new Intl.DateTimeFormat('ru-RU', {
     day: '2-digit',
     month: '2-digit',
-    year: 'numeric'
+    year: 'numeric',
   }).format(date);
 };
 
-const formatCurrency = (amount) => {
+const formatCurrency = amount => {
   return new Intl.NumberFormat('ru-RU', {
     style: 'currency',
     currency: 'RUB',
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0
+    maximumFractionDigits: 0,
   }).format(amount);
 };
 
-const translateRole = (role) => {
+const translateRole = role => {
   const roles = {
-    'customer': 'Клиент',
-    'admin': 'Администратор',
-    'manager': 'Менеджер'
+    customer: 'Клиент',
+    admin: 'Администратор',
+    manager: 'Менеджер',
   };
   return roles[role] || role;
 };
 
-const translateStatus = (status) => {
+const translateStatus = status => {
   const statuses = {
-    'pending': 'Ожидает подтверждения',
-    'confirmed': 'Подтверждено',
-    'cancelled': 'Отменено',
-    'completed': 'Завершено'
+    pending: 'Ожидает подтверждения',
+    confirmed: 'Подтверждено',
+    cancelled: 'Отменено',
+    completed: 'Завершено',
   };
   return statuses[status] || status;
 };
 
-const getInitials = (name) => {
+const getInitials = name => {
   if (!name) return '?';
-  
+
   const nameParts = name.split(' ');
   if (nameParts.length === 1) return nameParts[0].charAt(0).toUpperCase();
-  
+
   return (nameParts[0].charAt(0) + nameParts[1].charAt(0)).toUpperCase();
 };
 
 const CustomerDetailPage = () => {
   const { id } = useParams();
   const [customer, setCustomer] = useState(null);
-  const [bookings, setBookings] = useState([]);
-  const [statistics, setStatistics] = useState({
+  const [bookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState('bookings');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [statistics] = useState({
     totalBookings: 0,
     totalSpent: 0,
     averageStay: 0,
-    completedBookings: 0
+    completedBookings: 0,
   });
-  
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  
-  const [activeTab, setActiveTab] = useState('bookings'); // bookings, activity, notes
-  
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  
-  useEffect(() => {
-    fetchCustomerData();
-  }, [id]);
-  
-  const fetchCustomerData = async () => {
+
+  const fetchCustomerData = useCallback(async () => {
     try {
       setLoading(true);
-      
-      // Получаем данные пользователя
-      const userResponse = await userService.getUserById(id);
-      setCustomer(userResponse.data);
-      
-      // Получаем бронирования пользователя
-      const bookingsResponse = await userService.getUserBookings(id);
-      setBookings(bookingsResponse.data);
-      
-      // Вычисляем статистику
-      calculateStatistics(bookingsResponse.data);
-      
+      const data = await userService.getCustomerById(id);
+      setCustomer(data);
       setError(null);
-    } catch (error) {
-      console.error('Ошибка при загрузке данных клиента:', error);
-      setError('Произошла ошибка при загрузке данных клиента');
+    } catch (err) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
-  };
-  
-  const calculateStatistics = (bookings) => {
-    // Подсчитываем статистику на основе бронирований
-    const totalBookings = bookings.length;
-    let totalSpent = 0;
-    let totalStayDays = 0;
-    let completedBookings = 0;
-    
-    bookings.forEach(booking => {
-      totalSpent += booking.totalAmount || 0;
-      
-      // Расчет количества дней пребывания
-      if (booking.checkIn && booking.checkOut) {
-        const checkIn = new Date(booking.checkIn);
-        const checkOut = new Date(booking.checkOut);
-        const stayDays = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
-        totalStayDays += stayDays;
-      }
-      
-      if (booking.status === 'completed') {
-        completedBookings++;
-      }
-    });
-    
-    const averageStay = totalBookings > 0 ? Math.round(totalStayDays / totalBookings) : 0;
-    
-    setStatistics({
-      totalBookings,
-      totalSpent,
-      averageStay,
-      completedBookings
-    });
-  };
-  
+  }, [id]);
+
+  useEffect(() => {
+    fetchCustomerData();
+  }, [fetchCustomerData]);
+
   const handleDeleteClick = () => {
     setShowDeleteModal(true);
   };
-  
+
   const confirmDelete = async () => {
     try {
       await userService.deleteUser(id);
@@ -589,7 +551,7 @@ const CustomerDetailPage = () => {
       setShowDeleteModal(false);
     }
   };
-  
+
   if (loading) {
     return (
       <PageContainer>
@@ -605,7 +567,7 @@ const CustomerDetailPage = () => {
       </PageContainer>
     );
   }
-  
+
   if (error) {
     return (
       <PageContainer>
@@ -624,7 +586,7 @@ const CustomerDetailPage = () => {
       </PageContainer>
     );
   }
-  
+
   return (
     <PageContainer>
       <PageHeader>
@@ -633,7 +595,7 @@ const CustomerDetailPage = () => {
           <i className="fas fa-arrow-left"></i> Назад к списку
         </BackButton>
       </PageHeader>
-      
+
       <ContentWrapper>
         <div>
           <ProfileCard>
@@ -643,33 +605,35 @@ const CustomerDetailPage = () => {
               <div>{customer?.email}</div>
               <ProfileRole>{translateRole(customer?.role)}</ProfileRole>
             </ProfileHeader>
-            
+
             <ProfileDetails>
               <DetailGroup>
                 <DetailLabel>Идентификатор</DetailLabel>
                 <DetailValue>{customer?.id}</DetailValue>
               </DetailGroup>
-              
+
               <DetailGroup>
                 <DetailLabel>Телефон</DetailLabel>
                 <DetailValue>{customer?.phone || 'Не указан'}</DetailValue>
               </DetailGroup>
-              
+
               <DetailGroup>
                 <DetailLabel>Дата регистрации</DetailLabel>
                 <DetailValue>{formatDate(customer?.createdAt)}</DetailValue>
               </DetailGroup>
-              
+
               <DetailGroup>
                 <DetailLabel>Последняя активность</DetailLabel>
-                <DetailValue>{customer?.lastLogin ? formatDate(customer.lastLogin) : 'Н/Д'}</DetailValue>
+                <DetailValue>
+                  {customer?.lastLogin ? formatDate(customer.lastLogin) : 'Н/Д'}
+                </DetailValue>
               </DetailGroup>
-              
+
               <DetailGroup>
                 <DetailLabel>Адрес</DetailLabel>
                 <DetailValue>{customer?.address || 'Не указан'}</DetailValue>
               </DetailGroup>
-              
+
               <ActionButtons>
                 <ActionButton>
                   <i className="fas fa-pencil-alt"></i> Редактировать
@@ -681,7 +645,7 @@ const CustomerDetailPage = () => {
             </ProfileDetails>
           </ProfileCard>
         </div>
-        
+
         <div>
           <SectionTitle>Статистика</SectionTitle>
           <StatsGrid>
@@ -690,48 +654,45 @@ const CustomerDetailPage = () => {
               <StatValue>{statistics.totalBookings}</StatValue>
               <StatLabel>Всего бронирований</StatLabel>
             </StatCard>
-            
+
             <StatCard>
               <i className="fas fa-money-bill-wave"></i>
               <StatValue>{formatCurrency(statistics.totalSpent)}</StatValue>
               <StatLabel>Потрачено всего</StatLabel>
             </StatCard>
-            
+
             <StatCard>
               <i className="fas fa-bed"></i>
-              <StatValue>{statistics.averageStay} {statistics.averageStay === 1 ? 'день' : 
-                statistics.averageStay > 1 && statistics.averageStay < 5 ? 'дня' : 'дней'}</StatValue>
+              <StatValue>
+                {statistics.averageStay}{' '}
+                {statistics.averageStay === 1
+                  ? 'день'
+                  : statistics.averageStay > 1 && statistics.averageStay < 5
+                    ? 'дня'
+                    : 'дней'}
+              </StatValue>
               <StatLabel>Средняя продолжительность</StatLabel>
             </StatCard>
-            
+
             <StatCard>
               <i className="fas fa-check-circle"></i>
               <StatValue>{statistics.completedBookings}</StatValue>
               <StatLabel>Завершенных бронирований</StatLabel>
             </StatCard>
           </StatsGrid>
-          
+
           <Tabs>
-            <Tab 
-              active={activeTab === 'bookings'} 
-              onClick={() => setActiveTab('bookings')}
-            >
+            <Tab active={activeTab === 'bookings'} onClick={() => setActiveTab('bookings')}>
               Бронирования
             </Tab>
-            <Tab 
-              active={activeTab === 'activity'} 
-              onClick={() => setActiveTab('activity')}
-            >
+            <Tab active={activeTab === 'activity'} onClick={() => setActiveTab('activity')}>
               История активности
             </Tab>
-            <Tab 
-              active={activeTab === 'notes'} 
-              onClick={() => setActiveTab('notes')}
-            >
+            <Tab active={activeTab === 'notes'} onClick={() => setActiveTab('notes')}>
               Заметки
             </Tab>
           </Tabs>
-          
+
           {activeTab === 'bookings' && (
             <>
               {bookings.length === 0 ? (
@@ -777,14 +738,14 @@ const CustomerDetailPage = () => {
               )}
             </>
           )}
-          
+
           {activeTab === 'activity' && (
             <NoDataMessage>
               <i className="fas fa-history"></i>
               <p>История активности пока недоступна</p>
             </NoDataMessage>
           )}
-          
+
           {activeTab === 'notes' && (
             <NoDataMessage>
               <i className="fas fa-sticky-note"></i>
@@ -793,14 +754,15 @@ const CustomerDetailPage = () => {
           )}
         </div>
       </ContentWrapper>
-      
+
       {/* Модальное окно подтверждения удаления */}
       {showDeleteModal && (
         <Modal>
           <ModalContent>
             <ModalTitle>Подтверждение удаления</ModalTitle>
             <ModalText>
-              Вы действительно хотите удалить клиента <strong>{customer?.name || customer?.email}</strong>?
+              Вы действительно хотите удалить клиента{' '}
+              <strong>{customer?.name || customer?.email}</strong>?
               <br />
               Все данные пользователя, включая историю бронирований, будут удалены.
               <br />
@@ -817,4 +779,4 @@ const CustomerDetailPage = () => {
   );
 };
 
-export default CustomerDetailPage; 
+export default CustomerDetailPage;

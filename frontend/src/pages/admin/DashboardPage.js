@@ -94,14 +94,14 @@ const ChartOption = styled.button`
   padding: 0.4rem 0.8rem;
   border-radius: 4px;
   border: 1px solid #e0e0e0;
-  background: ${props => props.active ? '#3498db' : '#fff'};
-  color: ${props => props.active ? '#fff' : '#7f8c8d'};
+  background: ${props => (props.active ? '#3498db' : '#fff')};
+  color: ${props => (props.active ? '#fff' : '#7f8c8d')};
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    background: ${props => props.active ? '#2980b9' : '#f9f9f9'};
+    background: ${props => (props.active ? '#2980b9' : '#f9f9f9')};
   }
 `;
 
@@ -166,7 +166,7 @@ const TableBody = styled.tbody``;
 
 const TableRow = styled.tr`
   border-bottom: 1px solid #f0f0f0;
-  
+
   &:last-child {
     border-bottom: none;
   }
@@ -194,20 +194,30 @@ const StatusBadge = styled.span`
   font-weight: 500;
   background-color: ${props => {
     switch (props.status) {
-      case 'confirmed': return '#e3f7ed';
-      case 'pending': return '#fff8e6';
-      case 'cancelled': return '#ffebee';
-      case 'completed': return '#e8f0fe';
-      default: return '#f0f0f0';
+      case 'confirmed':
+        return '#e3f7ed';
+      case 'pending':
+        return '#fff8e6';
+      case 'cancelled':
+        return '#ffebee';
+      case 'completed':
+        return '#e8f0fe';
+      default:
+        return '#f0f0f0';
     }
   }};
   color: ${props => {
     switch (props.status) {
-      case 'confirmed': return '#1d8a4e';
-      case 'pending': return '#ff9800';
-      case 'cancelled': return '#e53935';
-      case 'completed': return '#3f51b5';
-      default: return '#7f8c8d';
+      case 'confirmed':
+        return '#1d8a4e';
+      case 'pending':
+        return '#ff9800';
+      case 'cancelled':
+        return '#e53935';
+      case 'completed':
+        return '#3f51b5';
+      default:
+        return '#7f8c8d';
     }
   }};
 `;
@@ -228,21 +238,21 @@ const ErrorMessage = styled.div`
   color: #e53935;
 `;
 
-const formatDate = (dateString) => {
+const formatDate = dateString => {
   const date = new Date(dateString);
   return new Intl.DateTimeFormat('ru-RU', {
     day: '2-digit',
     month: '2-digit',
-    year: 'numeric'
+    year: 'numeric',
   }).format(date);
 };
 
-const translateStatus = (status) => {
+const translateStatus = status => {
   const statuses = {
-    'pending': 'Ожидание',
-    'confirmed': 'Подтверждено',
-    'cancelled': 'Отменено',
-    'completed': 'Завершено'
+    pending: 'Ожидание',
+    confirmed: 'Подтверждено',
+    cancelled: 'Отменено',
+    completed: 'Завершено',
   };
   return statuses[status] || status;
 };
@@ -251,16 +261,16 @@ const DashboardPage = () => {
   const [recentBookings, setRecentBookings] = useState([]);
   const [bookingsLoading, setBookingsLoading] = useState(true);
   const [bookingsError, setBookingsError] = useState(null);
-  
+
   const [stats, setStats] = useState({
     revenue: 0,
     bookings: 0,
     occupancy: 0,
-    averageRating: 0
+    averageRating: 0,
   });
   const [statsLoading, setStatsLoading] = useState(true);
   const [statsError, setStatsError] = useState(null);
-  
+
   const [chartTimeframe, setChartTimeframe] = useState('week');
 
   useEffect(() => {
@@ -269,9 +279,9 @@ const DashboardPage = () => {
       try {
         setBookingsLoading(true);
         const response = await bookingService.getAllBookings();
-        const sortedBookings = response.data.sort((a, b) => 
-          new Date(b.createdAt) - new Date(a.createdAt)
-        ).slice(0, 5);
+        const sortedBookings = response.data
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 5);
         setRecentBookings(sortedBookings);
         setBookingsError(null);
       } catch (error) {
@@ -291,7 +301,7 @@ const DashboardPage = () => {
           revenue: response.data.totalRevenue || 0,
           bookings: response.data.totalBookings || 0,
           occupancy: response.data.occupancyRate || 0,
-          averageRating: response.data.averageRating || 0
+          averageRating: response.data.averageRating || 0,
         });
         setStatsError(null);
       } catch (error) {
@@ -369,20 +379,20 @@ const DashboardPage = () => {
         <ChartHeader>
           <ChartTitle>Выручка и бронирования</ChartTitle>
           <ChartOptions>
-            <ChartOption 
-              active={chartTimeframe === 'week'} 
+            <ChartOption
+              active={chartTimeframe === 'week'}
               onClick={() => setChartTimeframe('week')}
             >
               Неделя
             </ChartOption>
-            <ChartOption 
-              active={chartTimeframe === 'month'} 
+            <ChartOption
+              active={chartTimeframe === 'month'}
               onClick={() => setChartTimeframe('month')}
             >
               Месяц
             </ChartOption>
-            <ChartOption 
-              active={chartTimeframe === 'year'} 
+            <ChartOption
+              active={chartTimeframe === 'year'}
               onClick={() => setChartTimeframe('year')}
             >
               Год
@@ -390,10 +400,8 @@ const DashboardPage = () => {
           </ChartOptions>
         </ChartHeader>
         <ChartPlaceholder>
-          [График выручки и бронирований за {
-            chartTimeframe === 'week' ? 'неделю' : 
-            chartTimeframe === 'month' ? 'месяц' : 'год'
-          }]
+          [График выручки и бронирований за{' '}
+          {chartTimeframe === 'week' ? 'неделю' : chartTimeframe === 'month' ? 'месяц' : 'год'}]
         </ChartPlaceholder>
       </ChartContainer>
 
@@ -404,7 +412,7 @@ const DashboardPage = () => {
             <TableTitle>Последние бронирования</TableTitle>
             <ViewAll to="/admin/bookings">Все бронирования</ViewAll>
           </TableHeader>
-          
+
           {bookingsLoading ? (
             <LoadingMessage>Загрузка бронирований...</LoadingMessage>
           ) : bookingsError ? (
@@ -496,4 +504,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage; 
+export default DashboardPage;

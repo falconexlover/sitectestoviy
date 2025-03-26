@@ -70,15 +70,15 @@ const { DataTypes } = require('sequelize');
 const db = require('../config/db');
 
 const Booking = db.define('Booking', {
-  checkIn: { 
-    type: DataTypes.DATE, 
+  checkIn: {
+    type: DataTypes.DATE,
     allowNull: false,
     validate: {
-      isDate: true
-    }
+      isDate: true,
+    },
   },
-  checkOut: { 
-    type: DataTypes.DATE, 
+  checkOut: {
+    type: DataTypes.DATE,
     allowNull: false,
     validate: {
       isDate: true,
@@ -86,54 +86,54 @@ const Booking = db.define('Booking', {
         if (new Date(value) <= new Date(this.checkIn)) {
           throw new Error('Дата выезда должна быть позже даты заезда');
         }
-      }
-    }
+      },
+    },
   },
   adults: {
     type: DataTypes.INTEGER,
     allowNull: false,
     defaultValue: 1,
     validate: {
-      min: 1
-    }
+      min: 1,
+    },
   },
   children: {
     type: DataTypes.INTEGER,
     allowNull: false,
     defaultValue: 0,
     validate: {
-      min: 0
-    }
+      min: 0,
+    },
   },
   totalPrice: {
     type: DataTypes.FLOAT,
     allowNull: false,
     validate: {
-      min: 0
-    }
+      min: 0,
+    },
   },
   specialRequests: {
     type: DataTypes.TEXT,
-    allowNull: true
+    allowNull: true,
   },
-  status: { 
+  status: {
     type: DataTypes.STRING,
     defaultValue: 'pending',
     validate: {
-      isIn: [['pending', 'confirmed', 'canceled', 'completed']]
-    }
+      isIn: [['pending', 'confirmed', 'canceled', 'completed']],
+    },
   },
   paymentStatus: {
     type: DataTypes.STRING,
     defaultValue: 'unpaid',
     validate: {
-      isIn: [['unpaid', 'partial', 'paid']]
-    }
+      isIn: [['unpaid', 'partial', 'paid']],
+    },
   },
   paymentMethod: {
     type: DataTypes.STRING,
-    allowNull: true
-  }
+    allowNull: true,
+  },
 });
 
-module.exports = Booking; 
+module.exports = Booking;

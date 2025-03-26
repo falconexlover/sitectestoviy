@@ -4,7 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 
 /**
  * Компонент для защиты маршрутов, требующих авторизации
- * 
+ *
  * @param {Object} props - Свойства компонента
  * @param {React.ReactNode} props.children - Дочерние элементы (защищаемый компонент)
  * @param {string} props.requiredRole - Требуемая роль для доступа к маршруту
@@ -17,12 +17,14 @@ const PrivateRoute = ({ children, requiredRole }) => {
   // Если идёт загрузка информации о пользователе, показываем загрузчик
   if (loading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh' 
-      }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}
+      >
         <p>Загрузка...</p>
       </div>
     );
@@ -42,4 +44,4 @@ const PrivateRoute = ({ children, requiredRole }) => {
   return children;
 };
 
-export default PrivateRoute; 
+export default PrivateRoute;

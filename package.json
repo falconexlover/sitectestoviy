@@ -1,49 +1,47 @@
 {
   "name": "lesnoy-dvorik",
   "version": "1.0.0",
-  "description": "Гостиничный комплекс 'Лесной Дворик'",
+  "description": "Гостиничный комплекс Лесной дворик",
+  "private": true,
   "scripts": {
-    "frontend:dev": "cd frontend && npm run start",
-    "backend:dev": "cd backend && npm run dev",
-    "dev": "concurrently \"npm run frontend:dev\" \"npm run backend:dev\"",
+    "start": "cd backend && npm start",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\"",
+    "build": "cd frontend && npm run build && cd ../backend && npm run build",
     "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
-    "frontend:build": "cd frontend && npm run build",
-    "backend:build": "cd backend && npm run build",
-    "build": "npm run frontend:build && npm run backend:build",
-    "clean": "rm -rf frontend/node_modules backend/node_modules node_modules",
-    "backend:deploy": "cd backend && vercel --prod",
-    "frontend:deploy": "cd frontend && vercel --prod",
-    "backend:deploy:init": "cd backend && vercel",
-    "frontend:deploy:init": "cd frontend && vercel",
-    "deploy": "./deploy.sh",
+    "test": "concurrently \"cd frontend && npm test\" \"cd backend && npm test\"",
+    "test:frontend": "cd frontend && npm test",
+    "test:backend": "cd backend && npm test",
     "lint": "concurrently \"cd frontend && npm run lint\" \"cd backend && npm run lint\"",
-    "test": "concurrently \"cd frontend && npm run test\" \"cd backend && npm run test\"",
-    "init:env": "cp backend/.env.example backend/.env && cp frontend/.env.example frontend/.env"
+    "lint:frontend": "cd frontend && npm run lint",
+    "lint:backend": "cd backend && npm run lint",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
+    "deploy": "bash scripts/deploy.sh",
+    "backup": "bash scripts/backup.sh",
+    "restore": "bash scripts/restore.sh",
+    "docs": "cd docs && npm run docs",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.28.0",
+    "concurrently": "^8.2.2",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-prettier": "^5.2.5",
+    "eslint-plugin-react": "^7.37.4",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.2.5"
   },
   "engines": {
     "node": ">=14.0.0",
     "npm": ">=7.0.0"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/falconexlover/sitectestoviy.git"
-  },
-  "keywords": [
-    "hotel",
-    "booking",
-    "vercel",
-    "react",
-    "nodejs"
-  ],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "concurrently": "^8.2.2"
-  },
-  "dependencies": {
-    "i18next": "^24.2.3",
-    "i18next-fs-backend": "^2.6.0",
-    "i18next-http-middleware": "^3.7.1",
-    "winston": "^3.17.0"
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,scss,md}": [
+      "prettier --write"
+    ]
   }
 }

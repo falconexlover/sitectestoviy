@@ -41,4 +41,4 @@ i18next.on('failedLoading', (lng, ns, msg) => {
 
 const i18nMiddleware = middleware.handle(i18next);
 
-module.exports = i18nMiddleware; 
+module.exports = i18nMiddleware;

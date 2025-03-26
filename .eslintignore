@@ -1,0 +1,31 @@
+# Зависимости
+node_modules/
+**/node_modules/
+
+# Сборки
+build/
+dist/
+**/build/
+**/dist/
+
+# Тесты
+coverage/
+**/coverage/
+
+# Конфигурационные файлы
+.eslintrc.json
+.prettierrc
+**/.eslintrc.json
+**/.prettierrc
+
+# Документация
+docs/
+**/docs/
+
+# Скрипты
+scripts/
+**/scripts/
+
+# Временные файлы
+*.log
+**/*.log 

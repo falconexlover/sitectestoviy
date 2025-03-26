@@ -111,7 +111,9 @@ const RoomCard = styled.div`
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 
   &:hover {
     transform: translateY(-5px);
@@ -144,8 +146,8 @@ const RoomStatus = styled.span`
   border-radius: 4px;
   font-size: 0.8rem;
   font-weight: 600;
-  background-color: ${props => props.active ? '#e3f7ed' : '#ffebee'};
-  color: ${props => props.active ? '#1d8a4e' : '#e53935'};
+  background-color: ${props => (props.active ? '#e3f7ed' : '#ffebee')};
+  color: ${props => (props.active ? '#1d8a4e' : '#e53935')};
 `;
 
 const RoomContent = styled.div`
@@ -255,16 +257,16 @@ const PageButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid ${props => props.active ? '#3498db' : '#e0e0e0'};
+  border: 1px solid ${props => (props.active ? '#3498db' : '#e0e0e0')};
   border-radius: 4px;
-  background-color: ${props => props.active ? '#3498db' : 'white'};
-  color: ${props => props.active ? 'white' : '#2c3e50'};
+  background-color: ${props => (props.active ? '#3498db' : 'white')};
+  color: ${props => (props.active ? 'white' : '#2c3e50')};
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    background-color: ${props => props.active ? '#2980b9' : '#f0f0f0'};
+    background-color: ${props => (props.active ? '#2980b9' : '#f0f0f0')};
   }
 
   &:disabled {
@@ -502,13 +504,13 @@ const NoResults = styled.div`
   justify-content: center;
   text-align: center;
   padding: 3rem 1rem;
-  
+
   i {
     font-size: 3rem;
     color: #95a5a6;
     margin-bottom: 1rem;
   }
-  
+
   p {
     font-size: 1.2rem;
     color: #7f8c8d;
@@ -536,21 +538,21 @@ const RoomsPage = () => {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  
+
   const [currentPage, setCurrentPage] = useState(1);
   const roomsPerPage = 6;
-  
+
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState('add'); // 'add' или 'edit'
   const [currentRoom, setCurrentRoom] = useState(null);
-  
+
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [roomToDelete, setRoomToDelete] = useState(null);
-  
+
   // Состояние формы для добавления/редактирования номера
   const [formData, setFormData] = useState({
     number: '',
@@ -564,13 +566,13 @@ const RoomsPage = () => {
     description: '',
     amenities: [],
     images: '',
-    isActive: true
+    isActive: true,
   });
-  
+
   useEffect(() => {
     fetchRooms();
   }, []);
-  
+
   const fetchRooms = async () => {
     try {
       setLoading(true);
@@ -584,7 +586,7 @@ const RoomsPage = () => {
       setLoading(false);
     }
   };
-  
+
   const handleAddRoom = () => {
     setModalMode('add');
     setFormData({
@@ -599,12 +601,12 @@ const RoomsPage = () => {
       description: '',
       amenities: [],
       images: '',
-      isActive: true
+      isActive: true,
     });
     setShowModal(true);
   };
-  
-  const handleEditRoom = (room) => {
+
+  const handleEditRoom = room => {
     setModalMode('edit');
     setCurrentRoom(room);
     setFormData({
@@ -619,16 +621,16 @@ const RoomsPage = () => {
       description: room.description || '',
       amenities: room.amenities || [],
       images: room.images?.join(',') || '',
-      isActive: room.isActive ?? true
+      isActive: room.isActive ?? true,
     });
     setShowModal(true);
   };
-  
-  const handleDeleteRoom = (room) => {
+
+  const handleDeleteRoom = room => {
     setRoomToDelete(room);
     setShowDeleteConfirm(true);
   };
-  
+
   const confirmDeleteRoom = async () => {
     try {
       await roomService.deleteRoom(roomToDelete.id);
@@ -641,42 +643,42 @@ const RoomsPage = () => {
       // Оповещение об ошибке
     }
   };
-  
-  const handleInputChange = (e) => {
+
+  const handleInputChange = e => {
     const { name, value, type, checked } = e.target;
-    
+
     if (type === 'checkbox') {
       setFormData({
         ...formData,
-        [name]: checked
+        [name]: checked,
       });
     } else {
       setFormData({
         ...formData,
-        [name]: value
+        [name]: value,
       });
     }
   };
-  
-  const handleAmenitiesChange = (e) => {
+
+  const handleAmenitiesChange = e => {
     const { value, checked } = e.target;
     let newAmenities = [...formData.amenities];
-    
+
     if (checked) {
       newAmenities.push(value);
     } else {
       newAmenities = newAmenities.filter(amenity => amenity !== value);
     }
-    
+
     setFormData({
       ...formData,
-      amenities: newAmenities
+      amenities: newAmenities,
     });
   };
-  
-  const handleSubmit = async (e) => {
+
+  const handleSubmit = async e => {
     e.preventDefault();
-    
+
     try {
       const roomData = {
         ...formData,
@@ -685,46 +687,57 @@ const RoomsPage = () => {
         beds: parseInt(formData.beds),
         bathrooms: parseInt(formData.bathrooms),
         area: parseInt(formData.area),
-        images: formData.images.split(',').map(url => url.trim()).filter(url => url)
+        images: formData.images
+          .split(',')
+          .map(url => url.trim())
+          .filter(url => url),
       };
-      
+
       if (modalMode === 'add') {
         const response = await roomService.createRoom(roomData);
         setRooms([...rooms, response.data]);
       } else {
         const response = await roomService.updateRoom(currentRoom.id, roomData);
-        setRooms(rooms.map(room => room.id === currentRoom.id ? response.data : room));
+        setRooms(rooms.map(room => (room.id === currentRoom.id ? response.data : room)));
       }
-      
+
       setShowModal(false);
       // Оповещение об успешном добавлении/редактировании
     } catch (error) {
-      console.error(`Ошибка при ${modalMode === 'add' ? 'добавлении' : 'редактировании'} номера:`, error);
+      console.error(
+        `Ошибка при ${modalMode === 'add' ? 'добавлении' : 'редактировании'} номера:`,
+        error
+      );
       // Оповещение об ошибке
     }
   };
-  
+
   // Фильтрация номеров
   const filteredRooms = rooms.filter(room => {
-    const matchesSearch = room.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          room.number.toString().includes(searchTerm) ||
-                          room.description.toLowerCase().includes(searchTerm.toLowerCase());
-                          
+    const matchesSearch =
+      room.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      room.number.toString().includes(searchTerm) ||
+      room.description.toLowerCase().includes(searchTerm.toLowerCase());
+
     const matchesType = typeFilter ? room.type === typeFilter : true;
-    const matchesStatus = statusFilter === 'active' ? room.isActive : 
-                        statusFilter === 'inactive' ? !room.isActive : true;
-                        
+    const matchesStatus =
+      statusFilter === 'active'
+        ? room.isActive
+        : statusFilter === 'inactive'
+          ? !room.isActive
+          : true;
+
     return matchesSearch && matchesType && matchesStatus;
   });
-  
+
   // Пагинация
   const indexOfLastRoom = currentPage * roomsPerPage;
   const indexOfFirstRoom = indexOfLastRoom - roomsPerPage;
   const currentRooms = filteredRooms.slice(indexOfFirstRoom, indexOfLastRoom);
   const totalPages = Math.ceil(filteredRooms.length / roomsPerPage);
-  
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  
+
+  const paginate = pageNumber => setCurrentPage(pageNumber);
+
   const roomTypes = [
     { value: 'standard', label: 'Стандартный' },
     { value: 'deluxe', label: 'Делюкс' },
@@ -732,7 +745,7 @@ const RoomsPage = () => {
     { value: 'family', label: 'Семейный' },
     { value: 'business', label: 'Бизнес' },
   ];
-  
+
   const amenitiesList = [
     { value: 'wifi', label: 'Wi-Fi' },
     { value: 'tv', label: 'Телевизор' },
@@ -744,7 +757,7 @@ const RoomsPage = () => {
     { value: 'kitchen', label: 'Кухня' },
     { value: 'workspace', label: 'Рабочее место' },
   ];
-  
+
   return (
     <PageContainer>
       <PageHeader>
@@ -753,38 +766,34 @@ const RoomsPage = () => {
           <i className="fas fa-plus"></i> Добавить номер
         </ActionButton>
       </PageHeader>
-      
+
       <FilterContainer>
         <SearchInput>
           <i className="fas fa-search"></i>
-          <input 
-            type="text" 
-            placeholder="Поиск номера..." 
+          <input
+            type="text"
+            placeholder="Поиск номера..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
           />
         </SearchInput>
-        
-        <FilterSelect 
-          value={typeFilter}
-          onChange={(e) => setTypeFilter(e.target.value)}
-        >
+
+        <FilterSelect value={typeFilter} onChange={e => setTypeFilter(e.target.value)}>
           <option value="">Все типы</option>
           {roomTypes.map(type => (
-            <option key={type.value} value={type.value}>{type.label}</option>
+            <option key={type.value} value={type.value}>
+              {type.label}
+            </option>
           ))}
         </FilterSelect>
-        
-        <FilterSelect 
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-        >
+
+        <FilterSelect value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
           <option value="">Все статусы</option>
           <option value="active">Активные</option>
           <option value="inactive">Неактивные</option>
         </FilterSelect>
       </FilterContainer>
-      
+
       {loading ? (
         <LoadingWrapper>
           <LoadingIndicator>Загрузка номеров...</LoadingIndicator>
@@ -799,11 +808,15 @@ const RoomsPage = () => {
         <NoResults>
           <i className="fas fa-hotel"></i>
           <p>Номера не найдены</p>
-          <RetryButton onClick={() => {
-            setSearchTerm('');
-            setTypeFilter('');
-            setStatusFilter('');
-          }}>Сбросить фильтры</RetryButton>
+          <RetryButton
+            onClick={() => {
+              setSearchTerm('');
+              setTypeFilter('');
+              setStatusFilter('');
+            }}
+          >
+            Сбросить фильтры
+          </RetryButton>
         </NoResults>
       ) : (
         <>
@@ -811,7 +824,12 @@ const RoomsPage = () => {
             {currentRooms.map(room => (
               <RoomCard key={room.id}>
                 <RoomImageContainer>
-                  <RoomImage src={room.images?.[0] || 'https://via.placeholder.com/400x200?text=Нет+изображения'} alt={room.title} />
+                  <RoomImage
+                    src={
+                      room.images?.[0] || 'https://via.placeholder.com/400x200?text=Нет+изображения'
+                    }
+                    alt={room.title}
+                  />
                   <RoomStatus active={room.isActive}>
                     {room.isActive ? 'Активен' : 'Неактивен'}
                   </RoomStatus>
@@ -819,7 +837,8 @@ const RoomsPage = () => {
                 <RoomContent>
                   <RoomTitle>{room.title}</RoomTitle>
                   <RoomType>
-                    {roomTypes.find(type => type.value === room.type)?.label || room.type} | Номер {room.number}
+                    {roomTypes.find(type => type.value === room.type)?.label || room.type} | Номер{' '}
+                    {room.number}
                   </RoomType>
                   <RoomDetails>
                     <RoomFeature>
@@ -853,16 +872,13 @@ const RoomsPage = () => {
               </RoomCard>
             ))}
           </RoomsGrid>
-          
+
           {totalPages > 1 && (
             <Pagination>
-              <PageButton 
-                onClick={() => paginate(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
+              <PageButton onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
                 <i className="fas fa-chevron-left"></i>
               </PageButton>
-              
+
               {[...Array(totalPages).keys()].map(number => (
                 <PageButton
                   key={number + 1}
@@ -872,8 +888,8 @@ const RoomsPage = () => {
                   {number + 1}
                 </PageButton>
               ))}
-              
-              <PageButton 
+
+              <PageButton
                 onClick={() => paginate(currentPage + 1)}
                 disabled={currentPage === totalPages}
               >
@@ -883,7 +899,7 @@ const RoomsPage = () => {
           )}
         </>
       )}
-      
+
       {/* Модальное окно для добавления/редактирования номера */}
       {showModal && (
         <ModalOverlay onClick={() => setShowModal(false)}>
@@ -894,56 +910,58 @@ const RoomsPage = () => {
               </ModalTitle>
               <CloseButton onClick={() => setShowModal(false)}>×</CloseButton>
             </ModalHeader>
-            
+
             <Form onSubmit={handleSubmit}>
               <FormRow>
                 <FormGroup>
                   <Label htmlFor="number">Номер комнаты</Label>
-                  <Input 
-                    type="text" 
-                    id="number" 
-                    name="number" 
+                  <Input
+                    type="text"
+                    id="number"
+                    name="number"
                     required
                     value={formData.number}
                     onChange={handleInputChange}
                   />
                 </FormGroup>
-                
+
                 <FormGroup>
                   <Label htmlFor="type">Тип номера</Label>
-                  <Select 
-                    id="type" 
-                    name="type" 
+                  <Select
+                    id="type"
+                    name="type"
                     required
                     value={formData.type}
                     onChange={handleInputChange}
                   >
                     {roomTypes.map(type => (
-                      <option key={type.value} value={type.value}>{type.label}</option>
+                      <option key={type.value} value={type.value}>
+                        {type.label}
+                      </option>
                     ))}
                   </Select>
                 </FormGroup>
               </FormRow>
-              
+
               <FormGroup>
                 <Label htmlFor="title">Название номера</Label>
-                <Input 
-                  type="text" 
-                  id="title" 
-                  name="title" 
+                <Input
+                  type="text"
+                  id="title"
+                  name="title"
                   required
                   value={formData.title}
                   onChange={handleInputChange}
                 />
               </FormGroup>
-              
+
               <FormRow>
                 <FormGroup>
                   <Label htmlFor="price">Цена за ночь (₽)</Label>
-                  <Input 
-                    type="number" 
-                    id="price" 
-                    name="price" 
+                  <Input
+                    type="number"
+                    id="price"
+                    name="price"
                     required
                     min="0"
                     step="100"
@@ -951,13 +969,13 @@ const RoomsPage = () => {
                     onChange={handleInputChange}
                   />
                 </FormGroup>
-                
+
                 <FormGroup>
                   <Label htmlFor="capacity">Вместимость (гостей)</Label>
-                  <Input 
-                    type="number" 
-                    id="capacity" 
-                    name="capacity" 
+                  <Input
+                    type="number"
+                    id="capacity"
+                    name="capacity"
                     required
                     min="1"
                     value={formData.capacity}
@@ -965,40 +983,40 @@ const RoomsPage = () => {
                   />
                 </FormGroup>
               </FormRow>
-              
+
               <FormRow>
                 <FormGroup>
                   <Label htmlFor="beds">Количество кроватей</Label>
-                  <Input 
-                    type="number" 
-                    id="beds" 
-                    name="beds" 
+                  <Input
+                    type="number"
+                    id="beds"
+                    name="beds"
                     required
                     min="1"
                     value={formData.beds}
                     onChange={handleInputChange}
                   />
                 </FormGroup>
-                
+
                 <FormGroup>
                   <Label htmlFor="bathrooms">Количество ванных</Label>
-                  <Input 
-                    type="number" 
-                    id="bathrooms" 
-                    name="bathrooms" 
+                  <Input
+                    type="number"
+                    id="bathrooms"
+                    name="bathrooms"
                     required
                     min="1"
                     value={formData.bathrooms}
                     onChange={handleInputChange}
                   />
                 </FormGroup>
-                
+
                 <FormGroup>
                   <Label htmlFor="area">Площадь (м²)</Label>
-                  <Input 
-                    type="number" 
-                    id="area" 
-                    name="area" 
+                  <Input
+                    type="number"
+                    id="area"
+                    name="area"
                     required
                     min="1"
                     value={formData.area}
@@ -1006,26 +1024,28 @@ const RoomsPage = () => {
                   />
                 </FormGroup>
               </FormRow>
-              
+
               <FormGroup>
                 <Label htmlFor="description">Описание</Label>
-                <Textarea 
-                  id="description" 
-                  name="description" 
+                <Textarea
+                  id="description"
+                  name="description"
                   required
                   value={formData.description}
                   onChange={handleInputChange}
                 />
               </FormGroup>
-              
+
               <FormGroup>
                 <Label>Удобства</Label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem' }}>
+                <div
+                  style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem' }}
+                >
                   {amenitiesList.map(amenity => (
                     <Checkbox key={amenity.value}>
-                      <input 
-                        type="checkbox" 
-                        id={`amenity-${amenity.value}`} 
+                      <input
+                        type="checkbox"
+                        id={`amenity-${amenity.value}`}
                         name="amenities"
                         value={amenity.value}
                         checked={formData.amenities.includes(amenity.value)}
@@ -1036,31 +1056,33 @@ const RoomsPage = () => {
                   ))}
                 </div>
               </FormGroup>
-              
+
               <FormGroup>
                 <Label htmlFor="images">Изображения (URL, через запятую)</Label>
-                <Textarea 
-                  id="images" 
-                  name="images" 
+                <Textarea
+                  id="images"
+                  name="images"
                   placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
                   value={formData.images}
                   onChange={handleInputChange}
                 />
               </FormGroup>
-              
+
               <Checkbox>
-                <input 
-                  type="checkbox" 
-                  id="isActive" 
+                <input
+                  type="checkbox"
+                  id="isActive"
                   name="isActive"
                   checked={formData.isActive}
                   onChange={handleInputChange}
                 />
                 <label htmlFor="isActive">Активный номер (доступен для бронирования)</label>
               </Checkbox>
-              
+
               <ButtonGroup>
-                <CancelButton type="button" onClick={() => setShowModal(false)}>Отмена</CancelButton>
+                <CancelButton type="button" onClick={() => setShowModal(false)}>
+                  Отмена
+                </CancelButton>
                 <SubmitButton type="submit">
                   {modalMode === 'add' ? 'Добавить номер' : 'Сохранить изменения'}
                 </SubmitButton>
@@ -1069,7 +1091,7 @@ const RoomsPage = () => {
           </ModalContent>
         </ModalOverlay>
       )}
-      
+
       {/* Модальное окно подтверждения удаления */}
       {showDeleteConfirm && (
         <ModalOverlay onClick={() => setShowDeleteConfirm(false)}>
@@ -1078,15 +1100,17 @@ const RoomsPage = () => {
               <ModalTitle>Подтверждение</ModalTitle>
               <CloseButton onClick={() => setShowDeleteConfirm(false)}>×</CloseButton>
             </ModalHeader>
-            
+
             <ConfirmText>
               Вы уверены, что хотите удалить номер <strong>{roomToDelete?.title}</strong>?
               <br />
               Это действие нельзя отменить.
             </ConfirmText>
-            
+
             <ConfirmButtons>
-              <ConfirmCancelButton onClick={() => setShowDeleteConfirm(false)}>Отмена</ConfirmCancelButton>
+              <ConfirmCancelButton onClick={() => setShowDeleteConfirm(false)}>
+                Отмена
+              </ConfirmCancelButton>
               <ConfirmDeleteButton onClick={confirmDeleteRoom}>Удалить</ConfirmDeleteButton>
             </ConfirmButtons>
           </DeleteConfirmModal>
@@ -1096,4 +1120,4 @@ const RoomsPage = () => {
   );
 };
 
-export default RoomsPage; 
+export default RoomsPage;

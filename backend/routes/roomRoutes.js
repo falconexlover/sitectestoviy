@@ -209,4 +209,4 @@ router.put('/:id', auth, adminOnly, roomController.updateRoom);
  */
 router.delete('/:id', auth, adminOnly, roomController.deleteRoom);
 
-module.exports = router; 
+module.exports = router;

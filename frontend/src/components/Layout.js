@@ -1,5 +1,4 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
 import styled from 'styled-components';
@@ -12,22 +11,19 @@ const MainContainer = styled.div`
 
 const ContentContainer = styled.main`
   flex: 1;
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
   width: 100%;
 `;
 
-const Layout = () => {
+const Layout = ({ children }) => {
   return (
     <MainContainer>
       <Header />
       <ContentContainer>
-        <Outlet />
+        {children}
       </ContentContainer>
       <Footer />
     </MainContainer>
   );
 };
 
-export default Layout; 
+export default Layout;

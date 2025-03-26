@@ -1,0 +1,25 @@
+{
+  "welcome": "Welcome",
+  "hotel": {
+    "name": "Forest Courtyard",
+    "description": "Cozy hotel complex in the forest park area",
+    "address": "Nizhegorodskaya St., 4, Zhukovsky",
+    "phone": "+7 (498) 483-19-41"
+  },
+  "rooms": {
+    "title": "Our Rooms",
+    "book": "Book Now",
+    "price": "from {{price}} RUB/day"
+  },
+  "booking": {
+    "title": "Booking",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "guests": "Number of guests",
+    "submit": "Book Now"
+  },
+  "errors": {
+    "notFound": "Route not found",
+    "serverError": "Server error"
+  }
+}

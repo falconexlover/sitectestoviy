@@ -6,36 +6,36 @@ const logger = require('../utils/logger');
 exports.createPaymentIntent = async (req, res) => {
   try {
     const { bookingId } = req.body;
-    
+
     if (!bookingId) {
       return res.status(400).json({ message: 'Идентификатор бронирования обязателен' });
     }
-    
+
     // Получаем бронирование
     const booking = await Booking.findByPk(bookingId);
-    
+
     if (!booking) {
       return res.status(404).json({ message: 'Бронирование не найдено' });
     }
-    
+
     if (booking.paymentStatus === 'paid') {
       return res.status(400).json({ message: 'Бронирование уже оплачено' });
     }
-    
+
     // Создаем платежное намерение в Stripe
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(booking.totalPrice * 100), // Конвертируем в копейки/центы
       currency: 'rub',
       metadata: {
         bookingId: booking.id.toString(),
-        userId: req.user.id.toString()
-      }
+        userId: req.user.id.toString(),
+      },
     });
-    
+
     // Возвращаем клиентский секрет
-    res.json({ 
+    res.json({
       clientSecret: paymentIntent.client_secret,
-      amount: booking.totalPrice
+      amount: booking.totalPrice,
     });
   } catch (err) {
     logger.error(`Ошибка при создании платежного намерения: ${err.message}`);
@@ -47,28 +47,28 @@ exports.createPaymentIntent = async (req, res) => {
 exports.handlePaymentSuccess = async (req, res) => {
   try {
     const { paymentIntentId } = req.body;
-    
+
     // Проверяем статус платежа в Stripe
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-    
+
     if (paymentIntent.status !== 'succeeded') {
       return res.status(400).json({ message: 'Платеж не завершен' });
     }
-    
+
     const bookingId = paymentIntent.metadata.bookingId;
-    
+
     // Обновляем статус оплаты в бронировании
     const booking = await Booking.findByPk(bookingId);
-    
+
     if (!booking) {
       return res.status(404).json({ message: 'Бронирование не найдено' });
     }
-    
+
     await booking.update({
       paymentStatus: 'paid',
-      paymentMethod: 'card'
+      paymentMethod: 'card',
     });
-    
+
     res.json({ message: 'Оплата успешно завершена', booking });
   } catch (err) {
     logger.error(`Ошибка при обработке успешного платежа: ${err.message}`);
@@ -80,25 +80,29 @@ exports.handlePaymentSuccess = async (req, res) => {
 exports.getPaymentStatus = async (req, res) => {
   try {
     const { bookingId } = req.params;
-    
+
     const booking = await Booking.findByPk(bookingId);
-    
+
     if (!booking) {
       return res.status(404).json({ message: 'Бронирование не найдено' });
     }
-    
+
     // Проверяем, что пользователь имеет право на просмотр
-    if (booking.UserId !== req.user.id && req.user.role !== 'admin' && req.user.role !== 'manager') {
+    if (
+      booking.UserId !== req.user.id &&
+      req.user.role !== 'admin' &&
+      req.user.role !== 'manager'
+    ) {
       return res.status(403).json({ message: 'Доступ запрещен' });
     }
-    
+
     res.json({
       bookingId: booking.id,
       totalPrice: booking.totalPrice,
-      paymentStatus: booking.paymentStatus
+      paymentStatus: booking.paymentStatus,
     });
   } catch (err) {
     logger.error(`Ошибка при получении статуса оплаты: ${err.message}`);
     res.status(500).json({ message: err.message });
   }
-}; 
+};

@@ -12,20 +12,20 @@ exports.auth = async (req, res, next) => {
       logger.warn('Попытка доступа без токена аутентификации');
       return res.status(401).json({ message: 'Требуется аутентификация' });
     }
-    
+
     // Проверяем токен
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
+
     // Находим пользователя
     const user = await User.findByPk(decoded.id);
     if (!user) {
       logger.warn(`Попытка доступа с недействительным токеном: ${decoded.id}`);
       return res.status(401).json({ message: 'Пользователь не найден' });
     }
-    
+
     // Добавляем пользователя в объект запроса
     req.user = { id: user.id, role: user.role };
-    
+
     logger.debug(`Пользователь ${user.id} (${user.role}) аутентифицирован`);
     next();
   } catch (err) {
@@ -47,9 +47,11 @@ exports.adminOnly = (req, res, next) => {
 // Middleware для проверки роли менеджера или администратора
 exports.staffOnly = (req, res, next) => {
   if (req.user.role !== 'admin' && req.user.role !== 'manager') {
-    logger.warn(`Пользователь ${req.user.id} попытался получить доступ к защищенной функции персонала`);
+    logger.warn(
+      `Пользователь ${req.user.id} попытался получить доступ к защищенной функции персонала`
+    );
     return res.status(403).json({ message: 'Доступ запрещен' });
   }
   logger.debug(`Сотрудник ${req.user.id} (${req.user.role}) получил доступ к защищенной функции`);
   next();
-}; 
+};

@@ -10,7 +10,7 @@ const PageContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-  
+
   @media (max-width: 768px) {
     padding: 1rem;
   }
@@ -20,7 +20,7 @@ const ProfileHeader = styled.div`
   margin-bottom: 2.5rem;
   text-align: center;
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -38,7 +38,7 @@ const PageTitle = styled.h1`
   font-family: 'Playfair Display', serif;
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
-  
+
   @media (max-width: 768px) {
     font-size: 2rem;
   }
@@ -54,20 +54,20 @@ const TabContainer = styled.div`
   border-bottom: 1px solid var(--border-color);
   display: flex;
   overflow-x: auto;
-  
+
   &::-webkit-scrollbar {
     height: 5px;
   }
-  
+
   &::-webkit-scrollbar-track {
     background: var(--light-color);
   }
-  
+
   &::-webkit-scrollbar-thumb {
     background: var(--border-color);
     border-radius: 10px;
   }
-  
+
   @media (max-width: 576px) {
     justify-content: flex-start;
   }
@@ -77,14 +77,14 @@ const Tab = styled.button`
   padding: 1rem 1.5rem;
   background: transparent;
   border: none;
-  color: ${props => props.active ? 'var(--primary-color)' : 'var(--text-color)'};
-  font-weight: ${props => props.active ? '600' : '400'};
+  color: ${props => (props.active ? 'var(--primary-color)' : 'var(--text-color)')};
+  font-weight: ${props => (props.active ? '600' : '400')};
   font-size: 1rem;
   cursor: pointer;
   transition: var(--transition);
   position: relative;
   white-space: nowrap;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -93,13 +93,13 @@ const Tab = styled.button`
     width: 100%;
     height: 3px;
     background-color: var(--primary-color);
-    transform: scaleX(${props => props.active ? 1 : 0});
+    transform: scaleX(${props => (props.active ? 1 : 0)});
     transition: transform 0.3s ease;
   }
-  
+
   &:hover {
     color: var(--primary-color);
-    
+
     &::after {
       transform: scaleX(1);
     }
@@ -110,7 +110,7 @@ const ContentWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
-  
+
   @media (min-width: 992px) {
     grid-template-columns: 1fr 1fr;
   }
@@ -121,7 +121,7 @@ const FormSection = styled.div`
   padding: 2rem;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
-  
+
   @media (max-width: 576px) {
     padding: 1.5rem;
   }
@@ -133,7 +133,7 @@ const SectionTitle = styled.h2`
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -147,7 +147,7 @@ const SectionTitle = styled.h2`
 
 const InputGroup = styled.div`
   margin-bottom: 1.5rem;
-  
+
   label {
     display: block;
     margin-bottom: 0.5rem;
@@ -163,7 +163,7 @@ const Input = styled(Field)`
   border-radius: var(--radius-sm);
   background-color: var(--light-color);
   transition: var(--transition);
-  
+
   &:focus {
     outline: none;
     border-color: var(--primary-color);
@@ -190,7 +190,7 @@ const Button = styled.button`
   position: relative;
   overflow: hidden;
   z-index: 1;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -202,16 +202,16 @@ const Button = styled.button`
     transition: var(--transition);
     z-index: -1;
   }
-  
+
   &:hover {
     transform: translateY(-3px);
     box-shadow: var(--shadow-md);
   }
-  
+
   &:hover::before {
     width: 100%;
   }
-  
+
   &:disabled {
     background-color: var(--border-color);
     cursor: not-allowed;
@@ -221,7 +221,7 @@ const Button = styled.button`
 const LogoutButton = styled(Button)`
   background-color: var(--danger-color);
   margin-top: 1rem;
-  
+
   &::before {
     background-color: #b71c1c;
   }
@@ -232,7 +232,7 @@ const Alert = styled.div`
   margin-bottom: 1.5rem;
   border-radius: var(--radius-sm);
   background-color: ${props => {
-    switch(props.type) {
+    switch (props.type) {
       case 'success':
         return 'rgba(33, 113, 72, 0.1)';
       case 'error':
@@ -244,7 +244,7 @@ const Alert = styled.div`
     }
   }};
   color: ${props => {
-    switch(props.type) {
+    switch (props.type) {
       case 'success':
         return 'var(--success-color)';
       case 'error':
@@ -255,18 +255,19 @@ const Alert = styled.div`
         return 'var(--info-color)';
     }
   }};
-  border-left: 4px solid ${props => {
-    switch(props.type) {
-      case 'success':
-        return 'var(--success-color)';
-      case 'error':
-        return 'var(--danger-color)';
-      case 'warning':
-        return 'var(--warning-color)';
-      default:
-        return 'var(--info-color)';
-    }
-  }};
+  border-left: 4px solid
+    ${props => {
+      switch (props.type) {
+        case 'success':
+          return 'var(--success-color)';
+        case 'error':
+          return 'var(--danger-color)';
+        case 'warning':
+          return 'var(--warning-color)';
+        default:
+          return 'var(--info-color)';
+      }
+    }};
 `;
 
 const BookingList = styled.div`
@@ -281,7 +282,7 @@ const BookingCard = styled.div`
   padding: 1.5rem;
   box-shadow: var(--shadow-md);
   transition: var(--transition);
-  
+
   &:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-lg);
@@ -299,12 +300,12 @@ const BookingTitle = styled.h3`
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--dark-color);
-  
+
   a {
     color: inherit;
     text-decoration: none;
     transition: var(--transition);
-    
+
     &:hover {
       color: var(--primary-color);
     }
@@ -316,7 +317,7 @@ const BookingDates = styled.div`
   align-items: center;
   margin-bottom: 1rem;
   color: var(--text-color);
-  
+
   i {
     margin: 0 0.5rem;
     color: var(--text-muted);
@@ -331,7 +332,7 @@ const BookingStatus = styled.span`
   font-weight: 600;
   text-transform: uppercase;
   background-color: ${props => {
-    switch(props.status) {
+    switch (props.status) {
       case 'confirmed':
         return 'rgba(33, 113, 72, 0.1)';
       case 'pending':
@@ -343,7 +344,7 @@ const BookingStatus = styled.span`
     }
   }};
   color: ${props => {
-    switch(props.status) {
+    switch (props.status) {
       case 'confirmed':
         return 'var(--success-color)';
       case 'pending':
@@ -368,7 +369,7 @@ const BookingDetails = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 0.75rem;
   margin-bottom: 1rem;
-  
+
   @media (max-width: 576px) {
     grid-template-columns: 1fr;
   }
@@ -381,7 +382,7 @@ const BookingDetail = styled.div`
     color: var(--text-muted);
     margin-bottom: 0.2rem;
   }
-  
+
   span:last-child {
     font-weight: 600;
     color: var(--dark-color);
@@ -394,19 +395,19 @@ const EmptyState = styled.div`
   background-color: white;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
-  
+
   i {
     font-size: 3rem;
     color: var(--text-muted);
     margin-bottom: 1.5rem;
   }
-  
+
   h3 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
     color: var(--dark-color);
   }
-  
+
   p {
     color: var(--text-muted);
     margin-bottom: 1.5rem;
@@ -422,7 +423,7 @@ const ActionButton = styled(Button)`
 
 const CancelButton = styled(ActionButton)`
   background-color: var(--danger-color);
-  
+
   &::before {
     background-color: #b71c1c;
   }
@@ -432,7 +433,7 @@ const profileSchema = Yup.object().shape({
   firstName: Yup.string().required('Имя обязательно'),
   lastName: Yup.string().required('Фамилия обязательна'),
   email: Yup.string().email('Некорректный формат email').required('Email обязателен'),
-  phone: Yup.string().matches(/^\+?[0-9\s-()]+$/, 'Некорректный формат телефона')
+  phone: Yup.string().matches(/^\+?[0-9\s-()]+$/, 'Некорректный формат телефона'),
 });
 
 const passwordSchema = Yup.object().shape({
@@ -444,7 +445,7 @@ const passwordSchema = Yup.object().shape({
     .matches(/[0-9]/, 'Пароль должен содержать минимум одну цифру'),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('newPassword'), null], 'Пароли должны совпадать')
-    .required('Подтвердите новый пароль')
+    .required('Подтвердите новый пароль'),
 });
 
 const ProfilePage = () => {
@@ -456,13 +457,13 @@ const ProfilePage = () => {
   const [bookingsLoading, setBookingsLoading] = useState(false);
   const [profileUpdateStatus, setProfileUpdateStatus] = useState(null);
   const [passwordUpdateStatus, setPasswordUpdateStatus] = useState(null);
-  
+
   useEffect(() => {
     if (!user) {
       navigate('/login');
       return;
     }
-    
+
     // Загрузка бронирований пользователя
     const fetchBookings = async () => {
       try {
@@ -475,71 +476,71 @@ const ProfilePage = () => {
         setBookingsLoading(false);
       }
     };
-    
+
     fetchBookings();
   }, [user, navigate]);
-  
-  const handleTabChange = (tab) => {
+
+  const handleTabChange = tab => {
     setActiveTab(tab);
   };
-  
+
   const handleUpdateProfile = async (values, { setSubmitting }) => {
     try {
       setLoading(true);
       setProfileUpdateStatus(null);
-      
+
       const response = await userService.updateProfile(values);
       updateUser(response.data);
-      
+
       setProfileUpdateStatus({
         type: 'success',
-        message: 'Профиль успешно обновлен'
+        message: 'Профиль успешно обновлен',
       });
     } catch (error) {
       console.error('Ошибка при обновлении профиля:', error);
       setProfileUpdateStatus({
         type: 'error',
-        message: error.response?.data?.message || 'Не удалось обновить профиль'
+        message: error.response?.data?.message || 'Не удалось обновить профиль',
       });
     } finally {
       setLoading(false);
       setSubmitting(false);
     }
   };
-  
+
   const handleUpdatePassword = async (values, { setSubmitting, resetForm }) => {
     try {
       setLoading(true);
       setPasswordUpdateStatus(null);
-      
+
       await userService.updatePassword(values);
-      
+
       setPasswordUpdateStatus({
         type: 'success',
-        message: 'Пароль успешно обновлен'
+        message: 'Пароль успешно обновлен',
       });
-      
+
       resetForm();
     } catch (error) {
       console.error('Ошибка при обновлении пароля:', error);
       setPasswordUpdateStatus({
         type: 'error',
-        message: error.response?.data?.message || 'Не удалось обновить пароль'
+        message: error.response?.data?.message || 'Не удалось обновить пароль',
       });
     } finally {
       setLoading(false);
       setSubmitting(false);
     }
   };
-  
-  const handleCancelBooking = async (bookingId) => {
+
+  const handleCancelBooking = async bookingId => {
     if (window.confirm('Вы уверены, что хотите отменить бронирование?')) {
       try {
         await bookingService.cancelBooking(bookingId);
-        
+
         // Обновление состояния бронирований
-        setBookings(prevBookings => 
-          prevBookings.map(booking => 
+        setBookings(prevBookings =>
+          prevBookings.map(booking =>
             booking.id === bookingId ? { ...booking, status: 'cancelled' } : booking
           )
         );
@@ -549,63 +550,52 @@ const ProfilePage = () => {
       }
     }
   };
-  
+
   const handleLogout = () => {
     if (window.confirm('Вы действительно хотите выйти?')) {
       logout();
       navigate('/');
     }
   };
-  
+
   if (!user) {
     return null;
   }
-  
+
   return (
     <PageContainer>
       <ProfileHeader>
         <PageTitle>Личный кабинет</PageTitle>
         <Subtitle>Добро пожаловать, {user.firstName}!</Subtitle>
       </ProfileHeader>
-      
+
       <TabContainer>
-        <Tab 
-          active={activeTab === 'profile'} 
-          onClick={() => handleTabChange('profile')}
-        >
+        <Tab active={activeTab === 'profile'} onClick={() => handleTabChange('profile')}>
           Профиль
         </Tab>
-        <Tab 
-          active={activeTab === 'password'} 
-          onClick={() => handleTabChange('password')}
-        >
+        <Tab active={activeTab === 'password'} onClick={() => handleTabChange('password')}>
           Изменить пароль
         </Tab>
-        <Tab 
-          active={activeTab === 'bookings'} 
-          onClick={() => handleTabChange('bookings')}
-        >
+        <Tab active={activeTab === 'bookings'} onClick={() => handleTabChange('bookings')}>
           Мои бронирования
         </Tab>
       </TabContainer>
-      
+
       {activeTab === 'profile' && (
         <ContentWrapper>
           <FormSection>
             <SectionTitle>Личные данные</SectionTitle>
-            
+
             {profileUpdateStatus && (
-              <Alert type={profileUpdateStatus.type}>
-                {profileUpdateStatus.message}
-              </Alert>
+              <Alert type={profileUpdateStatus.type}>{profileUpdateStatus.message}</Alert>
             )}
-            
+
             <Formik
               initialValues={{
                 firstName: user.firstName || '',
                 lastName: user.lastName || '',
                 email: user.email || '',
-                phone: user.phone || ''
+                phone: user.phone || '',
               }}
               validationSchema={profileSchema}
               onSubmit={handleUpdateProfile}
@@ -617,40 +607,45 @@ const ProfilePage = () => {
                     <Input type="text" id="firstName" name="firstName" placeholder="Введите имя" />
                     <ErrorMessage name="firstName" component={Error} />
                   </InputGroup>
-                  
+
                   <InputGroup>
                     <label htmlFor="lastName">Фамилия</label>
-                    <Input type="text" id="lastName" name="lastName" placeholder="Введите фамилию" />
+                    <Input
+                      type="text"
+                      id="lastName"
+                      name="lastName"
+                      placeholder="Введите фамилию"
+                    />
                     <ErrorMessage name="lastName" component={Error} />
                   </InputGroup>
-                  
+
                   <InputGroup>
                     <label htmlFor="email">Email</label>
                     <Input type="email" id="email" name="email" placeholder="Введите email" />
                     <ErrorMessage name="email" component={Error} />
                   </InputGroup>
-                  
+
                   <InputGroup>
                     <label htmlFor="phone">Телефон</label>
                     <Input type="text" id="phone" name="phone" placeholder="Введите телефон" />
                     <ErrorMessage name="phone" component={Error} />
                   </InputGroup>
-                  
+
                   <Button type="submit" disabled={isSubmitting || loading}>
                     {isSubmitting || loading ? 'Сохранение...' : 'Сохранить изменения'}
                   </Button>
                 </Form>
               )}
             </Formik>
-            
+
             <LogoutButton type="button" onClick={handleLogout}>
               Выйти из аккаунта
             </LogoutButton>
           </FormSection>
-          
+
           <FormSection>
             <SectionTitle>Информация об аккаунте</SectionTitle>
-            
+
             <BookingDetails>
               <BookingDetail>
                 <span>Дата регистрации</span>
@@ -669,31 +664,30 @@ const ProfilePage = () => {
                 <span>{new Date().toLocaleDateString()}</span>
               </BookingDetail>
             </BookingDetails>
-            
+
             <SectionTitle>Предпочтения</SectionTitle>
             <p style={{ marginBottom: '1rem', color: 'var(--text-color)' }}>
-              Скоро здесь появится возможность настройки ваших предпочтений для более удобной работы с сайтом.
+              Скоро здесь появится возможность настройки ваших предпочтений для более удобной работы
+              с сайтом.
             </p>
           </FormSection>
         </ContentWrapper>
       )}
-      
+
       {activeTab === 'password' && (
         <ContentWrapper>
           <FormSection>
             <SectionTitle>Изменение пароля</SectionTitle>
-            
+
             {passwordUpdateStatus && (
-              <Alert type={passwordUpdateStatus.type}>
-                {passwordUpdateStatus.message}
-              </Alert>
+              <Alert type={passwordUpdateStatus.type}>{passwordUpdateStatus.message}</Alert>
             )}
-            
+
             <Formik
               initialValues={{
                 currentPassword: '',
                 newPassword: '',
-                confirmPassword: ''
+                confirmPassword: '',
               }}
               validationSchema={passwordSchema}
               onSubmit={handleUpdatePassword}
@@ -702,37 +696,37 @@ const ProfilePage = () => {
                 <Form>
                   <InputGroup>
                     <label htmlFor="currentPassword">Текущий пароль</label>
-                    <Input 
-                      type="password" 
-                      id="currentPassword" 
-                      name="currentPassword" 
-                      placeholder="Введите текущий пароль" 
+                    <Input
+                      type="password"
+                      id="currentPassword"
+                      name="currentPassword"
+                      placeholder="Введите текущий пароль"
                     />
                     <ErrorMessage name="currentPassword" component={Error} />
                   </InputGroup>
-                  
+
                   <InputGroup>
                     <label htmlFor="newPassword">Новый пароль</label>
-                    <Input 
-                      type="password" 
-                      id="newPassword" 
-                      name="newPassword" 
-                      placeholder="Введите новый пароль" 
+                    <Input
+                      type="password"
+                      id="newPassword"
+                      name="newPassword"
+                      placeholder="Введите новый пароль"
                     />
                     <ErrorMessage name="newPassword" component={Error} />
                   </InputGroup>
-                  
+
                   <InputGroup>
                     <label htmlFor="confirmPassword">Подтверждение пароля</label>
-                    <Input 
-                      type="password" 
-                      id="confirmPassword" 
-                      name="confirmPassword" 
-                      placeholder="Подтвердите новый пароль" 
+                    <Input
+                      type="password"
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      placeholder="Подтвердите новый пароль"
                     />
                     <ErrorMessage name="confirmPassword" component={Error} />
                   </InputGroup>
-                  
+
                   <Button type="submit" disabled={isSubmitting || loading}>
                     {isSubmitting || loading ? 'Обновление...' : 'Обновить пароль'}
                   </Button>
@@ -740,19 +734,21 @@ const ProfilePage = () => {
               )}
             </Formik>
           </FormSection>
-          
+
           <FormSection>
             <SectionTitle>Защита аккаунта</SectionTitle>
             <p style={{ color: 'var(--text-color)', lineHeight: '1.7' }}>
               Для обеспечения безопасности аккаунта рекомендуем:
             </p>
-            
-            <ul style={{ 
-              color: 'var(--text-color)', 
-              lineHeight: '1.7', 
-              paddingLeft: '1.2rem',
-              marginTop: '1rem'
-            }}>
+
+            <ul
+              style={{
+                color: 'var(--text-color)',
+                lineHeight: '1.7',
+                paddingLeft: '1.2rem',
+                marginTop: '1rem',
+              }}
+            >
               <li>Использовать сложный пароль, содержащий буквы, цифры и специальные символы</li>
               <li>Регулярно менять пароль (не реже одного раза в 3 месяца)</li>
               <li>Не использовать один и тот же пароль для разных сервисов</li>
@@ -762,11 +758,11 @@ const ProfilePage = () => {
           </FormSection>
         </ContentWrapper>
       )}
-      
+
       {activeTab === 'bookings' && (
         <div>
           <SectionTitle>Ваши бронирования</SectionTitle>
-          
+
           {bookingsLoading ? (
             <div>Загрузка бронирований...</div>
           ) : bookings && bookings.length > 0 ? (
@@ -774,22 +770,20 @@ const ProfilePage = () => {
               {bookings.map(booking => (
                 <BookingCard key={booking.id}>
                   <BookingHeader>
-                    <BookingTitle>
-                      {booking.room?.name || 'Номер'}
-                    </BookingTitle>
+                    <BookingTitle>{booking.room?.name || 'Номер'}</BookingTitle>
                     <BookingStatus status={booking.status}>
                       {booking.status === 'confirmed' && 'Подтверждено'}
                       {booking.status === 'pending' && 'В обработке'}
                       {booking.status === 'cancelled' && 'Отменено'}
                     </BookingStatus>
                   </BookingHeader>
-                  
+
                   <BookingDates>
                     <span>{new Date(booking.checkIn).toLocaleDateString()}</span>
                     <i className="fas fa-arrow-right"></i>
                     <span>{new Date(booking.checkOut).toLocaleDateString()}</span>
                   </BookingDates>
-                  
+
                   <BookingDetails>
                     <BookingDetail>
                       <span>Номер бронирования</span>
@@ -808,19 +802,19 @@ const ProfilePage = () => {
                       <span>{booking.room?.roomType || 'Стандарт'}</span>
                     </BookingDetail>
                   </BookingDetails>
-                  
+
                   <BookingPrice>
-                    {booking.totalPrice?.toLocaleString() || (booking.room?.price * 
-                      ((new Date(booking.checkOut) - new Date(booking.checkIn)) / 
-                      (1000 * 60 * 60 * 24))
-                    ).toLocaleString()} ₽
+                    {booking.totalPrice?.toLocaleString() ||
+                      (
+                        booking.room?.price *
+                        ((new Date(booking.checkOut) - new Date(booking.checkIn)) /
+                          (1000 * 60 * 60 * 24))
+                      ).toLocaleString()}{' '}
+                    ₽
                   </BookingPrice>
-                  
+
                   {booking.status !== 'cancelled' && (
-                    <CancelButton 
-                      type="button" 
-                      onClick={() => handleCancelBooking(booking.id)}
-                    >
+                    <CancelButton type="button" onClick={() => handleCancelBooking(booking.id)}>
                       Отменить бронирование
                     </CancelButton>
                   )}
@@ -832,11 +826,7 @@ const ProfilePage = () => {
               <i className="fas fa-calendar-times"></i>
               <h3>У вас пока нет бронирований</h3>
               <p>Забронируйте номер в нашем отеле для комфортного отдыха</p>
-              <ActionButton 
-                as="a" 
-                href="/rooms" 
-                style={{ textDecoration: 'none' }}
-              >
+              <ActionButton as="a" href="/rooms" style={{ textDecoration: 'none' }}>
                 Посмотреть номера
               </ActionButton>
             </EmptyState>
@@ -847,4 +837,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage; 
+export default ProfilePage;

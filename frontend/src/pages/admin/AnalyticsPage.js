@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { Line, Bar, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, registerables } from 'chart.js';
@@ -134,7 +134,7 @@ const StatCard = styled.div`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  
+
   i {
     font-size: 2rem;
     color: #3498db;
@@ -158,10 +158,10 @@ const StatChange = styled.div`
   font-size: 0.9rem;
   margin-top: auto;
   padding-top: 1rem;
-  color: ${props => props.positive ? '#27ae60' : '#e74c3c'};
+  color: ${props => (props.positive ? '#27ae60' : '#e74c3c')};
   display: flex;
   align-items: center;
-  
+
   i {
     font-size: 1rem;
     margin-right: 0.25rem;
@@ -189,7 +189,7 @@ const ChartGrid = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
   margin-bottom: 2rem;
-  
+
   @media (max-width: 992px) {
     grid-template-columns: 1fr;
   }
@@ -220,19 +220,19 @@ const ErrorMessage = styled.div`
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  
+
   i {
     font-size: 3rem;
     color: #e74c3c;
     margin-bottom: 1rem;
   }
-  
+
   h3 {
     font-size: 1.5rem;
     color: #2c3e50;
     margin-bottom: 1rem;
   }
-  
+
   p {
     font-size: 1.1rem;
     color: #7f8c8d;
@@ -264,7 +264,7 @@ const Table = styled.table`
 
 const TableHead = styled.thead`
   background-color: #f8f9fa;
-  
+
   th {
     padding: 1rem;
     text-align: left;
@@ -277,32 +277,32 @@ const TableHead = styled.thead`
 const TableBody = styled.tbody`
   tr {
     border-bottom: 1px solid #f0f0f0;
-    
+
     &:hover {
       background-color: #f8f9fa;
     }
-    
+
     &:last-child {
       border-bottom: none;
     }
   }
-  
+
   td {
     padding: 1rem;
     color: #2c3e50;
   }
 `;
 
-const formatCurrency = (amount) => {
+const formatCurrency = amount => {
   return new Intl.NumberFormat('ru-RU', {
     style: 'currency',
     currency: 'RUB',
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0
+    maximumFractionDigits: 0,
   }).format(amount);
 };
 
-const formatPercent = (value) => {
+const formatPercent = value => {
   return `${value.toFixed(1)}%`;
 };
 
@@ -310,7 +310,7 @@ const AnalyticsPage = () => {
   const [timeframe, setTimeframe] = useState('month');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  
+
   const [stats, setStats] = useState({
     revenue: 0,
     revenueChange: 0,
@@ -319,85 +319,92 @@ const AnalyticsPage = () => {
     occupancy: 0,
     occupancyChange: 0,
     averageRate: 0,
-    averageRateChange: 0
+    averageRateChange: 0,
   });
-  
+
   const [revenueData, setRevenueData] = useState({
     labels: [],
-    datasets: []
+    datasets: [],
   });
-  
+
   const [bookingsData, setBookingsData] = useState({
     labels: [],
-    datasets: []
+    datasets: [],
   });
-  
+
   const [occupancyData, setOccupancyData] = useState({
     labels: [],
-    datasets: []
+    datasets: [],
   });
-  
+
   const [roomTypeData, setRoomTypeData] = useState({
     labels: [],
-    datasets: []
+    datasets: [],
   });
-  
+
   const [sourceData, setSourceData] = useState({
     labels: [],
-    datasets: []
+    datasets: [],
   });
-  
+
   const [popularRooms, setPopularRooms] = useState([]);
-  
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  useEffect(() => {
-    fetchAnalyticsData();
-  }, []);
-  
-  const fetchAnalyticsData = async () => {
+
+  const fetchAnalyticsData = useCallback(async () => {
     try {
       setLoading(true);
-      
+
       // Получаем общую статистику
       const overallStats = await analyticsService.getOverallStats();
-      
+
       // Получаем данные по выручке и бронированиям
       const periodStats = await analyticsService.getStatsByPeriod(timeframe);
-      
+
       // Получаем данные по загрузке
       const occupancyStats = await analyticsService.getOccupancyForecast();
-      
+
       // Получаем данные по популярным номерам
       const popularRoomsData = await analyticsService.getPopularRooms();
-      
+
       // Получаем статистику по типам номеров
       const roomTypeStats = await analyticsService.getRoomTypeStats();
-      
+
       // Получаем статистику по источникам бронирований
       const sourceStats = await analyticsService.getBookingSourceStats();
-      
+
       // Обрабатываем полученные данные
       processData(
-        overallStats.data, 
-        periodStats.data, 
+        overallStats.data,
+        periodStats.data,
         occupancyStats.data,
         popularRoomsData.data,
         roomTypeStats.data,
         sourceStats.data
       );
-      
+
       setError(null);
-    } catch (error) {
-      console.error('Ошибка при загрузке аналитических данных:', error);
-      setError('Произошла ошибка при загрузке аналитических данных');
+    } catch (err) {
+      console.error('Ошибка при загрузке аналитических данных:', err);
+      setError(err.message);
     } finally {
       setLoading(false);
     }
-  };
-  
-  const processData = (overall, periodStats, occupancyStats, popularRoomsData, roomTypeStats, sourceStats) => {
+  }, [timeframe]);
+
+  useEffect(() => {
+    fetchAnalyticsData();
+  }, [fetchAnalyticsData]);
+
+  const processData = (
+    overall,
+    periodStats,
+    occupancyStats,
+    popularRoomsData,
+    roomTypeStats,
+    sourceStats
+  ) => {
     // Устанавливаем общую статистику
     setStats({
       revenue: overall.revenue,
@@ -407,9 +414,9 @@ const AnalyticsPage = () => {
       occupancy: overall.occupancy,
       occupancyChange: overall.occupancyChange,
       averageRate: overall.averageRate,
-      averageRateChange: overall.averageRateChange
+      averageRateChange: overall.averageRateChange,
     });
-    
+
     // Подготавливаем данные для графика выручки
     setRevenueData({
       labels: periodStats.labels,
@@ -420,11 +427,11 @@ const AnalyticsPage = () => {
           borderColor: '#3498db',
           backgroundColor: 'rgba(52, 152, 219, 0.1)',
           fill: true,
-          tension: 0.4
-        }
-      ]
+          tension: 0.4,
+        },
+      ],
     });
-    
+
     // Подготавливаем данные для графика бронирований
     setBookingsData({
       labels: periodStats.labels,
@@ -435,11 +442,11 @@ const AnalyticsPage = () => {
           borderColor: '#27ae60',
           backgroundColor: 'rgba(39, 174, 96, 0.1)',
           fill: true,
-          tension: 0.4
-        }
-      ]
+          tension: 0.4,
+        },
+      ],
     });
-    
+
     // Подготавливаем данные для графика загрузки
     setOccupancyData({
       labels: occupancyStats.labels,
@@ -450,65 +457,52 @@ const AnalyticsPage = () => {
           borderColor: '#f39c12',
           backgroundColor: 'rgba(243, 156, 18, 0.1)',
           fill: true,
-          tension: 0.4
-        }
-      ]
+          tension: 0.4,
+        },
+      ],
     });
-    
+
     // Устанавливаем данные по популярным номерам
     setPopularRooms(popularRoomsData);
-    
+
     // Подготавливаем данные для графика по типам номеров
     setRoomTypeData({
       labels: roomTypeStats.labels,
       datasets: [
         {
           data: roomTypeStats.values,
-          backgroundColor: [
-            '#3498db',
-            '#2ecc71',
-            '#f1c40f',
-            '#e74c3c',
-            '#9b59b6',
-            '#1abc9c'
-          ],
-          borderWidth: 0
-        }
-      ]
+          backgroundColor: ['#3498db', '#2ecc71', '#f1c40f', '#e74c3c', '#9b59b6', '#1abc9c'],
+          borderWidth: 0,
+        },
+      ],
     });
-    
+
     // Подготавливаем данные для графика по источникам бронирований
     setSourceData({
       labels: sourceStats.labels,
       datasets: [
         {
           data: sourceStats.values,
-          backgroundColor: [
-            '#3498db',
-            '#2ecc71',
-            '#f1c40f',
-            '#e74c3c',
-            '#9b59b6'
-          ],
-          borderWidth: 0
-        }
-      ]
+          backgroundColor: ['#3498db', '#2ecc71', '#f1c40f', '#e74c3c', '#9b59b6'],
+          borderWidth: 0,
+        },
+      ],
     });
   };
-  
-  const handleTimeframeChange = (e) => {
+
+  const handleTimeframeChange = e => {
     setTimeframe(e.target.value);
   };
-  
+
   const handleApplyFilters = () => {
     fetchAnalyticsData();
   };
-  
+
   const handleDownloadReport = () => {
     // Логика для скачивания отчёта в формате PDF или Excel
     alert('Скачивание отчета в разработке');
   };
-  
+
   if (loading) {
     return (
       <PageContainer>
@@ -521,7 +515,7 @@ const AnalyticsPage = () => {
       </PageContainer>
     );
   }
-  
+
   if (error) {
     return (
       <PageContainer>
@@ -537,7 +531,7 @@ const AnalyticsPage = () => {
       </PageContainer>
     );
   }
-  
+
   return (
     <PageContainer>
       <PageHeader>
@@ -546,7 +540,7 @@ const AnalyticsPage = () => {
           <i className="fas fa-file-download"></i> Скачать отчёт
         </DownloadButton>
       </PageHeader>
-      
+
       <FilterContainer>
         <div>
           <FilterLabel>Период</FilterLabel>
@@ -559,33 +553,29 @@ const AnalyticsPage = () => {
             <option value="custom">Произвольный период</option>
           </FilterSelect>
         </div>
-        
+
         {timeframe === 'custom' && (
           <DateFilterWrapper>
             <div>
               <FilterLabel>С</FilterLabel>
-              <DateInput 
-                type="date" 
+              <DateInput
+                type="date"
                 value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
+                onChange={e => setStartDate(e.target.value)}
               />
             </div>
             <div>
               <FilterLabel>По</FilterLabel>
-              <DateInput 
-                type="date" 
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-              />
+              <DateInput type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
             </div>
           </DateFilterWrapper>
         )}
-        
+
         <ApplyButton onClick={handleApplyFilters}>
           <i className="fas fa-filter"></i> Применить
         </ApplyButton>
       </FilterContainer>
-      
+
       <StatsGrid>
         <StatCard>
           <i className="fas fa-money-bill-wave"></i>
@@ -596,7 +586,7 @@ const AnalyticsPage = () => {
             {formatPercent(Math.abs(stats.revenueChange))}
           </StatChange>
         </StatCard>
-        
+
         <StatCard>
           <i className="fas fa-calendar-check"></i>
           <StatValue>{stats.bookings}</StatValue>
@@ -606,7 +596,7 @@ const AnalyticsPage = () => {
             {formatPercent(Math.abs(stats.bookingsChange))}
           </StatChange>
         </StatCard>
-        
+
         <StatCard>
           <i className="fas fa-bed"></i>
           <StatValue>{formatPercent(stats.occupancy)}</StatValue>
@@ -616,7 +606,7 @@ const AnalyticsPage = () => {
             {formatPercent(Math.abs(stats.occupancyChange))}
           </StatChange>
         </StatCard>
-        
+
         <StatCard>
           <i className="fas fa-tag"></i>
           <StatValue>{formatCurrency(stats.averageRate)}</StatValue>
@@ -627,160 +617,160 @@ const AnalyticsPage = () => {
           </StatChange>
         </StatCard>
       </StatsGrid>
-      
+
       <ChartGrid>
         <ChartContainer>
           <ChartTitle>Динамика выручки</ChartTitle>
-          <Line 
+          <Line
             data={revenueData}
             options={{
               responsive: true,
               plugins: {
                 legend: {
                   position: 'top',
-                  align: 'end'
+                  align: 'end',
                 },
                 tooltip: {
                   callbacks: {
-                    label: function(context) {
+                    label: function (context) {
                       return formatCurrency(context.parsed.y);
-                    }
-                  }
-                }
+                    },
+                  },
+                },
               },
               scales: {
                 y: {
                   beginAtZero: true,
                   ticks: {
-                    callback: function(value) {
+                    callback: function (value) {
                       return formatCurrency(value);
-                    }
-                  }
-                }
-              }
+                    },
+                  },
+                },
+              },
             }}
           />
         </ChartContainer>
-        
+
         <ChartContainer>
           <ChartTitle>Динамика бронирований</ChartTitle>
-          <Bar 
+          <Bar
             data={bookingsData}
             options={{
               responsive: true,
               plugins: {
                 legend: {
                   position: 'top',
-                  align: 'end'
-                }
+                  align: 'end',
+                },
               },
               scales: {
                 y: {
                   beginAtZero: true,
                   ticks: {
-                    precision: 0
-                  }
-                }
-              }
+                    precision: 0,
+                  },
+                },
+              },
             }}
           />
         </ChartContainer>
       </ChartGrid>
-      
+
       <ChartContainer>
         <ChartTitle>Прогноз загрузки</ChartTitle>
-        <Line 
+        <Line
           data={occupancyData}
           options={{
             responsive: true,
             plugins: {
               legend: {
                 position: 'top',
-                align: 'end'
+                align: 'end',
               },
               tooltip: {
                 callbacks: {
-                  label: function(context) {
+                  label: function (context) {
                     return `${context.parsed.y.toFixed(1)}%`;
-                  }
-                }
-              }
+                  },
+                },
+              },
             },
             scales: {
               y: {
                 beginAtZero: true,
                 max: 100,
                 ticks: {
-                  callback: function(value) {
+                  callback: function (value) {
                     return `${value}%`;
-                  }
-                }
-              }
-            }
+                  },
+                },
+              },
+            },
           }}
         />
       </ChartContainer>
-      
+
       <SegmentGrid>
         <ChartContainer>
           <ChartTitle>Распределение по типам номеров</ChartTitle>
           <div style={{ maxHeight: '300px', display: 'flex', justifyContent: 'center' }}>
-            <Pie 
+            <Pie
               data={roomTypeData}
               options={{
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
                   legend: {
-                    position: 'right'
+                    position: 'right',
                   },
                   tooltip: {
                     callbacks: {
-                      label: function(context) {
+                      label: function (context) {
                         const label = context.label || '';
                         const value = context.parsed || 0;
                         const total = context.dataset.data.reduce((acc, data) => acc + data, 0);
                         const percentage = ((value * 100) / total).toFixed(1);
                         return `${label}: ${percentage}%`;
-                      }
-                    }
-                  }
-                }
+                      },
+                    },
+                  },
+                },
               }}
             />
           </div>
         </ChartContainer>
-        
+
         <ChartContainer>
           <ChartTitle>Источники бронирований</ChartTitle>
           <div style={{ maxHeight: '300px', display: 'flex', justifyContent: 'center' }}>
-            <Pie 
+            <Pie
               data={sourceData}
               options={{
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
                   legend: {
-                    position: 'right'
+                    position: 'right',
                   },
                   tooltip: {
                     callbacks: {
-                      label: function(context) {
+                      label: function (context) {
                         const label = context.label || '';
                         const value = context.parsed || 0;
                         const total = context.dataset.data.reduce((acc, data) => acc + data, 0);
                         const percentage = ((value * 100) / total).toFixed(1);
                         return `${label}: ${percentage}%`;
-                      }
-                    }
-                  }
-                }
+                      },
+                    },
+                  },
+                },
               }}
             />
           </div>
         </ChartContainer>
       </SegmentGrid>
-      
+
       <ChartContainer>
         <ChartTitle>Самые популярные номера</ChartTitle>
         <Table>
@@ -810,4 +800,4 @@ const AnalyticsPage = () => {
   );
 };
 
-export default AnalyticsPage; 
+export default AnalyticsPage;

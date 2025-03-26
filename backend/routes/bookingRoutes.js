@@ -8,7 +8,9 @@
 const express = require('express');
 const router = express.Router();
 const bookingController = require('../controllers/bookingController');
-const { auth, adminOnly, staffOnly } = require('../middlewares/authMiddleware');
+const { auth } = require('../middlewares/authMiddleware');
+
+router.use(auth);
 
 /**
  * @swagger
@@ -59,7 +61,7 @@ const { auth, adminOnly, staffOnly } = require('../middlewares/authMiddleware');
  *       404:
  *         description: Номер не найден или недоступен
  */
-router.post('/', auth, bookingController.createBooking);
+router.post('/', bookingController.createBooking);
 
 /**
  * @swagger
@@ -75,67 +77,11 @@ router.post('/', auth, bookingController.createBooking);
  *       401:
  *         description: Не авторизован
  */
-router.get('/', auth, bookingController.getUserBookings);
+router.get('/user', bookingController.getUserBookings);
 
 /**
  * @swagger
- * /api/bookings/{id}:
- *   get:
- *     summary: Получение информации о конкретном бронировании
- *     tags: [Bookings]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: integer
- *         required: true
- *         description: ID бронирования
- *     responses:
- *       200:
- *         description: Информация о бронировании
- *       401:
- *         description: Не авторизован
- *       403:
- *         description: Нет прав для доступа к бронированию
- *       404:
- *         description: Бронирование не найдено
- */
-router.get('/:id', auth, bookingController.getBookingById);
-
-/**
- * @swagger
- * /api/bookings/cancel/{id}:
- *   put:
- *     summary: Отмена бронирования пользователем
- *     tags: [Bookings]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: integer
- *         required: true
- *         description: ID бронирования
- *     responses:
- *       200:
- *         description: Бронирование успешно отменено
- *       401:
- *         description: Не авторизован
- *       403:
- *         description: Нет прав для отмены бронирования
- *       404:
- *         description: Бронирование не найдено
- *       400:
- *         description: Невозможно отменить (например, прошла дата заезда)
- */
-router.put('/cancel/:id', auth, bookingController.cancelBooking);
-
-/**
- * @swagger
- * /api/bookings/admin/all:
+ * /api/bookings/all:
  *   get:
  *     summary: Получение списка всех бронирований (только для админов/менеджеров)
  *     tags: [Bookings]
@@ -168,11 +114,67 @@ router.put('/cancel/:id', auth, bookingController.cancelBooking);
  *       403:
  *         description: Нет прав для доступа
  */
-router.get('/admin/all', auth, staffOnly, bookingController.getAllBookings);
+router.get('/all', bookingController.getAllBookings);
 
 /**
  * @swagger
- * /api/bookings/admin/status/{id}:
+ * /api/bookings/{id}:
+ *   get:
+ *     summary: Получение информации о конкретном бронировании
+ *     tags: [Bookings]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID бронирования
+ *     responses:
+ *       200:
+ *         description: Информация о бронировании
+ *       401:
+ *         description: Не авторизован
+ *       403:
+ *         description: Нет прав для доступа к бронированию
+ *       404:
+ *         description: Бронирование не найдено
+ */
+router.get('/:id', bookingController.getBookingById);
+
+/**
+ * @swagger
+ * /api/bookings/{id}/cancel:
+ *   put:
+ *     summary: Отмена бронирования пользователем
+ *     tags: [Bookings]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID бронирования
+ *     responses:
+ *       200:
+ *         description: Бронирование успешно отменено
+ *       401:
+ *         description: Не авторизован
+ *       403:
+ *         description: Нет прав для отмены бронирования
+ *       404:
+ *         description: Бронирование не найдено
+ *       400:
+ *         description: Невозможно отменить (например, прошла дата заезда)
+ */
+router.put('/:id/cancel', bookingController.cancelBooking);
+
+/**
+ * @swagger
+ * /api/bookings/{id}/status:
  *   put:
  *     summary: Обновление статуса бронирования (только для админов/менеджеров)
  *     tags: [Bookings]
@@ -213,6 +215,6 @@ router.get('/admin/all', auth, staffOnly, bookingController.getAllBookings);
  *       404:
  *         description: Бронирование не найдено
  */
-router.put('/admin/status/:id', auth, staffOnly, bookingController.updateBookingStatus);
+router.put('/:id/status', bookingController.updateBookingStatus);
 
-module.exports = router; 
+module.exports = router;

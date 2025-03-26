@@ -7,9 +7,7 @@ const { body } = require('express-validator');
 
 // Валидация для отзывов
 const reviewValidation = [
-  body('rating')
-    .isInt({ min: 1, max: 5 })
-    .withMessage('Оценка должна быть от 1 до 5'),
+  body('rating').isInt({ min: 1, max: 5 }).withMessage('Оценка должна быть от 1 до 5'),
   body('comment')
     .isString()
     .isLength({ min: 2, max: 1000 })
@@ -43,14 +41,14 @@ const reviewValidation = [
     .optional()
     .isString()
     .isLength({ max: 500 })
-    .withMessage('Недостатки должны содержать не более 500 символов')
+    .withMessage('Недостатки должны содержать не более 500 символов'),
 ];
 
 const responseValidation = [
   body('response')
     .isString()
     .isLength({ min: 2, max: 1000 })
-    .withMessage('Ответ должен содержать от 2 до 1000 символов')
+    .withMessage('Ответ должен содержать от 2 до 1000 символов'),
 ];
 
 // Получение всех отзывов к номеру (публичный доступ)
@@ -58,8 +56,8 @@ router.get('/rooms/:roomId/reviews', reviewController.getRoomReviews);
 
 // Создание отзыва (только для авторизованных пользователей)
 router.post(
-  '/rooms/:roomId/reviews', 
-  auth.protect, 
+  '/rooms/:roomId/reviews',
+  auth.protect,
   reviewValidation,
   validate,
   reviewController.createReview
@@ -67,28 +65,24 @@ router.post(
 
 // Обновление отзыва (только для автора или администратора)
 router.put(
-  '/reviews/:reviewId', 
-  auth.protect, 
+  '/reviews/:reviewId',
+  auth.protect,
   reviewValidation,
   validate,
   reviewController.updateReview
 );
 
 // Удаление отзыва (только для автора или администратора)
-router.delete(
-  '/reviews/:reviewId', 
-  auth.protect, 
-  reviewController.deleteReview
-);
+router.delete('/reviews/:reviewId', auth.protect, reviewController.deleteReview);
 
 // Ответ на отзыв (только для администраторов и менеджеров)
 router.post(
-  '/reviews/:reviewId/respond', 
-  auth.protect, 
+  '/reviews/:reviewId/respond',
+  auth.protect,
   auth.restrictTo('admin', 'manager'),
   responseValidation,
   validate,
   reviewController.respondToReview
 );
 
-module.exports = router; 
+module.exports = router;

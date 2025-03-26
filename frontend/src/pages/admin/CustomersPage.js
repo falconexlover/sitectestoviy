@@ -73,7 +73,7 @@ const CustomersTable = styled.table`
 
 const TableHead = styled.thead`
   background-color: #f8f9fa;
-  
+
   th {
     padding: 1rem;
     text-align: left;
@@ -87,16 +87,16 @@ const TableBody = styled.tbody`
   tr {
     border-bottom: 1px solid #f0f0f0;
     transition: background-color 0.2s;
-    
+
     &:hover {
       background-color: #f8f9fa;
     }
-    
+
     &:last-child {
       border-bottom: none;
     }
   }
-  
+
   td {
     padding: 1rem;
     color: #2c3e50;
@@ -139,16 +139,22 @@ const Badge = styled.span`
   font-weight: 500;
   background-color: ${props => {
     switch (props.role) {
-      case 'admin': return '#e3f7ed';
-      case 'manager': return '#fff8e6';
-      default: return '#e8f0fe';
+      case 'admin':
+        return '#e3f7ed';
+      case 'manager':
+        return '#fff8e6';
+      default:
+        return '#e8f0fe';
     }
   }};
   color: ${props => {
     switch (props.role) {
-      case 'admin': return '#1d8a4e';
-      case 'manager': return '#ff9800';
-      default: return '#3f51b5';
+      case 'admin':
+        return '#1d8a4e';
+      case 'manager':
+        return '#ff9800';
+      default:
+        return '#3f51b5';
     }
   }};
 `;
@@ -164,11 +170,11 @@ const ActionLink = styled(Link)`
   text-decoration: none;
   transition: background-color 0.2s;
   margin-right: 0.5rem;
-  
+
   &:hover {
     background-color: #e0e0e0;
   }
-  
+
   i {
     margin-right: 0.25rem;
   }
@@ -187,16 +193,16 @@ const PageButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid ${props => props.active ? '#3498db' : '#e0e0e0'};
+  border: 1px solid ${props => (props.active ? '#3498db' : '#e0e0e0')};
   border-radius: 4px;
-  background-color: ${props => props.active ? '#3498db' : 'white'};
-  color: ${props => props.active ? 'white' : '#2c3e50'};
+  background-color: ${props => (props.active ? '#3498db' : 'white')};
+  color: ${props => (props.active ? 'white' : '#2c3e50')};
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    background-color: ${props => props.active ? '#2980b9' : '#f0f0f0'};
+    background-color: ${props => (props.active ? '#2980b9' : '#f0f0f0')};
   }
 
   &:disabled {
@@ -227,13 +233,13 @@ const NoResults = styled.div`
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  
+
   i {
     font-size: 3rem;
     color: #95a5a6;
     margin-bottom: 1rem;
   }
-  
+
   p {
     font-size: 1.2rem;
     color: #7f8c8d;
@@ -267,7 +273,7 @@ const CustomerStats = styled.div`
     align-items: center;
     font-size: 0.85rem;
     color: #7f8c8d;
-    
+
     i {
       margin-right: 0.25rem;
       font-size: 0.9rem;
@@ -280,17 +286,17 @@ const ActionButton = styled.button`
   border-radius: 4px;
   font-size: 0.85rem;
   font-weight: 500;
-  background-color: ${props => props.danger ? '#fff0f0' : '#f0f0f0'};
-  color: ${props => props.danger ? '#e53935' : '#2c3e50'};
+  background-color: ${props => (props.danger ? '#fff0f0' : '#f0f0f0')};
+  color: ${props => (props.danger ? '#e53935' : '#2c3e50')};
   border: none;
   cursor: pointer;
   transition: background-color 0.2s;
   margin-right: 0.5rem;
-  
+
   &:hover {
-    background-color: ${props => props.danger ? '#ffebee' : '#e0e0e0'};
+    background-color: ${props => (props.danger ? '#ffebee' : '#e0e0e0')};
   }
-  
+
   i {
     margin-right: 0.25rem;
   }
@@ -393,30 +399,30 @@ const ConfirmButton = styled.button`
   }
 `;
 
-const formatDate = (dateString) => {
+const formatDate = dateString => {
   const date = new Date(dateString);
   return new Intl.DateTimeFormat('ru-RU', {
     day: '2-digit',
     month: '2-digit',
-    year: 'numeric'
+    year: 'numeric',
   }).format(date);
 };
 
-const translateRole = (role) => {
+const translateRole = role => {
   const roles = {
-    'customer': 'Клиент',
-    'admin': 'Администратор',
-    'manager': 'Менеджер'
+    customer: 'Клиент',
+    admin: 'Администратор',
+    manager: 'Менеджер',
   };
   return roles[role] || role;
 };
 
-const getInitials = (name) => {
+const getInitials = name => {
   if (!name) return '?';
-  
+
   const nameParts = name.split(' ');
   if (nameParts.length === 1) return nameParts[0].charAt(0).toUpperCase();
-  
+
   return (nameParts[0].charAt(0) + nameParts[1].charAt(0)).toUpperCase();
 };
 
@@ -424,19 +430,19 @@ const CustomersPage = () => {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   const [currentPage, setCurrentPage] = useState(1);
   const customersPerPage = 10;
-  
+
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [customerToDelete, setCustomerToDelete] = useState(null);
-  
+
   useEffect(() => {
     fetchCustomers();
   }, []);
-  
+
   const fetchCustomers = async () => {
     try {
       setLoading(true);
@@ -450,28 +456,28 @@ const CustomersPage = () => {
       setLoading(false);
     }
   };
-  
-  const handleDeleteClick = (customer) => {
+
+  const handleDeleteClick = customer => {
     setCustomerToDelete(customer);
     setShowDeleteModal(true);
   };
-  
+
   const confirmDelete = async () => {
     try {
       await userService.deleteUser(customerToDelete.id);
-      
+
       // Обновляем состояние после успешного удаления
       setCustomers(customers.filter(customer => customer.id !== customerToDelete.id));
       setShowDeleteModal(false);
       setCustomerToDelete(null);
-      
+
       // Оповещение об успешном удалении
     } catch (error) {
       console.error('Ошибка при удалении пользователя:', error);
       // Оповещение об ошибке
     }
   };
-  
+
   const exportToCSV = () => {
     // Функция экспорта клиентов в CSV
     const headers = ['ID', 'Имя', 'Email', 'Телефон', 'Роль', 'Бронирований', 'Дата регистрации'];
@@ -482,14 +488,11 @@ const CustomersPage = () => {
       customer.phone || 'Н/Д',
       translateRole(customer.role),
       customer.bookingsCount || '0',
-      formatDate(customer.createdAt)
+      formatDate(customer.createdAt),
     ]);
-    
-    const csvContent = [
-      headers.join(','),
-      ...rows.map(row => row.join(','))
-    ].join('\n');
-    
+
+    const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+
     // Создаем временную ссылку для скачивания файла
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
@@ -497,22 +500,23 @@ const CustomersPage = () => {
     link.setAttribute('download', `customers-${new Date().toISOString().slice(0, 10)}.csv`);
     link.click();
   };
-  
+
   // Фильтрация клиентов
-  const filteredCustomers = customers.filter(customer => 
-    customer.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    customer.phone?.includes(searchTerm)
+  const filteredCustomers = customers.filter(
+    customer =>
+      customer.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      customer.phone?.includes(searchTerm)
   );
-  
+
   // Пагинация
   const indexOfLastCustomer = currentPage * customersPerPage;
   const indexOfFirstCustomer = indexOfLastCustomer - customersPerPage;
   const currentCustomers = filteredCustomers.slice(indexOfFirstCustomer, indexOfLastCustomer);
   const totalPages = Math.ceil(filteredCustomers.length / customersPerPage);
-  
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  
+
+  const paginate = pageNumber => setCurrentPage(pageNumber);
+
   return (
     <PageContainer>
       <PageHeader>
@@ -521,19 +525,19 @@ const CustomersPage = () => {
           <i className="fas fa-file-export"></i> Экспорт в CSV
         </ExportButton>
       </PageHeader>
-      
+
       <FilterContainer>
         <SearchInput>
           <i className="fas fa-search"></i>
-          <input 
-            type="text" 
-            placeholder="Поиск клиента по имени, email или телефону..." 
+          <input
+            type="text"
+            placeholder="Поиск клиента по имени, email или телефону..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
           />
         </SearchInput>
       </FilterContainer>
-      
+
       {loading ? (
         <LoadingWrapper>
           <LoadingIndicator>Загрузка клиентов...</LoadingIndicator>
@@ -578,7 +582,9 @@ const CustomersPage = () => {
                     </td>
                     <td>
                       <div>{customer.email}</div>
-                      <small style={{ color: '#7f8c8d' }}>{customer.phone || 'Телефон не указан'}</small>
+                      <small style={{ color: '#7f8c8d' }}>
+                        {customer.phone || 'Телефон не указан'}
+                      </small>
                     </td>
                     <td>
                       <Badge role={customer.role}>{translateRole(customer.role)}</Badge>
@@ -586,10 +592,12 @@ const CustomersPage = () => {
                     <td>
                       <CustomerStats>
                         <span>
-                          <i className="fas fa-calendar-check"></i> {customer.bookingsCount || 0} бронирований
+                          <i className="fas fa-calendar-check"></i> {customer.bookingsCount || 0}{' '}
+                          бронирований
                         </span>
                         <span>
-                          <i className="fas fa-money-bill-wave"></i> {customer.totalSpent?.toLocaleString('ru-RU') || 0} ₽
+                          <i className="fas fa-money-bill-wave"></i>{' '}
+                          {customer.totalSpent?.toLocaleString('ru-RU') || 0} ₽
                         </span>
                       </CustomerStats>
                     </td>
@@ -607,16 +615,13 @@ const CustomersPage = () => {
               </TableBody>
             </CustomersTable>
           </TableContainer>
-          
+
           {totalPages > 1 && (
             <Pagination>
-              <PageButton 
-                onClick={() => paginate(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
+              <PageButton onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
                 <i className="fas fa-chevron-left"></i>
               </PageButton>
-              
+
               {[...Array(totalPages).keys()].map(number => (
                 <PageButton
                   key={number + 1}
@@ -626,8 +631,8 @@ const CustomersPage = () => {
                   {number + 1}
                 </PageButton>
               ))}
-              
-              <PageButton 
+
+              <PageButton
                 onClick={() => paginate(currentPage + 1)}
                 disabled={currentPage === totalPages}
               >
@@ -637,14 +642,15 @@ const CustomersPage = () => {
           )}
         </>
       )}
-      
+
       {/* Модальное окно подтверждения удаления */}
       {showDeleteModal && (
         <Modal>
           <ModalContent>
             <ModalTitle>Подтверждение удаления</ModalTitle>
             <ModalText>
-              Вы действительно хотите удалить клиента <strong>{customerToDelete?.name || customerToDelete?.email}</strong>?
+              Вы действительно хотите удалить клиента{' '}
+              <strong>{customerToDelete?.name || customerToDelete?.email}</strong>?
               <br />
               Все данные пользователя, включая историю бронирований, будут удалены.
               <br />
@@ -661,4 +667,4 @@ const CustomersPage = () => {
   );
 };
 
-export default CustomersPage; 
+export default CustomersPage;

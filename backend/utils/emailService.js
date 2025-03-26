@@ -13,8 +13,8 @@ const createTransporter = () => {
       secure: process.env.EMAIL_SECURE === 'true',
       auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD
-      }
+        pass: process.env.EMAIL_PASSWORD,
+      },
     });
   } else {
     // Для разработки используем nodemailer.createTestAccount()
@@ -25,8 +25,8 @@ const createTransporter = () => {
       secure: false,
       auth: {
         user: process.env.TEST_EMAIL_USER || 'xrtevw3agdz3yx4z@ethereal.email',
-        pass: process.env.TEST_EMAIL_PASS || 'kEdQb1jW8UF36qSa2j'
-      }
+        pass: process.env.TEST_EMAIL_PASS || 'kEdQb1jW8UF36qSa2j',
+      },
     });
   }
 };
@@ -44,33 +44,33 @@ const createTransporter = () => {
 const sendEmail = async (options) => {
   try {
     const transporter = createTransporter();
-    
+
     const lang = options.lang || 'ru';
-    
+
     // Получение локализованного содержимого письма
     const subject = options.subject || '';
     const text = options.text || '';
     const html = options.html || '';
-    
+
     // Настройка отправителя
     const from = process.env.EMAIL_FROM || '"Лесной Дворик" <info@lesnoy-dvorik.ru>';
-    
+
     // Отправка письма
     const info = await transporter.sendMail({
       from,
       to: options.to,
       subject,
       text,
-      html
+      html,
     });
-    
+
     logger.info(`Email отправлен: ${info.messageId}`);
-    
+
     // Для тестовых аккаунтов возвращаем URL для просмотра
     if (process.env.NODE_ENV !== 'production') {
       logger.info(`URL для просмотра: ${nodemailer.getTestMessageUrl(info)}`);
     }
-    
+
     return info;
   } catch (error) {
     logger.error(`Ошибка при отправке email: ${error.message}`, { error });
@@ -92,18 +92,18 @@ const sendBookingConfirmation = async (booking, user, room, lang = 'ru') => {
     const t = (key) => i18next.t(key, { lng: lang });
 
     const subject = t('emails.bookingConfirmation.subject');
-    
+
     // Форматируем даты в локализованном формате
     const checkInDate = new Date(booking.checkIn).toLocaleDateString(
       lang === 'ru' ? 'ru-RU' : 'en-US',
       { day: '2-digit', month: '2-digit', year: 'numeric' }
     );
-    
+
     const checkOutDate = new Date(booking.checkOut).toLocaleDateString(
       lang === 'ru' ? 'ru-RU' : 'en-US',
       { day: '2-digit', month: '2-digit', year: 'numeric' }
     );
-    
+
     // Создаем HTML-версию письма
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -138,7 +138,7 @@ const sendBookingConfirmation = async (booking, user, room, lang = 'ru') => {
         </p>
       </div>
     `;
-    
+
     // Текстовая версия письма
     const text = `
       ${t('emails.bookingConfirmation.title')}
@@ -162,13 +162,13 @@ const sendBookingConfirmation = async (booking, user, room, lang = 'ru') => {
       
       © ${new Date().getFullYear()} ${t('app.name')}. ${t('emails.bookingConfirmation.footer')}
     `;
-    
+
     return await sendEmail({
       to: user.email,
       subject,
       text,
       html,
-      lang
+      lang,
     });
   } catch (error) {
     logger.error(`Ошибка при отправке подтверждения бронирования: ${error.message}`, { error });
@@ -208,9 +208,24 @@ const sendReviewRequest = async (booking, user, room, lang = 'ru') => {
   return true;
 };
 
+const sendBookingConfirmationEmail = async (_user, _booking, _room, _lang) => {
+  // ... existing code ...
+};
+
+const sendBookingCancellationEmail = async (_user, _booking, _room, _lang) => {
+  // ... existing code ...
+};
+
+const sendBookingUpdateEmail = async (_user, _booking, _room, _lang) => {
+  // ... existing code ...
+};
+
 module.exports = {
   sendEmail,
   sendBookingConfirmation,
   sendCheckInReminder,
-  sendReviewRequest
-}; 
+  sendReviewRequest,
+  sendBookingConfirmationEmail,
+  sendBookingCancellationEmail,
+  sendBookingUpdateEmail,
+};

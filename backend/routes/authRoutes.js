@@ -158,4 +158,4 @@ router.put('/profile', auth, authController.updateProfile);
  */
 router.put('/change-password', auth, authController.changePassword);
 
-module.exports = router; 
+module.exports = router;

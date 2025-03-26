@@ -65,31 +65,31 @@ const { DataTypes } = require('sequelize');
 const db = require('../config/db');
 
 const Room = db.define('Room', {
-  name: { 
-    type: DataTypes.STRING, 
-    allowNull: false 
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
   },
-  description: { 
-    type: DataTypes.TEXT 
+  description: {
+    type: DataTypes.TEXT,
   },
-  price: { 
-    type: DataTypes.FLOAT, 
+  price: {
+    type: DataTypes.FLOAT,
     allowNull: false,
     validate: {
-      min: 0
-    }
+      min: 0,
+    },
   },
   capacity: {
     type: DataTypes.INTEGER,
     allowNull: false,
     defaultValue: 1,
     validate: {
-      min: 1
-    }
+      min: 1,
+    },
   },
   roomType: {
     type: DataTypes.STRING,
-    defaultValue: 'standard'
+    defaultValue: 'standard',
   },
   amenities: {
     type: DataTypes.TEXT,
@@ -100,7 +100,7 @@ const Room = db.define('Room', {
     },
     set(value) {
       this.setDataValue('amenities', JSON.stringify(value || []));
-    }
+    },
   },
   images: {
     type: DataTypes.TEXT,
@@ -111,21 +111,21 @@ const Room = db.define('Room', {
     },
     set(value) {
       this.setDataValue('images', JSON.stringify(value || []));
-    }
+    },
   },
-  available: { 
-    type: DataTypes.BOOLEAN, 
-    defaultValue: true 
+  available: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true,
   },
   floor: {
     type: DataTypes.INTEGER,
-    allowNull: true
+    allowNull: true,
   },
   roomNumber: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
-  }
+    unique: true,
+  },
 });
 
-module.exports = Room; 
+module.exports = Room;

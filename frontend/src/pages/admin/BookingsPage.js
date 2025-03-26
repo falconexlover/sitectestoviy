@@ -81,12 +81,12 @@ const DateRangeFilter = styled.div`
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   min-width: 300px;
-  
+
   i {
     color: #7f8c8d;
     margin-right: 0.5rem;
   }
-  
+
   input {
     padding: 0.25rem;
     border: none;
@@ -95,7 +95,7 @@ const DateRangeFilter = styled.div`
     color: #2c3e50;
     width: 120px;
   }
-  
+
   span {
     color: #7f8c8d;
   }
@@ -113,7 +113,7 @@ const BookingsTable = styled.table`
 
 const TableHead = styled.thead`
   background-color: #f8f9fa;
-  
+
   th {
     padding: 1rem;
     text-align: left;
@@ -128,46 +128,20 @@ const TableBody = styled.tbody`
   tr {
     border-bottom: 1px solid #f0f0f0;
     transition: background-color 0.2s;
-    
+
     &:hover {
       background-color: #f8f9fa;
     }
-    
+
     &:last-child {
       border-bottom: none;
     }
   }
-  
+
   td {
     padding: 1rem;
     color: #2c3e50;
   }
-`;
-
-const StatusBadge = styled.span`
-  display: inline-block;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  background-color: ${props => {
-    switch (props.status) {
-      case 'confirmed': return '#e3f7ed';
-      case 'pending': return '#fff8e6';
-      case 'cancelled': return '#ffebee';
-      case 'completed': return '#e8f0fe';
-      default: return '#f0f0f0';
-    }
-  }};
-  color: ${props => {
-    switch (props.status) {
-      case 'confirmed': return '#1d8a4e';
-      case 'pending': return '#ff9800';
-      case 'cancelled': return '#e53935';
-      case 'completed': return '#3f51b5';
-      default: return '#7f8c8d';
-    }
-  }};
 `;
 
 const ActionLink = styled(Link)`
@@ -181,11 +155,11 @@ const ActionLink = styled(Link)`
   text-decoration: none;
   transition: background-color 0.2s;
   margin-right: 0.5rem;
-  
+
   &:hover {
     background-color: #e0e0e0;
   }
-  
+
   i {
     margin-right: 0.25rem;
   }
@@ -220,16 +194,16 @@ const PageButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid ${props => props.active ? '#3498db' : '#e0e0e0'};
+  border: 1px solid ${props => (props.active ? '#3498db' : '#e0e0e0')};
   border-radius: 4px;
-  background-color: ${props => props.active ? '#3498db' : 'white'};
-  color: ${props => props.active ? 'white' : '#2c3e50'};
+  background-color: ${props => (props.active ? '#3498db' : 'white')};
+  color: ${props => (props.active ? 'white' : '#2c3e50')};
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    background-color: ${props => props.active ? '#2980b9' : '#f0f0f0'};
+    background-color: ${props => (props.active ? '#2980b9' : '#f0f0f0')};
   }
 
   &:disabled {
@@ -283,13 +257,13 @@ const NoResults = styled.div`
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  
+
   i {
     font-size: 3rem;
     color: #95a5a6;
     margin-bottom: 1rem;
   }
-  
+
   p {
     font-size: 1.2rem;
     color: #7f8c8d;
@@ -313,89 +287,53 @@ const RetryButton = styled.button`
   }
 `;
 
-const formatDate = (dateString) => {
+const formatDate = dateString => {
   const date = new Date(dateString);
   return new Intl.DateTimeFormat('ru-RU', {
     day: '2-digit',
     month: '2-digit',
-    year: 'numeric'
+    year: 'numeric',
   }).format(date);
 };
 
-const formatDateTime = (dateString) => {
+const formatDateTime = dateString => {
   const date = new Date(dateString);
   return new Intl.DateTimeFormat('ru-RU', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   }).format(date);
 };
 
-const translateStatus = (status) => {
+const translateStatus = status => {
   const statuses = {
-    'pending': 'Ожидание',
-    'confirmed': 'Подтверждено',
-    'cancelled': 'Отменено',
-    'completed': 'Завершено'
+    pending: 'Ожидание',
+    confirmed: 'Подтверждено',
+    cancelled: 'Отменено',
+    completed: 'Завершено',
   };
   return statuses[status] || status;
-};
-
-const BookingStatusCell = ({ value }) => {
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'confirmed': return '#4CAF50';
-      case 'pending': return '#FFC107';
-      case 'cancelled': return '#F44336';
-      case 'completed': return '#2196F3';
-      default: return '#9E9E9E';
-    }
-  };
-
-  const getStatusText = (status) => {
-    switch (status) {
-      case 'confirmed': return 'Подтверждено';
-      case 'pending': return 'Ожидает';
-      case 'cancelled': return 'Отменено';
-      case 'completed': return 'Завершено';
-      default: return 'Неизвестно';
-    }
-  };
-
-  return (
-    <div style={{ 
-      padding: '4px 8px', 
-      borderRadius: '4px', 
-      backgroundColor: getStatusColor(value), 
-      color: 'white',
-      display: 'inline-block',
-      fontWeight: 'bold',
-      fontSize: '0.85rem'
-    }}>
-      {getStatusText(value)}
-    </div>
-  );
 };
 
 const BookingsPage = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  
+
   const [currentPage, setCurrentPage] = useState(1);
   const bookingsPerPage = 10;
-  
+
   useEffect(() => {
     fetchBookings();
   }, []);
-  
+
   const fetchBookings = async () => {
     try {
       setLoading(true);
@@ -409,28 +347,39 @@ const BookingsPage = () => {
       setLoading(false);
     }
   };
-  
+
   const handleStatusChange = async (bookingId, newStatus) => {
     try {
       await bookingService.updateBookingStatus(bookingId, newStatus);
-      
+
       // Обновляем состояние после успешного запроса
-      setBookings(bookings.map(booking => 
-        booking.id === bookingId 
-          ? { ...booking, status: newStatus } 
-          : booking
-      ));
-      
+      setBookings(
+        bookings.map(booking =>
+          booking.id === bookingId ? { ...booking, status: newStatus } : booking
+        )
+      );
+
       // Оповещение об успешном обновлении
     } catch (error) {
       console.error('Ошибка при обновлении статуса:', error);
       // Оповещение об ошибке
     }
   };
-  
+
   const exportToCSV = () => {
     // Функция экспорта бронирований в CSV
-    const headers = ['ID', 'Гость', 'Email', 'Телефон', 'Номер', 'Даты', 'Гостей', 'Цена', 'Статус', 'Создано'];
+    const headers = [
+      'ID',
+      'Гость',
+      'Email',
+      'Телефон',
+      'Номер',
+      'Даты',
+      'Гостей',
+      'Цена',
+      'Статус',
+      'Создано',
+    ];
     const rows = filteredBookings.map(booking => [
       booking.id,
       booking.User?.name || 'Н/Д',
@@ -441,14 +390,11 @@ const BookingsPage = () => {
       booking.guestsCount || 'Н/Д',
       `${booking.totalPrice.toLocaleString('ru-RU')} ₽`,
       translateStatus(booking.status),
-      formatDateTime(booking.createdAt)
+      formatDateTime(booking.createdAt),
     ]);
-    
-    const csvContent = [
-      headers.join(','),
-      ...rows.map(row => row.join(','))
-    ].join('\n');
-    
+
+    const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+
     // Создаем временную ссылку для скачивания файла
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
@@ -456,43 +402,42 @@ const BookingsPage = () => {
     link.setAttribute('download', `bookings-${new Date().toISOString().slice(0, 10)}.csv`);
     link.click();
   };
-  
+
   // Фильтрация бронирований
   const filteredBookings = bookings.filter(booking => {
     // Поиск по ID, имени гостя, email или номеру комнаты
-    const searchMatch = 
+    const searchMatch =
       booking.id.toString().includes(searchTerm) ||
       (booking.User?.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       (booking.User?.email || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       (booking.Room?.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       (booking.Room?.number || '').toString().includes(searchTerm);
-    
+
     // Фильтр по статусу
     const statusMatch = statusFilter ? booking.status === statusFilter : true;
-    
+
     // Фильтр по датам
     const checkInDate = new Date(booking.checkIn);
     const checkOutDate = new Date(booking.checkOut);
-    
+
     const startDateFilter = startDate ? new Date(startDate) : null;
     const endDateFilter = endDate ? new Date(endDate) : null;
-    
-    const dateMatch = (
+
+    const dateMatch =
       (!startDateFilter || checkInDate >= startDateFilter) &&
-      (!endDateFilter || checkOutDate <= endDateFilter)
-    );
-    
+      (!endDateFilter || checkOutDate <= endDateFilter);
+
     return searchMatch && statusMatch && dateMatch;
   });
-  
+
   // Пагинация
   const indexOfLastBooking = currentPage * bookingsPerPage;
   const indexOfFirstBooking = indexOfLastBooking - bookingsPerPage;
   const currentBookings = filteredBookings.slice(indexOfFirstBooking, indexOfLastBooking);
   const totalPages = Math.ceil(filteredBookings.length / bookingsPerPage);
-  
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  
+
+  const paginate = pageNumber => setCurrentPage(pageNumber);
+
   return (
     <PageContainer>
       <PageHeader>
@@ -501,47 +446,44 @@ const BookingsPage = () => {
           <i className="fas fa-file-export"></i> Экспорт в CSV
         </ExportButton>
       </PageHeader>
-      
+
       <FilterContainer>
         <SearchInput>
           <i className="fas fa-search"></i>
-          <input 
-            type="text" 
-            placeholder="Поиск бронирования..." 
+          <input
+            type="text"
+            placeholder="Поиск бронирования..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
           />
         </SearchInput>
-        
-        <FilterSelect 
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-        >
+
+        <FilterSelect value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
           <option value="">Все статусы</option>
           <option value="pending">Ожидание</option>
           <option value="confirmed">Подтверждено</option>
           <option value="cancelled">Отменено</option>
           <option value="completed">Завершено</option>
         </FilterSelect>
-        
+
         <DateRangeFilter>
           <i className="fas fa-calendar-alt"></i>
-          <input 
-            type="date" 
+          <input
+            type="date"
             value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
+            onChange={e => setStartDate(e.target.value)}
             placeholder="Дата заезда"
           />
           <span>до</span>
-          <input 
-            type="date" 
+          <input
+            type="date"
             value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
+            onChange={e => setEndDate(e.target.value)}
             placeholder="Дата выезда"
           />
         </DateRangeFilter>
       </FilterContainer>
-      
+
       {loading ? (
         <LoadingWrapper>
           <LoadingIndicator>Загрузка бронирований...</LoadingIndicator>
@@ -556,12 +498,16 @@ const BookingsPage = () => {
         <NoResults>
           <i className="fas fa-calendar-times"></i>
           <p>Бронирования не найдены</p>
-          <RetryButton onClick={() => {
-            setSearchTerm('');
-            setStatusFilter('');
-            setStartDate('');
-            setEndDate('');
-          }}>Сбросить фильтры</RetryButton>
+          <RetryButton
+            onClick={() => {
+              setSearchTerm('');
+              setStatusFilter('');
+              setStartDate('');
+              setEndDate('');
+            }}
+          >
+            Сбросить фильтры
+          </RetryButton>
         </NoResults>
       ) : (
         <>
@@ -588,22 +534,24 @@ const BookingsPage = () => {
                     <br />
                     <small style={{ color: '#7f8c8d' }}>{booking.User?.email || 'Н/Д'}</small>
                   </td>
-                  <td>
-                    {booking.Room?.title || `Номер ${booking.Room?.number}` || 'Н/Д'}
-                  </td>
+                  <td>{booking.Room?.title || `Номер ${booking.Room?.number}` || 'Н/Д'}</td>
                   <td>
                     {formatDate(booking.checkIn)} - {formatDate(booking.checkOut)}
                     <br />
                     <small style={{ color: '#7f8c8d' }}>
-                      {Math.ceil((new Date(booking.checkOut) - new Date(booking.checkIn)) / (1000 * 60 * 60 * 24))} ночей
+                      {Math.ceil(
+                        (new Date(booking.checkOut) - new Date(booking.checkIn)) /
+                          (1000 * 60 * 60 * 24)
+                      )}{' '}
+                      ночей
                     </small>
                   </td>
                   <td>{booking.guestsCount || 'Н/Д'}</td>
                   <td>{booking.totalPrice?.toLocaleString('ru-RU')} ₽</td>
                   <td>
-                    <StatusSelect 
+                    <StatusSelect
                       value={booking.status}
-                      onChange={(e) => handleStatusChange(booking.id, e.target.value)}
+                      onChange={e => handleStatusChange(booking.id, e.target.value)}
                     >
                       <option value="pending">Ожидание</option>
                       <option value="confirmed">Подтверждено</option>
@@ -621,16 +569,13 @@ const BookingsPage = () => {
               ))}
             </TableBody>
           </BookingsTable>
-          
+
           {totalPages > 1 && (
             <Pagination>
-              <PageButton 
-                onClick={() => paginate(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
+              <PageButton onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
                 <i className="fas fa-chevron-left"></i>
               </PageButton>
-              
+
               {[...Array(totalPages).keys()].map(number => (
                 <PageButton
                   key={number + 1}
@@ -640,8 +585,8 @@ const BookingsPage = () => {
                   {number + 1}
                 </PageButton>
               ))}
-              
-              <PageButton 
+
+              <PageButton
                 onClick={() => paginate(currentPage + 1)}
                 disabled={currentPage === totalPages}
               >
@@ -655,4 +600,4 @@ const BookingsPage = () => {
   );
 };
 
-export default BookingsPage; 
+export default BookingsPage;

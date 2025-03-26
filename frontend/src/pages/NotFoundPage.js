@@ -96,22 +96,40 @@ const Illustration = styled.div`
   font-size: 5rem;
   line-height: 1;
   color: #e74c3c;
-  
+
   i {
     animation: shake 1.5s infinite;
     display: inline-block;
   }
-  
+
   @keyframes shake {
-    0% { transform: rotate(0); }
-    15% { transform: rotate(5deg); }
-    30% { transform: rotate(-5deg); }
-    45% { transform: rotate(4deg); }
-    60% { transform: rotate(-4deg); }
-    75% { transform: rotate(2deg); }
-    85% { transform: rotate(-2deg); }
-    92% { transform: rotate(1deg); }
-    100% { transform: rotate(0); }
+    0% {
+      transform: rotate(0);
+    }
+    15% {
+      transform: rotate(5deg);
+    }
+    30% {
+      transform: rotate(-5deg);
+    }
+    45% {
+      transform: rotate(4deg);
+    }
+    60% {
+      transform: rotate(-4deg);
+    }
+    75% {
+      transform: rotate(2deg);
+    }
+    85% {
+      transform: rotate(-2deg);
+    }
+    92% {
+      transform: rotate(1deg);
+    }
+    100% {
+      transform: rotate(0);
+    }
   }
 `;
 
@@ -124,8 +142,8 @@ const NotFoundPage = () => {
         <i className="fas fa-tree"></i>
       </Illustration>
       <ErrorDescription>
-        Похоже, вы забрели в дремучий лес! Страница, которую вы ищете, не существует или была перемещена.
-        Возможно, вы ошиблись при вводе адреса или перешли по устаревшей ссылке.
+        Похоже, вы забрели в дремучий лес! Страница, которую вы ищете, не существует или была
+        перемещена. Возможно, вы ошиблись при вводе адреса или перешли по устаревшей ссылке.
       </ErrorDescription>
       <LinkGroup>
         <PrimaryLink to="/">Вернуться на главную</PrimaryLink>
@@ -136,4 +154,4 @@ const NotFoundPage = () => {
   );
 };
 
-export default NotFoundPage; 
+export default NotFoundPage;
