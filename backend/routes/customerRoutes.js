@@ -119,7 +119,7 @@ router.get('/:id', customerController.getCustomerById);
  */
 router.get('/:id/stats', customerController.getCustomerStats);
 
-router.put('/:id', customerController.updateCustomer);
-router.delete('/:id', customerController.deleteCustomer);
+// router.put('/:id', customerController.updateCustomer);
+// router.delete('/:id', customerController.deleteCustomer);
 
 module.exports = router;

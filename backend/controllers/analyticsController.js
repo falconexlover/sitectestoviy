@@ -233,3 +233,170 @@ exports.getPopularRooms = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+// Добавляем недостающие функции для маршрутов аналитики
+exports.getBookingAnalytics = async (req, res) => {
+  try {
+    const { period } = req.query;
+    const timeFrame = period || 'month'; // по умолчанию за месяц
+    
+    const now = new Date();
+    let startDate;
+    
+    switch(timeFrame) {
+      case 'week':
+        startDate = new Date(now);
+        startDate.setDate(now.getDate() - 7);
+        break;
+      case 'month':
+        startDate = new Date(now);
+        startDate.setMonth(now.getMonth() - 1);
+        break;
+      case 'year':
+        startDate = new Date(now);
+        startDate.setFullYear(now.getFullYear() - 1);
+        break;
+      default:
+        startDate = new Date(now);
+        startDate.setMonth(now.getMonth() - 1);
+    }
+    
+    const bookings = await Booking.findAll({
+      where: {
+        createdAt: {
+          [Op.between]: [startDate, now]
+        }
+      },
+      attributes: [
+        [sequelize.fn('date', sequelize.col('createdAt')), 'date'],
+        [sequelize.fn('count', sequelize.col('id')), 'count']
+      ],
+      group: [sequelize.fn('date', sequelize.col('createdAt'))],
+      order: [[sequelize.literal('date'), 'ASC']]
+    });
+    
+    res.json(bookings);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.getRevenueAnalytics = async (req, res) => {
+  try {
+    const { period } = req.query;
+    const timeFrame = period || 'month'; // по умолчанию за месяц
+    
+    const now = new Date();
+    let startDate;
+    
+    switch(timeFrame) {
+      case 'week':
+        startDate = new Date(now);
+        startDate.setDate(now.getDate() - 7);
+        break;
+      case 'month':
+        startDate = new Date(now);
+        startDate.setMonth(now.getMonth() - 1);
+        break;
+      case 'year':
+        startDate = new Date(now);
+        startDate.setFullYear(now.getFullYear() - 1);
+        break;
+      default:
+        startDate = new Date(now);
+        startDate.setMonth(now.getMonth() - 1);
+    }
+    
+    const revenue = await Booking.findAll({
+      where: {
+        status: {
+          [Op.in]: ['confirmed', 'completed']
+        },
+        createdAt: {
+          [Op.between]: [startDate, now]
+        }
+      },
+      attributes: [
+        [sequelize.fn('date', sequelize.col('createdAt')), 'date'],
+        [sequelize.fn('sum', sequelize.col('totalPrice')), 'totalRevenue']
+      ],
+      group: [sequelize.fn('date', sequelize.col('createdAt'))],
+      order: [[sequelize.literal('date'), 'ASC']]
+    });
+    
+    res.json(revenue);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.getOccupancyAnalytics = async (req, res) => {
+  try {
+    const now = new Date();
+    const endDate = new Date(now);
+    endDate.setDate(now.getDate() + 30); // аналитика на 30 дней вперед
+    
+    // Получаем общее количество номеров
+    const totalRooms = await Room.count();
+    
+    // Получаем бронирования на следующие 30 дней
+    const bookings = await Booking.findAll({
+      where: {
+        status: 'confirmed',
+        [Op.or]: [
+          {
+            checkIn: {
+              [Op.between]: [now, endDate]
+            }
+          },
+          {
+            checkOut: {
+              [Op.between]: [now, endDate]
+            }
+          },
+          {
+            [Op.and]: [
+              { checkIn: { [Op.lte]: now } },
+              { checkOut: { [Op.gte]: endDate } }
+            ]
+          }
+        ]
+      },
+      attributes: ['checkIn', 'checkOut']
+    });
+    
+    // Рассчитываем занятость по дням
+    const occupancyByDay = {};
+    
+    for (let i = 0; i < 30; i++) {
+      const currentDate = new Date(now);
+      currentDate.setDate(now.getDate() + i);
+      currentDate.setHours(0, 0, 0, 0);
+      
+      const dateString = currentDate.toISOString().split('T')[0];
+      
+      // Считаем количество занятых номеров на эту дату
+      const occupiedRooms = bookings.filter(booking => {
+        const checkIn = new Date(booking.checkIn);
+        const checkOut = new Date(booking.checkOut);
+        checkIn.setHours(0, 0, 0, 0);
+        checkOut.setHours(0, 0, 0, 0);
+        
+        return currentDate >= checkIn && currentDate < checkOut;
+      }).length;
+      
+      const occupancyRate = (occupiedRooms / totalRooms) * 100;
+      
+      occupancyByDay[dateString] = {
+        date: dateString,
+        occupiedRooms,
+        availableRooms: totalRooms - occupiedRooms,
+        occupancyRate: Math.round(occupancyRate * 100) / 100
+      };
+    }
+    
+    res.json(Object.values(occupancyByDay));
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

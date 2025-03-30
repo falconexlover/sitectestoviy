@@ -157,10 +157,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response = await authService.updateProfile(userData);
       
       if (response.status === 200) {
-        setUser(prev => prev ? { ...prev, ...response.data } : null);
+        setUser(prev => prev ? { ...prev, ...response.data.user } : null);
         return true;
       } else {
-        setError(response.message || 'Ошибка обновления профиля');
+        setError('Ошибка обновления профиля');
         return false;
       }
     } catch (err: any) {

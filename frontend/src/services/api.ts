@@ -1,6 +1,10 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
+import axios, { AxiosInstance, AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { User, Room, RoomAvailabilityParams, RoomData, Booking, BookingData, BookingStatus, Customer, CustomerStats, AnalyticsData, OccupancyForecast, PopularRooms } from '../types/services';
-import { reviewService } from './reviewService';
+
+// Кастомная конфигурация для Axios с _retry полем
+interface CustomInternalAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
 
 // Создаем экземпляр axios с базовым URL API
 const api: AxiosInstance = axios.create({
@@ -28,7 +32,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
-    const originalRequest = error.config;
+    const originalRequest = error.config as CustomInternalAxiosRequestConfig;
     
     if (originalRequest && error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -67,6 +71,10 @@ export const authService = {
   getProfile: () => api.get<{ user: User }>('/auth/profile'),
   updateProfile: (userData: Partial<User>) => api.put<{ user: User }>('/auth/profile', userData),
   changePassword: (passwords: { currentPassword: string; newPassword: string }) => api.put('/auth/change-password', passwords),
+  logout: () => api.post('/auth/logout'),
+  getAllUsers: () => api.get<{ users: User[] }>('/auth/users'),
+  deleteUser: (userId: string) => api.delete(`/auth/users/${userId}`),
+  updateUserRole: (userId: string, role: string) => api.put(`/auth/users/${userId}/role`, { role }),
 };
 
 export const roomService = {
@@ -86,10 +94,15 @@ export const bookingService = {
     api.post<{ booking: Booking }>('/bookings', bookingData),
   getUserBookings: () => api.get<{ bookings: Booking[] }>('/bookings'),
   getBookingById: (id: string) => api.get<{ booking: Booking }>(`/bookings/${id}`),
-  cancelBooking: (id: string) => api.put<{ booking: Booking }>(`/bookings/cancel/${id}`),
+  cancelBooking: (id: string) => api.put<{ booking: Booking }>(`/bookings/${id}/cancel`),
   getAllBookings: () => api.get<{ bookings: Booking[] }>('/bookings/admin/all'),
   updateBookingStatus: (id: string, status: BookingStatus) => 
     api.put<{ booking: Booking }>(`/bookings/admin/status/${id}`, { status }),
+  checkAvailability: (roomId: string, checkIn: string, checkOut: string) =>
+    api.get<{ available: boolean }>('/bookings/availability', {
+      params: { roomId, checkIn, checkOut },
+    }),
+  getBookingStats: () => api.get<{ stats: any }>('/bookings/stats'),
 };
 
 export const customerService = {
@@ -121,7 +134,5 @@ export const userService = {
   updatePassword: (passwords: { currentPassword: string; newPassword: string }) => api.put('/auth/change-password', passwords),
   getProfile: () => api.get<{ user: User }>('/auth/profile'),
 };
-
-export { reviewService };
 
 export default api; 

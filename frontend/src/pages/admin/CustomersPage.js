@@ -622,7 +622,7 @@ const CustomersPage = () => {
                 <i className="fas fa-chevron-left"></i>
               </PageButton>
 
-              {[...Array(totalPages).keys()].map(number => (
+              {Array.from({ length: totalPages }, (_, i) => i).map(number => (
                 <PageButton
                   key={number + 1}
                   active={number + 1 === currentPage}

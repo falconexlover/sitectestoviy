@@ -134,6 +134,15 @@ const Booking = db.define('Booking', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+}, {
+  indexes: [
+    { fields: ['status'] },
+    { fields: ['checkIn'] },
+    { fields: ['checkOut'] },
+    { fields: ['UserId'] },
+    { fields: ['RoomId'] },
+    { fields: ['paymentStatus'] }
+  ]
 });
 
 module.exports = Booking;

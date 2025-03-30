@@ -8,9 +8,11 @@
 const express = require('express');
 const router = express.Router();
 const analyticsController = require('../controllers/analyticsController');
-const { authenticate } = require('../middlewares/authMiddleware');
+const { auth, staffOnly } = require('../middlewares/authMiddleware');
 
-router.use(authenticate);
+// Применяем middleware аутентификации
+router.use(auth);
+router.use(staffOnly);
 
 /**
  * @swagger
@@ -113,8 +115,9 @@ router.get('/forecast', analyticsController.getOccupancyForecast);
  */
 router.get('/popular-rooms', analyticsController.getPopularRooms);
 
-router.get('/analytics/bookings', analyticsController.getBookingAnalytics);
-router.get('/analytics/revenue', analyticsController.getRevenueAnalytics);
-router.get('/analytics/occupancy', analyticsController.getOccupancyAnalytics);
+// Дополнительные маршруты аналитики
+router.get('/bookings', analyticsController.getBookingAnalytics);
+router.get('/revenue', analyticsController.getRevenueAnalytics);
+router.get('/occupancy', analyticsController.getOccupancyAnalytics);
 
 module.exports = router;

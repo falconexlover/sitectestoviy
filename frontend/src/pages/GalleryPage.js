@@ -114,7 +114,7 @@ const GalleryPage = () => {
         ))}
       </CategoryFilters>
 
-      <Gallery />
+      <Gallery images={[]} />
     </PageContainer>
   );
 };

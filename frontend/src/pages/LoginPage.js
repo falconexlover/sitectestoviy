@@ -2,8 +2,16 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../context/AuthContext';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { 
+  FormGroup, 
+  Label, 
+  Input, 
+  Button, 
+  Error, 
+  Alert 
+} from '../components/common/PageElements';
 
 const PageWrapper = styled.div`
   min-height: calc(100vh - 150px);
@@ -66,89 +74,6 @@ const StyledForm = styled(Form)`
   gap: 1.5rem;
 `;
 
-const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`;
-
-const Label = styled.label`
-  font-weight: 600;
-  color: var(--dark-color);
-  margin-bottom: 0.5rem;
-`;
-
-const Input = styled(Field)`
-  padding: 0.9rem 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  transition: var(--transition);
-  font-size: 1rem;
-  width: 100%;
-  background-color: var(--light-color);
-
-  &:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(33, 113, 72, 0.2);
-  }
-
-  &::placeholder {
-    color: var(--text-muted);
-    opacity: 0.8;
-  }
-`;
-
-const Error = styled.div`
-  color: var(--error-color);
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
-`;
-
-const Button = styled.button`
-  background-color: var(--primary-color);
-  color: white;
-  padding: 1rem;
-  border: none;
-  border-radius: var(--radius-sm);
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-  letter-spacing: 0.5px;
-  font-size: 1rem;
-  box-shadow: var(--shadow-sm);
-  text-transform: uppercase;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0%;
-    height: 100%;
-    background-color: var(--dark-color);
-    transition: var(--transition);
-    z-index: -1;
-  }
-
-  &:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-3px);
-  }
-
-  &:hover::before {
-    width: 100%;
-  }
-
-  &:disabled {
-    background-color: var(--border-color);
-    cursor: not-allowed;
-  }
-`;
-
 const LinkText = styled.div`
   text-align: center;
   margin-top: 1.5rem;
@@ -183,16 +108,6 @@ const LinkText = styled.div`
   }
 `;
 
-const Alert = styled.div`
-  background-color: rgba(220, 53, 69, 0.1);
-  color: var(--error-color);
-  padding: 1rem;
-  border-radius: var(--radius-sm);
-  margin-bottom: 1.5rem;
-  border-left: 4px solid var(--error-color);
-  font-size: 0.95rem;
-`;
-
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Некорректный email').required('Обязательное поле'),
   password: Yup.string().required('Обязательное поле'),
@@ -225,7 +140,7 @@ const LoginPage = () => {
       <Container>
         <Title>Вход в систему</Title>
 
-        {loginError && <Alert>{loginError}</Alert>}
+        {loginError && <Alert type="danger">{loginError}</Alert>}
 
         <Formik
           initialValues={{ email: '', password: '' }}
@@ -251,16 +166,20 @@ const LoginPage = () => {
                 <ErrorMessage name="password" component={Error} />
               </FormGroup>
 
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? 'Вход...' : 'Войти'}
+              <Button 
+                type="submit" 
+                block 
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Выполняется вход...' : 'Войти'}
               </Button>
+
+              <LinkText>
+                Еще нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
+              </LinkText>
             </StyledForm>
           )}
         </Formik>
-
-        <LinkText>
-          Еще нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
-        </LinkText>
       </Container>
     </PageWrapper>
   );

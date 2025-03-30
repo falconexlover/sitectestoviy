@@ -3,16 +3,16 @@
  */
 
 const { Booking, Room, User } = require('../models');
-const { Op } = require('sequelize');
+const { Op, fn, col } = require('sequelize');
+const db = require('../config/db');
 const logger = require('../utils/logger');
 
 /**
  * Создание нового бронирования
  * @param {Object} bookingData Данные бронирования
- * @param {number} userId ID пользователя, создающего бронирование
  * @returns {Promise<Object>} Созданное бронирование
  */
-exports.createBooking = async (bookingData, userId) => {
+exports.createBooking = async (bookingData) => {
   try {
     // Проверяем существование номера
     const room = await Room.findByPk(bookingData.roomId);
@@ -41,7 +41,8 @@ exports.createBooking = async (bookingData, userId) => {
     // Создаем бронирование
     const booking = await Booking.create({
       ...bookingData,
-      UserId: userId,
+      UserId: bookingData.userId,
+      RoomId: bookingData.roomId,
       totalPrice,
       status: 'pending',
     });
@@ -239,6 +240,80 @@ exports.updateBookingStatus = async (id, status) => {
     return booking;
   } catch (error) {
     logger.error(`Ошибка при обновлении статуса бронирования ${id}:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Получение статистики по бронированиям
+ * @returns {Promise<Object>} Объект со статистикой бронирований
+ */
+exports.getBookingStats = async () => {
+  try {
+    const totalCount = await Booking.count();
+    const confirmedCount = await Booking.count({ where: { status: 'confirmed' } });
+    const pendingCount = await Booking.count({ where: { status: 'pending' } });
+    const canceledCount = await Booking.count({ where: { status: 'canceled' } });
+    const completedCount = await Booking.count({ where: { status: 'completed' } });
+
+    // Расчет дохода от подтвержденных бронирований
+    const totalRevenue = await Booking.sum('totalPrice', {
+      where: { status: { [Op.in]: ['confirmed', 'completed'] } },
+    });
+
+    // Статистика по месяцам (текущий год)
+    const currentYear = new Date().getFullYear();
+    const startOfYear = new Date(currentYear, 0, 1);
+    const endOfYear = new Date(currentYear, 11, 31);
+
+    const bookingsByMonth = await Booking.findAll({
+      attributes: [
+        [
+          fn('date_trunc', 'month', col('createdAt')),
+          'month',
+        ],
+        [fn('COUNT', col('id')), 'count'],
+        [fn('SUM', col('totalPrice')), 'revenue'],
+      ],
+      where: {
+        createdAt: {
+          [Op.between]: [startOfYear, endOfYear],
+        },
+        status: { [Op.in]: ['confirmed', 'completed'] },
+      },
+      group: [fn('date_trunc', 'month', col('createdAt'))],
+      order: [fn('date_trunc', 'month', col('createdAt'))],
+    });
+
+    // Самые популярные номера
+    const popularRooms = await Booking.findAll({
+      attributes: [
+        'RoomId',
+        [fn('COUNT', col('id')), 'bookingCount'],
+      ],
+      include: [{ model: Room, attributes: ['name', 'capacity', 'price'] }],
+      where: {
+        status: { [Op.in]: ['confirmed', 'completed'] },
+      },
+      group: ['RoomId', 'Room.id'],
+      order: [[fn('COUNT', col('id')), 'DESC']],
+      limit: 5,
+    });
+
+    return {
+      totalCount,
+      statuses: {
+        confirmed: confirmedCount,
+        pending: pendingCount,
+        canceled: canceledCount,
+        completed: completedCount,
+      },
+      totalRevenue: totalRevenue || 0,
+      monthlyStats: bookingsByMonth,
+      popularRooms,
+    };
+  } catch (error) {
+    logger.error('Ошибка при получении статистики бронирований:', error);
     throw error;
   }
 };

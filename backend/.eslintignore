@@ -1,7 +1,30 @@
+# Зависимости
 node_modules/
+**/node_modules/
+
+# Сборки
+build/
 dist/
+**/build/
+**/dist/
+
+# Тесты
 coverage/
-*.config.js
-jest.config.js
+**/coverage/
+
+# Конфигурационные файлы
+.prettierrc
+**/.prettierrc
+
+# Документация
+docs/
+**/docs/
+
+# Скрипты
+scripts/
+**/scripts/
+
+# Временные файлы
+*.log
+**/*.log
 logs/
-*.log 

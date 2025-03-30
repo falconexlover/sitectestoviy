@@ -5,7 +5,6 @@
  *     User:
  *       type: object
  *       required:
- *         - username
  *         - email
  *         - password
  *       properties:
@@ -51,10 +50,10 @@ const User = db.define(
   {
     username: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       unique: true,
       validate: {
-        notEmpty: true,
+        notEmpty: false,
       },
     },
     email: {

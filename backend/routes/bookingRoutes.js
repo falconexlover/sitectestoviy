@@ -77,11 +77,11 @@ router.post('/', bookingController.createBooking);
  *       401:
  *         description: Не авторизован
  */
-router.get('/user', bookingController.getUserBookings);
+router.get('/', bookingController.getUserBookings);
 
 /**
  * @swagger
- * /api/bookings/all:
+ * /api/bookings/admin/all:
  *   get:
  *     summary: Получение списка всех бронирований (только для админов/менеджеров)
  *     tags: [Bookings]
@@ -114,7 +114,7 @@ router.get('/user', bookingController.getUserBookings);
  *       403:
  *         description: Нет прав для доступа
  */
-router.get('/all', bookingController.getAllBookings);
+router.get('/admin/all', bookingController.getAllBookings);
 
 /**
  * @swagger
@@ -174,7 +174,7 @@ router.put('/:id/cancel', bookingController.cancelBooking);
 
 /**
  * @swagger
- * /api/bookings/{id}/status:
+ * /api/bookings/admin/status/{id}:
  *   put:
  *     summary: Обновление статуса бронирования (только для админов/менеджеров)
  *     tags: [Bookings]
@@ -215,6 +215,71 @@ router.put('/:id/cancel', bookingController.cancelBooking);
  *       404:
  *         description: Бронирование не найдено
  */
-router.put('/:id/status', bookingController.updateBookingStatus);
+router.put('/admin/status/:id', bookingController.updateBookingStatus);
+
+/**
+ * @swagger
+ * /api/bookings/availability:
+ *   get:
+ *     summary: Проверка доступности номера на указанные даты
+ *     tags: [Bookings]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: roomId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID номера
+ *       - in: query
+ *         name: checkIn
+ *         schema:
+ *           type: string
+ *           format: date
+ *         required: true
+ *         description: Дата заезда
+ *       - in: query
+ *         name: checkOut
+ *         schema:
+ *           type: string
+ *           format: date
+ *         required: true
+ *         description: Дата выезда
+ *     responses:
+ *       200:
+ *         description: Информация о доступности номера
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 available:
+ *                   type: boolean
+ *                   description: Доступен ли номер на указанные даты
+ *       400:
+ *         description: Ошибка в запросе
+ *       401:
+ *         description: Не авторизован
+ */
+router.get('/availability', bookingController.checkAvailability);
+
+/**
+ * @swagger
+ * /api/bookings/stats:
+ *   get:
+ *     summary: Получение статистики по бронированиям (только для админов/менеджеров)
+ *     tags: [Bookings]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Статистика по бронированиям
+ *       401:
+ *         description: Не авторизован
+ *       403:
+ *         description: Нет прав для доступа
+ */
+router.get('/stats', bookingController.getBookingStats);
 
 module.exports = router;

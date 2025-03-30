@@ -1,6 +1,40 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const { Booking } = require('../models');
 const logger = require('../utils/logger');
+const { Booking } = require('../models');
+
+// Создаем заглушку или настоящий клиент Stripe в зависимости от наличия ключа API
+let stripe;
+if (process.env.STRIPE_SECRET_KEY) {
+  stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+  logger.info('Stripe API инициализирован');
+} else {
+  logger.warn('STRIPE_SECRET_KEY не найден в окружении. Платежная система работает в ТЕСТОВОМ режиме');
+  // Создаем мок-объект для разработки
+  stripe = {
+    paymentIntents: {
+      create: async (options) => {
+        logger.info(`[ТЕСТ] Создано платежное намерение: ${JSON.stringify(options)}`);
+        return {
+          id: `pi_mock_${Date.now()}`,
+          client_secret: `pi_mock_secret_${Date.now()}`,
+          amount: options.amount,
+          currency: options.currency,
+          metadata: options.metadata,
+          status: 'requires_payment_method'
+        };
+      },
+      retrieve: async (id) => {
+        logger.info(`[ТЕСТ] Получено платежное намерение: ${id}`);
+        return {
+          id,
+          status: 'succeeded',
+          metadata: {
+            bookingId: id.split('_').pop(),
+          }
+        };
+      }
+    }
+  };
+}
 
 // Создание платежного намерения
 exports.createPaymentIntent = async (req, res) => {

@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const reviewController = require('../controllers/reviewController');
-const auth = require('../middleware/authMiddleware');
-const validate = require('../middleware/validateMiddleware');
+const { auth, restrictTo } = require('../middlewares/authMiddleware');
+const validate = require('../middlewares/validateMiddleware');
 const { body } = require('express-validator');
 
 // Валидация для отзывов
@@ -57,7 +57,7 @@ router.get('/rooms/:roomId/reviews', reviewController.getRoomReviews);
 // Создание отзыва (только для авторизованных пользователей)
 router.post(
   '/rooms/:roomId/reviews',
-  auth.protect,
+  auth,
   reviewValidation,
   validate,
   reviewController.createReview
@@ -66,20 +66,20 @@ router.post(
 // Обновление отзыва (только для автора или администратора)
 router.put(
   '/reviews/:reviewId',
-  auth.protect,
+  auth,
   reviewValidation,
   validate,
   reviewController.updateReview
 );
 
 // Удаление отзыва (только для автора или администратора)
-router.delete('/reviews/:reviewId', auth.protect, reviewController.deleteReview);
+router.delete('/reviews/:reviewId', auth, reviewController.deleteReview);
 
 // Ответ на отзыв (только для администраторов и менеджеров)
 router.post(
   '/reviews/:reviewId/respond',
-  auth.protect,
-  auth.restrictTo('admin', 'manager'),
+  auth,
+  restrictTo('admin', 'manager'),
   responseValidation,
   validate,
   reviewController.respondToReview

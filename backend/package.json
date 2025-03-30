@@ -2,18 +2,19 @@
   "name": "hotel-complex-backend",
   "version": "1.0.0",
   "description": "Бэкенд для гостиничного комплекса \"Лесной Дворик\"",
-  "main": "server.js",
+  "main": "dist/server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
-    "build": "echo \"No build step required for backend\" && exit 0",
+    "start": "node dist/server.js",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
+    "build": "tsc",
     "lint": "eslint . --ext .js,.ts",
     "lint:fix": "eslint . --ext .js,.ts --fix",
     "format": "prettier --write \"**/*.{js,ts,json,md}\"",
     "format:check": "prettier --check \"**/*.{js,ts,json,md}\"",
     "test": "jest",
     "migrate": "sequelize-cli db:migrate",
-    "seed": "sequelize-cli db:seed:all"
+    "seed": "sequelize-cli db:seed:all",
+    "init-db": "ts-node src/utils/initDatabase.ts"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -43,6 +44,19 @@
     "xss-clean": "^0.1.4"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/hpp": "^0.2.5",
+    "@types/jest": "^29.5.0",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^18.15.11",
+    "@types/nodemailer": "^6.4.14",
+    "@types/sequelize": "^4.28.20",
+    "@types/supertest": "^6.0.2",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.6",
     "@typescript-eslint/eslint-plugin": "^8.28.0",
     "@typescript-eslint/parser": "^8.28.0",
     "eslint": "^8.57.1",
@@ -52,7 +66,10 @@
     "nodemon": "^3.0.1",
     "prettier": "^3.5.3",
     "sequelize-cli": "^6.6.2",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.0.4"
   },
   "engines": {
     "node": ">=14.0.0",

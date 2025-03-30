@@ -55,3 +55,17 @@ exports.staffOnly = (req, res, next) => {
   logger.debug(`Сотрудник ${req.user.id} (${req.user.role}) получил доступ к защищенной функции`);
   next();
 };
+
+// Middleware для ограничения доступа по ролям
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      logger.warn(
+        `Пользователь ${req.user.id} (${req.user.role}) попытался получить доступ к защищенной функции, доступной только для: ${roles.join(', ')}`
+      );
+      return res.status(403).json({ message: 'Доступ запрещен. Недостаточно прав.' });
+    }
+    logger.debug(`Пользователь ${req.user.id} (${req.user.role}) получил доступ к защищенной функции`);
+    next();
+  };
+};

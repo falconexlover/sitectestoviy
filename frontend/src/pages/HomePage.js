@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Gallery from '../components/Gallery';
 import Testimonials from '../components/Testimonials';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLeaf, faWifi, faParking, faTrain, faHotel, faUserTie } from '@fortawesome/free-solid-svg-icons';
 
 const HeroSection = styled.section`
   height: 100vh;
@@ -505,39 +506,148 @@ const CtaButton = styled(Link)`
 `;
 
 const HomePage = () => {
-  const featuredRooms = [
+  const testimonials = [
     {
       id: 1,
-      name: 'Стандартный номер',
-      description: 'Уютный номер с современным дизайном для комфортного пребывания.',
-      image:
-        'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80',
-      price: 4500,
-      capacity: 2,
-      area: 25,
-      beds: '1 двуспальная',
+      text: 'Отличное место для отдыха в тихой лесной зоне. Очень понравилась атмосфера советской романтики. Обязательно вернёмся!',
+      author: 'Анна П.',
+      rating: 5,
+      avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
     },
     {
       id: 2,
-      name: 'Люкс',
-      description: 'Просторный номер с отдельной гостиной и всеми необходимыми удобствами.',
-      image:
-        'https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
-      price: 7500,
-      capacity: 3,
-      area: 40,
-      beds: '1 king-size',
+      text: 'Уютные номера, приветливый персонал. Сауна - отдельный бонус. Рекомендую для семейного отдыха.',
+      author: 'Михаил К.',
+      rating: 4,
+      avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
     },
     {
       id: 3,
-      name: 'Семейный номер',
-      description: 'Идеален для семейного отдыха, с дополнительной спальней для детей.',
-      image:
-        'https://images.unsplash.com/photo-1618773928121-c32242e63f39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
-      price: 8500,
-      capacity: 4,
-      area: 55,
-      beds: '2 двуспальные',
+      text: 'Провели конференцию в зале Лесного дворика. Всё на высшем уровне, спасибо за организацию!',
+      author: 'Олег В., компания "Альфа"',
+      rating: 5,
+      avatar: 'https://randomuser.me/api/portraits/men/36.jpg',
+    },
+  ];
+
+  const features = [
+    {
+      icon: faLeaf,
+      title: 'Лесопарковая зона',
+      text: 'Расположение в экологически чистом месте, окружённом природой и свежим воздухом',
+    },
+    {
+      icon: faWifi,
+      title: 'Бесплатный Wi-Fi',
+      text: 'На всей территории гостиничного комплекса доступен бесплатный высокоскоростной интернет',
+    },
+    {
+      icon: faParking,
+      title: 'Собственная парковка',
+      text: 'Удобная парковка для гостей гостиницы, вы всегда найдете место для своего автомобиля',
+    },
+    {
+      icon: faTrain,
+      title: 'Близость транспорта',
+      text: 'Недалеко от станции МЦД Отдых, в шаговой доступности от городской инфраструктуры',
+    },
+    {
+      icon: faHotel,
+      title: 'Комфортное проживание',
+      text: 'Уютные номера различных категорий для вашего комфортного отдыха и проживания',
+    },
+    {
+      icon: faUserTie,
+      title: 'Отличный сервис',
+      text: 'Внимательный персонал, который обеспечит комфортное пребывание в гостинице',
+    },
+  ];
+
+  const rooms = [
+    {
+      id: 1,
+      name: '2-местный эконом',
+      description: 'Уютный номер с двумя отдельными кроватями, балконом и видом на парк',
+      price: '2500 ₽/сутки',
+      image: 'https://images.unsplash.com/photo-1631049035182-249067d7618e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
+      link: '/rooms/1',
+    },
+    {
+      id: 2,
+      name: '2-местный семейный',
+      description: 'Двухместный семейный номер-стандарт с видом на парк из окна. Двуспальная кровать, 22 кв.м.',
+      price: '3800 ₽/сутки',
+      image: '/images/rooms/2semeiny/room1.jpg',
+      capacity: 2,
+      area: '22',
+      beds: '1 двуспальная',
+      link: '/rooms/2',
+    },
+    {
+      id: 3,
+      name: '4-местный эконом',
+      description: 'Просторный номер с балконом, 2 комнаты, 4 односпальные кровати, душевая кабина и ванна',
+      price: '5000 ₽/сутки',
+      image: 'https://images.unsplash.com/photo-1595576508898-0ad5c879a061?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80',
+      link: '/rooms/3',
+    },
+  ];
+
+  const services = [
+    {
+      id: 1,
+      name: 'Сауна',
+      description: 'Сауна с купелью и двумя парилками - сухой и русской',
+      price: '1275 ₽/час',
+      image: 'https://images.unsplash.com/photo-1560180474-e8563fd75bab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80',
+      link: '/services/sauna',
+    },
+    {
+      id: 2,
+      name: 'Конференц-зал',
+      description: 'Просторный зал 62 кв.м для проведения мероприятий',
+      price: '1500 ₽/час',
+      image: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1112&q=80',
+      link: '/services/conference',
+    },
+  ];
+
+  const galleryImages = [
+    {
+      id: 1,
+      url: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
+      alt: 'Внешний вид гостиницы',
+      category: 'exterior',
+    },
+    {
+      id: 2,
+      url: 'https://images.unsplash.com/photo-1631049035182-249067d7618e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
+      alt: '2-местный эконом',
+      category: 'rooms',
+    },
+    {
+      id: 3,
+      url: '/images/rooms/2semeiny/room1.jpg',
+      alt: '2-местный семейный',
+      category: 'rooms',
+    },
+    {
+      id: 4,
+      url: 'https://images.unsplash.com/photo-1560180474-e8563fd75bab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80',
+      alt: 'Сауна',
+      category: 'sauna',
+    },
+    {
+      id: 5,
+      url: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1112&q=80',
+      alt: 'Конференц-зал',
+      category: 'conference',
+    },
+    {
+      id: 6,
+      url: 'https://images.unsplash.com/photo-1595576508898-0ad5c879a061?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80',
+      alt: '4-местный эконом',
+      category: 'rooms',
     },
   ];
 
@@ -546,56 +656,44 @@ const HomePage = () => {
       <HeroSection>
         <HeroContainer>
           <HeroContent>
-            <HeroTitle>Уютный отдых в отеле "Лесной Дворик"</HeroTitle>
+            <HeroTitle>Гостиничный комплекс «Лесной дворик»</HeroTitle>
             <HeroSubtitle>
-              Откройте для себя идеальное место для отдыха и релаксации среди природы, с комфортными
-              номерами и первоклассным сервисом.
+              Уютная гостиница, конференц-зал и сауна в лесопарковой зоне города Жуковский
             </HeroSubtitle>
             <ButtonGroup>
               <PrimaryButton to="/rooms">Посмотреть номера</PrimaryButton>
-              <SecondaryButton to="#about">Узнать больше</SecondaryButton>
+              <SecondaryButton to="/booking">Забронировать</SecondaryButton>
             </ButtonGroup>
           </HeroContent>
         </HeroContainer>
       </HeroSection>
 
-      <AboutSection id="about">
+      <AboutSection>
         <Container>
           <AboutGrid>
             <AboutImage>
-              <img
-                src="https://images.unsplash.com/photo-1560624052-449f5ddf0c31?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80"
-                alt="Лесной Дворик"
-              />
+              <img src="https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="Гостиница Лесной дворик" />
             </AboutImage>
             <AboutContent>
-              <SectionSubtitle>О нас</SectionSubtitle>
-              <SectionTitle>Гостеприимство и комфорт в каждой детали</SectionTitle>
+              <SectionSubtitle>О гостинице</SectionSubtitle>
+              <SectionTitle>Лесной дворик</SectionTitle>
               <Paragraph>
-                "Лесной Дворик" – это уютный отель, расположенный в живописном месте среди природы.
-                Мы предлагаем нашим гостям комфортные номера, приветливый персонал и первоклассный
-                сервис, чтобы сделать ваш отдых незабываемым.
+                Санаторий-профилакторий расположен в красивейшей лесопарковой зоне, сохраненной с начала века. Гостиница, конференц-зал, сауна в одном комплексе в городе Жуковский.
               </Paragraph>
               <Paragraph>
-                С момента открытия в 2010 году, наш отель остается любимым местом отдыха для многих
-                семей и бизнес-путешественников, которые ценят комфорт, тишину и красоту окружающей
-                природы.
+                Здание построено в 1979 году, в стиле советского постмодернизма. Использовалось как санаторий-профилакторий Жуковского машиностроительного завода. С 1991 года лечебные и оздоровительные процедуры больше не проводятся, зато комплекс прекрасно справляется с ролью отеля.
               </Paragraph>
               <FeatureList>
                 <FeatureItem>
-                  <FontAwesomeIcon icon="check" />
-                  <span>Современные и комфортные номера</span>
+                  <FontAwesomeIcon icon={faLeaf} size="lg" style={{ color: 'white' }} />
+                  <span>Расположение в лесопарковой зоне</span>
                 </FeatureItem>
                 <FeatureItem>
-                  <FontAwesomeIcon icon="check" />
-                  <span>Ресторан с изысканной кухней</span>
+                  <FontAwesomeIcon icon={faTrain} size="lg" style={{ color: 'white' }} />
+                  <span>Недалеко от ж/д станции МЦД Отдых</span>
                 </FeatureItem>
                 <FeatureItem>
-                  <FontAwesomeIcon icon="check" />
-                  <span>Удобное расположение и парковка</span>
-                </FeatureItem>
-                <FeatureItem>
-                  <FontAwesomeIcon icon="check" />
+                  <FontAwesomeIcon icon={faWifi} size="lg" style={{ color: 'white' }} />
                   <span>Бесплатный Wi-Fi на всей территории</span>
                 </FeatureItem>
               </FeatureList>
@@ -605,133 +703,85 @@ const HomePage = () => {
         </Container>
       </AboutSection>
 
-      <ServicesSection id="services">
+      <ServicesSection>
         <Container>
           <SectionHeader>
-            <SectionSubtitle>Наши услуги</SectionSubtitle>
-            <SectionTitle>Что мы предлагаем</SectionTitle>
+            <SectionSubtitle>Преимущества</SectionSubtitle>
+            <SectionTitle>Наши услуги</SectionTitle>
             <SectionDescription>
-              В отеле "Лесной Дворик" мы стремимся сделать ваше пребывание максимально комфортным и
-              предлагаем широкий спектр услуг
+              Мы стремимся создать комфортные условия для вашего отдыха и предлагаем различные услуги для гостей
             </SectionDescription>
           </SectionHeader>
-
           <ServicesGrid>
-            <ServiceCard>
-              <FontAwesomeIcon icon="utensils" />
-              <ServiceTitle>Ресторан</ServiceTitle>
-              <ServiceDescription>
-                Наш ресторан предлагает изысканные блюда русской и европейской кухни из свежих
-                местных продуктов.
-              </ServiceDescription>
-            </ServiceCard>
-
-            <ServiceCard>
-              <FontAwesomeIcon icon="spa" />
-              <ServiceTitle>СПА центр</ServiceTitle>
-              <ServiceDescription>
-                Расслабьтесь в нашем СПА центре с сауной, джакузи и широким выбором массажей и
-                процедур.
-              </ServiceDescription>
-            </ServiceCard>
-
-            <ServiceCard>
-              <FontAwesomeIcon icon="dumbbell" />
-              <ServiceTitle>Фитнес-зал</ServiceTitle>
-              <ServiceDescription>
-                Поддерживайте форму в нашем современном фитнес-зале, оснащенном новейшим
-                оборудованием.
-              </ServiceDescription>
-            </ServiceCard>
-
-            <ServiceCard>
-              <FontAwesomeIcon icon="swimming-pool" />
-              <ServiceTitle>Бассейн</ServiceTitle>
-              <ServiceDescription>
-                Насладитесь плаванием в нашем крытом бассейне с подогревом, доступным для гостей
-                круглый год.
-              </ServiceDescription>
-            </ServiceCard>
-
-            <ServiceCard>
-              <FontAwesomeIcon icon="child" />
-              <ServiceTitle>Детская площадка</ServiceTitle>
-              <ServiceDescription>
-                Для маленьких гостей предусмотрена детская площадка и игровая комната с
-                анимационными программами.
-              </ServiceDescription>
-            </ServiceCard>
-
-            <ServiceCard>
-              <FontAwesomeIcon icon="concierge-bell" />
-              <ServiceTitle>Консьерж-сервис</ServiceTitle>
-              <ServiceDescription>
-                Наш консьерж-сервис поможет вам организовать экскурсии, трансфер и решить любые
-                вопросы во время пребывания.
-              </ServiceDescription>
-            </ServiceCard>
+            {features.map((feature, index) => (
+              <ServiceCard key={index}>
+                <FontAwesomeIcon icon={feature.icon} size="2x" style={{ color: 'var(--primary-color)' }} />
+                <ServiceTitle>{feature.title}</ServiceTitle>
+                <ServiceDescription>{feature.text}</ServiceDescription>
+              </ServiceCard>
+            ))}
           </ServicesGrid>
         </Container>
       </ServicesSection>
 
-      <RoomsSection id="rooms-preview">
+      <RoomsSection>
         <Container>
           <SectionHeader>
-            <SectionSubtitle>Номера</SectionSubtitle>
-            <SectionTitle>Выберите свой идеальный номер</SectionTitle>
+            <SectionSubtitle>Размещение</SectionSubtitle>
+            <SectionTitle>Номерной фонд</SectionTitle>
             <SectionDescription>
-              Мы предлагаем различные категории номеров, чтобы удовлетворить потребности каждого
-              гостя
+              Комфортные номера различных категорий для вашего отдыха
             </SectionDescription>
           </SectionHeader>
-
           <RoomGrid>
-            {featuredRooms.map(room => (
+            {rooms.map(room => (
               <RoomCard key={room.id}>
                 <RoomImage>
                   <img src={room.image} alt={room.name} />
+                  <RoomPrice>{room.price}</RoomPrice>
                 </RoomImage>
                 <RoomInfo>
                   <RoomTitle>{room.name}</RoomTitle>
                   <RoomDescription>{room.description}</RoomDescription>
                   <RoomDetails>
                     <RoomDetail>
-                      <FontAwesomeIcon icon="user" /> {room.capacity} гостей
+                      <FontAwesomeIcon icon="user" />
+                      <span>{room.capacity} гостей</span>
                     </RoomDetail>
                     <RoomDetail>
-                      <FontAwesomeIcon icon="expand" /> {room.area} м²
+                      <FontAwesomeIcon icon="expand" />
+                      <span>{room.area} м²</span>
                     </RoomDetail>
                     <RoomDetail>
-                      <FontAwesomeIcon icon="bed" /> {room.beds}
+                      <FontAwesomeIcon icon="bed" />
+                      <span>{room.beds}</span>
                     </RoomDetail>
                   </RoomDetails>
                   <RoomPrice>
-                    <span>{room.price.toLocaleString()} ₽ / ночь</span>
-                    <RoomButton to={`/rooms/${room.id}`}>Подробнее</RoomButton>
+                    <span>{room.price}</span>
+                    <RoomButton to={room.link}>Подробнее</RoomButton>
                   </RoomPrice>
                 </RoomInfo>
               </RoomCard>
             ))}
           </RoomGrid>
-
           <div style={{ textAlign: 'center', marginTop: '3rem' }}>
             <PrimaryButton to="/rooms">Смотреть все номера</PrimaryButton>
           </div>
         </Container>
       </RoomsSection>
 
-      <Gallery />
+      <Gallery images={[]} />
 
-      <Testimonials />
+      <Testimonials testimonials={testimonials} />
 
       <CtaSection>
         <CtaContainer>
-          <CtaTitle>Готовы забронировать идеальный отдых?</CtaTitle>
+          <CtaTitle>Забронируйте номер прямо сейчас</CtaTitle>
           <CtaDescription>
-            Забронируйте номер прямо сейчас и получите лучшую цену, а также ряд дополнительных
-            преимуществ для вашего незабываемого отдыха в "Лесном Дворике".
+            Отдых в тихой лесопарковой зоне города Жуковский, в комфортных номерах с хорошим сервисом.
           </CtaDescription>
-          <CtaButton to="/rooms">Забронировать номер</CtaButton>
+          <CtaButton to="/booking">Забронировать номер</CtaButton>
         </CtaContainer>
       </CtaSection>
     </>

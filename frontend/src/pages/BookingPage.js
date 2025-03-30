@@ -1,12 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useAuth } from '../context/AuthContext';
 import { roomService, bookingService } from '../services/api';
+import { ru } from 'date-fns/locale';
+import { addDays, format, differenceInDays } from 'date-fns';
+// Импортируем компоненты формы бронирования
+import {
+  BookingTypeSelector,
+  BookingTypeButton,
+  FormSection,
+  FormLabel,
+  FormInput,
+  FormSelect,
+  FormTextarea,
+  FormError,
+  StyledDatePicker,
+  PriceSummary,
+  SummaryTitle,
+  SummaryPrice,
+  SummaryDetails,
+  SummaryItem,
+  BookingFormButton,
+  BookingPolicy,
+  PolicyLink,
+  BookingInfo,
+  InfoTitle,
+  InfoText
+} from '../components/booking/BookingFormElements';
 
 const PageContainer = styled.div`
   max-width: 1200px;
@@ -63,7 +87,7 @@ const BookingContainer = styled.div`
   }
 `;
 
-const BookingForm = styled.div`
+const BookingForm = styled.form`
   background-color: white;
   padding: 2rem;
   border-radius: var(--radius-md);
@@ -227,9 +251,9 @@ const CancelButton = styled(Button)`
 
 const FormRow = styled.div`
   display: grid;
-  grid-template-columns: ${props => props.columns || '1fr 1fr'};
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
-
+  
   @media (max-width: 576px) {
     grid-template-columns: 1fr;
   }
@@ -411,32 +435,22 @@ const Alert = styled.div`
 
 const LoginPrompt = styled.div`
   text-align: center;
-  padding: 3rem 2rem;
   background-color: white;
+  padding: 3rem;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
-
+  max-width: 600px;
+  margin: 0 auto;
+  
   h3 {
-    font-family: 'Playfair Display', serif;
     font-size: 1.5rem;
-    color: var(--dark-color);
     margin-bottom: 1rem;
+    color: var(--dark-color);
   }
-
+  
   p {
+    color: var(--text-muted);
     margin-bottom: 2rem;
-    color: var(--text-color);
-  }
-
-  a {
-    color: var(--primary-color);
-    text-decoration: underline;
-    font-weight: 600;
-    transition: var(--transition);
-
-    &:hover {
-      color: var(--accent-color);
-    }
   }
 `;
 
@@ -450,42 +464,168 @@ const BookingPage = () => {
   const [loading, setLoading] = useState(true);
   const [availableRooms, setAvailableRooms] = useState([]);
   const [status, setStatus] = useState(null);
+  const [bookingType, setBookingType] = useState('room');
+  const [roomInfo, setRoomInfo] = useState(null);
+  
+  const roomTypes = [
+    {
+      id: 1,
+      name: '2-местный эконом',
+      description: 'Уютный номер с двумя отдельными кроватями, балконом и видом на парк. 11 кв.м. Общая ванная комната.',
+      price: 2500,
+      priceDouble: 3000,
+      maxGuests: 2,
+      image: 'https://images.unsplash.com/photo-1631049035182-249067d7618e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
+      features: ['Телевизор', 'Общий душ', 'Балкон', 'Вид на парк'],
+    },
+    {
+      id: 2,
+      name: '2-местный семейный',
+      description: 'Комфортный номер-стандарт с двуспальной кроватью, 22 кв.м. Душевая кабина, санузел и вид на парк из окна.',
+      price: 3800,
+      priceDouble: 3800,
+      maxGuests: 2,
+      image: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80',
+      features: ['Двуспальная кровать', 'Холодильник', 'Душевая кабина', 'Санузел'],
+    },
+    {
+      id: 3,
+      name: '4-местный эконом',
+      description: 'Просторный номер с балконом, 25 кв.м. Четыре односпальных кровати в 2 комнатах. Душевая кабина, ванна, санузел.',
+      price: 5000,
+      priceDouble: 5000,
+      maxGuests: 4,
+      image: 'https://images.unsplash.com/photo-1595576508898-0ad5c879a061?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80',
+      features: ['Вид на парк', '2 комнаты', 'Ванна и душ', 'Балкон'],
+    },
+  ];
+  
+  const services = [
+    {
+      id: 1,
+      type: 'sauna',
+      name: 'Сауна',
+      description: 'Сауна с купелью и двумя парилками - сухой и русской. Просторная комната отдыха для релакса.',
+      price: 1275,
+      image: 'https://images.unsplash.com/photo-1560180474-e8563fd75bab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80',
+      features: ['Купель 18-20°C', 'Возможен заказ еды', 'Два вида парных'],
+    },
+    {
+      id: 2,
+      type: 'conference',
+      name: 'Конференц-зал',
+      description: 'Просторный конференц-зал 62 кв.м на 2 этаже. Светлое помещение с оборудованием для презентаций.',
+      price: 1500,
+      image: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1112&q=80',
+      features: ['Вместимость до 40 человек', 'Проектор, экран, флип-чарт', 'Конференц-оборудование'],
+    },
+  ];
 
-  // Начальные значения для формы бронирования
-  const initialValues = {
-    roomId: '',
-    checkIn: new Date(Date.now() + 86400000), // Завтрашняя дата
-    checkOut: new Date(Date.now() + 86400000 * 4), // Дата + 4 дня
-    adults: 1,
-    children: 0,
-    specialRequests: '',
-    firstName: user ? user.firstName || '' : '',
-    lastName: user ? user.lastName || '' : '',
-    email: user ? user.email || '' : '',
-    phone: user ? user.phone || '' : '',
+  const formik = useFormik({
+    initialValues: {
+      bookingType: 'room',
+      roomType: '',
+      serviceType: '',
+      checkIn: new Date(),
+      checkOut: addDays(new Date(), 1),
+      guests: 1,
+      serviceHours: 1,
+      serviceDate: new Date(),
+      serviceTime: '12:00',
+      name: '',
+      phone: '',
+      email: '',
+      additionalRequests: '',
+    },
+    validationSchema: Yup.object({
+      roomType: Yup.string().when('bookingType', {
+        is: 'room',
+        then: () => Yup.string().required('Выберите тип номера'),
+      }),
+      serviceType: Yup.string().when('bookingType', {
+        is: 'service',
+        then: () => Yup.string().required('Выберите услугу'),
+      }),
+      guests: Yup.number().min(1, 'Минимум 1 гость').required('Укажите количество гостей'),
+      name: Yup.string().required('Введите ваше имя'),
+      phone: Yup.string().required('Введите ваш телефон'),
+      email: Yup.string().email('Неверный формат email').required('Введите ваш email'),
+    }),
+    onSubmit: values => {
+      setLoading(true);
+      
+      // Создаем объект данных для отправки
+      const bookingData = {
+        roomId: values.roomType,
+        checkIn: values.checkIn.toISOString(),
+        checkOut: values.checkOut.toISOString(),
+        adults: values.guests,
+        specialRequests: values.additionalRequests,
+      };
+      
+      // Отправляем запрос на создание бронирования
+      bookingService.createBooking(bookingData)
+        .then(response => {
+          setLoading(false);
+          setStatus({
+            type: 'success',
+            message: 'Бронирование успешно создано!'
+          });
+          formik.resetForm();
+          setTimeout(() => {
+            navigate(`/bookings/${response.data.id}`);
+          }, 1500);
+        })
+        .catch(error => {
+          setLoading(false);
+          console.error('Ошибка при создании бронирования:', error);
+          setStatus({
+            type: 'error',
+            message: error.response?.data?.message || 'Не удалось создать бронирование. Пожалуйста, попробуйте позже.'
+          });
+        });
+    },
+  });
+
+  // Эффект для обновления maxGuests при выборе типа номера
+  useEffect(() => {
+    if (bookingType === 'room' && formik.values.roomType) {
+      const selectedRoom = roomTypes.find(room => room.id === parseInt(formik.values.roomType));
+      if (selectedRoom) {
+        setRoomInfo(selectedRoom);
+        formik.setFieldValue('guests', 1);
+      }
+    } else {
+      setRoomInfo(null);
+    }
+  }, [formik.values.roomType, bookingType]);
+
+  // Обработчик смены типа бронирования
+  const handleBookingTypeChange = type => {
+    setBookingType(type);
+    formik.setFieldValue('bookingType', type);
   };
 
-  // Схема валидации для формы бронирования
-  const validationSchema = Yup.object({
-    checkIn: Yup.date().required('Пожалуйста, выберите дату заезда'),
-    checkOut: Yup.date()
-      .required('Пожалуйста, выберите дату выезда')
-      .min(Yup.ref('checkIn'), 'Дата выезда должна быть позже даты заезда'),
-    adults: Yup.number()
-      .required('Укажите количество взрослых')
-      .min(1, 'Минимум 1 взрослый')
-      .max(10, 'Максимум 10 взрослых'),
-    children: Yup.number()
-      .required('Укажите количество детей')
-      .min(0, 'Минимум 0 детей')
-      .max(10, 'Максимум 10 детей'),
-    firstName: Yup.string().required('Пожалуйста, введите имя'),
-    lastName: Yup.string().required('Пожалуйста, введите фамилию'),
-    email: Yup.string().email('Неверный формат email').required('Пожалуйста, введите email'),
-    phone: Yup.string()
-      .matches(phoneRegex, 'Неверный формат телефона')
-      .required('Пожалуйста, введите номер телефона'),
-  });
+  // Вычисляем общую стоимость
+  const calculateTotalPrice = () => {
+    if (bookingType === 'room' && roomInfo) {
+      const nights = differenceInDays(formik.values.checkOut, formik.values.checkIn);
+      let basePrice = roomInfo.price;
+      
+      // Если 2 гостя и есть отдельная цена для двоих, используем ее
+      if (formik.values.guests === 2 && roomInfo.priceDouble) {
+        basePrice = roomInfo.priceDouble;
+      }
+      
+      return basePrice * nights;
+    } else if (bookingType === 'service' && formik.values.serviceType) {
+      const selectedService = services.find(service => service.id === parseInt(formik.values.serviceType));
+      if (selectedService) {
+        return selectedService.price * formik.values.serviceHours;
+      }
+    }
+    return 0;
+  };
 
   // Загрузка всех номеров при монтировании компонента
   useEffect(() => {
@@ -507,74 +647,6 @@ const BookingPage = () => {
 
     fetchRooms();
   }, []);
-
-  // Функция для обработки отправки формы
-  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    if (!selectedRoom) {
-      setStatus({
-        type: 'error',
-        message: 'Пожалуйста, выберите номер для бронирования',
-      });
-      setSubmitting(false);
-      return;
-    }
-
-    try {
-      const bookingData = {
-        roomId: selectedRoom._id,
-        checkIn: values.checkIn,
-        checkOut: values.checkOut,
-        adults: values.adults,
-        children: values.children,
-        specialRequests: values.specialRequests,
-        guestInfo: {
-          firstName: values.firstName,
-          lastName: values.lastName,
-          email: values.email,
-          phone: values.phone,
-        },
-      };
-
-      const response = await bookingService.createBooking(bookingData);
-
-      setStatus({
-        type: 'success',
-        message: 'Бронирование успешно создано! Номер бронирования: ' + response.data.bookingNumber,
-      });
-
-      resetForm();
-      setSelectedRoom(null);
-
-      // Перенаправление на страницу с бронированиями через 3 секунды
-      setTimeout(() => {
-        navigate('/bookings');
-      }, 3000);
-    } catch (error) {
-      console.error('Ошибка при создании бронирования:', error);
-      setStatus({
-        type: 'error',
-        message:
-          error.response?.data?.message ||
-          'Произошла ошибка при бронировании. Пожалуйста, попробуйте позже.',
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  // Функция для расчета количества дней
-  const calculateDays = (startDate, endDate) => {
-    if (!startDate || !endDate) return 0;
-    const diffTime = Math.abs(endDate - startDate);
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  };
-
-  // Функция для расчета общей стоимости
-  const calculateTotalPrice = (room, checkIn, checkOut) => {
-    if (!room || !checkIn || !checkOut) return 0;
-    const days = calculateDays(checkIn, checkOut);
-    return room.price * days;
-  };
 
   // Поиск доступных номеров по датам
   const searchAvailableRooms = async (checkIn, checkOut) => {
@@ -651,289 +723,349 @@ const BookingPage = () => {
   return (
     <PageContainer>
       <PageHeader>
-        <PageTitle>Бронирование номера</PageTitle>
-        <PageSubtitle>Выберите номер и даты проживания для создания бронирования</PageSubtitle>
+        <PageTitle>Бронирование</PageTitle>
+        <PageSubtitle>
+          Забронируйте номер или дополнительные услуги гостиничного комплекса «Лесной дворик»
+        </PageSubtitle>
       </PageHeader>
 
-      {status && (
-        <Alert type={status.type}>
-          <i
-            className={`fas ${status.type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}`}
-          ></i>
-          {status.message}
-        </Alert>
-      )}
+      <BookingTypeSelector>
+        <BookingTypeButton 
+          active={bookingType === 'room'} 
+          onClick={() => handleBookingTypeChange('room')}
+        >
+          Забронировать номер
+        </BookingTypeButton>
+        <BookingTypeButton 
+          active={bookingType === 'service'} 
+          onClick={() => handleBookingTypeChange('service')}
+        >
+          Забронировать услугу
+        </BookingTypeButton>
+      </BookingTypeSelector>
 
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ values, setFieldValue, isSubmitting }) => (
-          <Form>
-            <BookingContainer>
-              <BookingForm>
-                <SectionTitle>Информация о бронировании</SectionTitle>
-
+      <BookingForm onSubmit={formik.handleSubmit}>
+        <FormSection>
+          <SectionTitle>Детали бронирования</SectionTitle>
+          
+          {bookingType === 'room' && (
+            <>
                 <FormGroup>
-                  <Label>Даты проживания</Label>
+                <FormLabel>Выберите тип номера</FormLabel>
+                <FormSelect
+                  name="roomType"
+                  value={formik.values.roomType}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                >
+                  <option value="">Выберите тип номера</option>
+                  {roomTypes.map(room => (
+                    <option key={room.id} value={room.id}>
+                      {room.name} - {room.price} ₽/сутки
+                    </option>
+                  ))}
+                </FormSelect>
+                {formik.touched.roomType && formik.errors.roomType && (
+                  <FormError>{formik.errors.roomType}</FormError>
+                )}
+              </FormGroup>
+
                   <FormRow>
-                    <DatePickerWrapper>
-                      <DatePicker
-                        selected={values.checkIn}
-                        onChange={date => {
-                          setFieldValue('checkIn', date);
-                          searchAvailableRooms(date, values.checkOut);
-                        }}
-                        selectsStart
-                        startDate={values.checkIn}
-                        endDate={values.checkOut}
-                        minDate={new Date()}
-                        placeholderText="Дата заезда"
-                        dateFormat="dd.MM.yyyy"
-                      />
-                      <ErrorMessage name="checkIn" component={Error} />
-                    </DatePickerWrapper>
-
-                    <DatePickerWrapper>
-                      <DatePicker
-                        selected={values.checkOut}
-                        onChange={date => {
-                          setFieldValue('checkOut', date);
-                          searchAvailableRooms(values.checkIn, date);
-                        }}
-                        selectsEnd
-                        startDate={values.checkIn}
-                        endDate={values.checkOut}
-                        minDate={values.checkIn}
-                        placeholderText="Дата выезда"
-                        dateFormat="dd.MM.yyyy"
-                      />
-                      <ErrorMessage name="checkOut" component={Error} />
-                    </DatePickerWrapper>
-                  </FormRow>
-                </FormGroup>
-
-                <FormRow>
-                  <FormGroup>
-                    <Label htmlFor="adults">Взрослые</Label>
-                    <Select as="select" name="adults" id="adults">
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                      <option value="6">6</option>
-                      <option value="7">7</option>
-                      <option value="8">8</option>
-                      <option value="9">9</option>
-                      <option value="10">10</option>
-                    </Select>
-                    <ErrorMessage name="adults" component={Error} />
-                  </FormGroup>
-
-                  <FormGroup>
-                    <Label htmlFor="children">Дети</Label>
-                    <Select as="select" name="children" id="children">
-                      <option value="0">0</option>
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                    </Select>
-                    <ErrorMessage name="children" component={Error} />
-                  </FormGroup>
-                </FormRow>
-
-                <SectionTitle>Информация о госте</SectionTitle>
-
-                <FormRow>
-                  <FormGroup>
-                    <Label htmlFor="firstName">Имя</Label>
-                    <Input
-                      type="text"
-                      id="firstName"
-                      name="firstName"
-                      placeholder="Введите ваше имя"
-                    />
-                    <ErrorMessage name="firstName" component={Error} />
-                  </FormGroup>
-
-                  <FormGroup>
-                    <Label htmlFor="lastName">Фамилия</Label>
-                    <Input
-                      type="text"
-                      id="lastName"
-                      name="lastName"
-                      placeholder="Введите вашу фамилию"
-                    />
-                    <ErrorMessage name="lastName" component={Error} />
-                  </FormGroup>
-                </FormRow>
-
-                <FormRow>
-                  <FormGroup>
-                    <Label htmlFor="email">Email</Label>
-                    <Input type="email" id="email" name="email" placeholder="Введите ваш email" />
-                    <ErrorMessage name="email" component={Error} />
-                  </FormGroup>
-
-                  <FormGroup>
-                    <Label htmlFor="phone">Телефон</Label>
-                    <Input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      placeholder="Введите ваш номер телефона"
-                    />
-                    <ErrorMessage name="phone" component={Error} />
-                  </FormGroup>
-                </FormRow>
-
                 <FormGroup>
-                  <Label htmlFor="specialRequests">Особые пожелания</Label>
-                  <Input
-                    as="textarea"
-                    id="specialRequests"
-                    name="specialRequests"
-                    placeholder="Укажите особые пожелания к проживанию"
-                    style={{ minHeight: '100px', resize: 'vertical' }}
+                  <FormLabel>Дата заезда</FormLabel>
+                  <StyledDatePicker
+                    selected={formik.values.checkIn}
+                        onChange={date => {
+                      formik.setFieldValue('checkIn', date);
+                      if (differenceInDays(formik.values.checkOut, date) < 1) {
+                        formik.setFieldValue('checkOut', addDays(date, 1));
+                      }
+                    }}
+                        dateFormat="dd.MM.yyyy"
+                    locale={ru}
+                    minDate={new Date()}
                   />
                 </FormGroup>
 
-                {selectedRoom && (
-                  <CheckoutSummary>
-                    <SectionTitle>Итоговая информация</SectionTitle>
-                    <SummaryRow>
-                      <span>Номер:</span>
-                      <span>{selectedRoom.name}</span>
-                    </SummaryRow>
-                    <SummaryRow>
-                      <span>Даты:</span>
+                <FormGroup>
+                  <FormLabel>Дата отъезда</FormLabel>
+                  <StyledDatePicker
+                    selected={formik.values.checkOut}
+                    onChange={date => formik.setFieldValue('checkOut', date)}
+                        dateFormat="dd.MM.yyyy"
+                    locale={ru}
+                    minDate={addDays(formik.values.checkIn, 1)}
+                      />
+                </FormGroup>
+                  </FormRow>
+
+              <FormGroup>
+                <FormLabel>Количество гостей</FormLabel>
+                <FormSelect
+                  name="guests"
+                  value={formik.values.guests}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  disabled={!roomInfo}
+                >
+                  {roomInfo && Array.from({ length: roomInfo.maxGuests }, (_, i) => (
+                    <option key={i + 1} value={i + 1}>
+                      {i + 1} {i === 0 ? 'гость' : i < 4 ? 'гостя' : 'гостей'}
+                    </option>
+                  ))}
+                </FormSelect>
+              </FormGroup>
+            </>
+          )}
+
+          {bookingType === 'service' && (
+            <>
+              <FormGroup>
+                <FormLabel>Выберите услугу</FormLabel>
+                <FormSelect
+                  name="serviceType"
+                  value={formik.values.serviceType}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                >
+                  <option value="">Выберите услугу</option>
+                  {services.map(service => (
+                    <option key={service.id} value={service.id}>
+                      {service.name} - {service.price} ₽/час
+                    </option>
+                  ))}
+                </FormSelect>
+                {formik.touched.serviceType && formik.errors.serviceType && (
+                  <FormError>{formik.errors.serviceType}</FormError>
+                )}
+                </FormGroup>
+
+                <FormRow>
+                  <FormGroup>
+                  <FormLabel>Дата</FormLabel>
+                  <StyledDatePicker
+                    selected={formik.values.serviceDate}
+                    onChange={date => formik.setFieldValue('serviceDate', date)}
+                    dateFormat="dd.MM.yyyy"
+                    locale={ru}
+                    minDate={new Date()}
+                  />
+                  </FormGroup>
+
+                  <FormGroup>
+                  <FormLabel>Время</FormLabel>
+                  <FormSelect
+                    name="serviceTime"
+                    value={formik.values.serviceTime}
+                    onChange={formik.handleChange}
+                  >
+                    {[...Array(12)].map((_, i) => {
+                      const hour = i + 10; // Начинаем с 10:00
+                      return (
+                        <option key={hour} value={`${hour}:00`}>
+                          {`${hour}:00`}
+                        </option>
+                      );
+                    })}
+                  </FormSelect>
+                  </FormGroup>
+                </FormRow>
+
+              <FormGroup>
+                <FormLabel>Продолжительность (часов)</FormLabel>
+                <FormSelect
+                  name="serviceHours"
+                  value={formik.values.serviceHours}
+                  onChange={formik.handleChange}
+                >
+                  {[...Array(8)].map((_, i) => (
+                    <option key={i + 1} value={i + 1}>
+                      {i + 1} {i === 0 ? 'час' : i < 4 ? 'часа' : 'часов'}
+                    </option>
+                  ))}
+                </FormSelect>
+              </FormGroup>
+
+                  <FormGroup>
+                <FormLabel>Количество гостей</FormLabel>
+                <FormSelect
+                  name="guests"
+                  value={formik.values.guests}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                >
+                  {[...Array(20)].map((_, i) => (
+                    <option key={i + 1} value={i + 1}>
+                      {i + 1} {i === 0 ? 'гость' : i < 4 ? 'гостя' : 'гостей'}
+                    </option>
+                  ))}
+                </FormSelect>
+                  </FormGroup>
+            </>
+          )}
+        </FormSection>
+
+        <FormSection>
+          <SectionTitle>Контактная информация</SectionTitle>
+
+                  <FormGroup>
+            <FormLabel>Имя и фамилия</FormLabel>
+            <FormInput
+                      type="text"
+              name="name"
+              value={formik.values.name}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              placeholder="Иван Иванов"
+            />
+            {formik.touched.name && formik.errors.name && (
+              <FormError>{formik.errors.name}</FormError>
+            )}
+                  </FormGroup>
+
+                <FormRow>
+                  <FormGroup>
+              <FormLabel>Телефон</FormLabel>
+              <FormInput
+                type="tel"
+                name="phone"
+                value={formik.values.phone}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                placeholder="+7 (XXX) XXX-XX-XX"
+              />
+              {formik.touched.phone && formik.errors.phone && (
+                <FormError>{formik.errors.phone}</FormError>
+              )}
+                  </FormGroup>
+
+                  <FormGroup>
+              <FormLabel>Email</FormLabel>
+              <FormInput
+                type="email"
+                name="email"
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                placeholder="example@mail.ru"
+              />
+              {formik.touched.email && formik.errors.email && (
+                <FormError>{formik.errors.email}</FormError>
+              )}
+                  </FormGroup>
+                </FormRow>
+
+                <FormGroup>
+            <FormLabel>Дополнительные пожелания</FormLabel>
+            <FormTextarea
+              name="additionalRequests"
+              value={formik.values.additionalRequests}
+              onChange={formik.handleChange}
+              placeholder="Укажите любые дополнительные пожелания или комментарии..."
+                  />
+                </FormGroup>
+        </FormSection>
+
+        <PriceSummary>
+          <SummaryTitle>Итого к оплате:</SummaryTitle>
+          <SummaryPrice>{calculateTotalPrice()} ₽</SummaryPrice>
+          <SummaryDetails>
+            {bookingType === 'room' && roomInfo && (
+              <>
+                <SummaryItem>
+                  <span>Тип номера:</span>
+                  <span>{roomInfo.name}</span>
+                </SummaryItem>
+                <SummaryItem>
+                  <span>Период:</span>
                       <span>
-                        {values.checkIn && values.checkIn.toLocaleDateString('ru-RU')} -{' '}
-                        {values.checkOut && values.checkOut.toLocaleDateString('ru-RU')} (
-                        {calculateDays(values.checkIn, values.checkOut)} дн.)
+                    {format(formik.values.checkIn, 'dd.MM.yyyy')} - {format(formik.values.checkOut, 'dd.MM.yyyy')}
                       </span>
-                    </SummaryRow>
-                    <SummaryRow>
-                      <span>Гости:</span>
-                      <span>
-                        {values.adults} взр.{' '}
-                        {values.children > 0 ? `+ ${values.children} дет.` : ''}
-                      </span>
-                    </SummaryRow>
-                    <SummaryRow>
+                </SummaryItem>
+                <SummaryItem>
+                  <span>Количество ночей:</span>
+                  <span>{differenceInDays(formik.values.checkOut, formik.values.checkIn)}</span>
+                </SummaryItem>
+                <SummaryItem>
+                  <span>Гостей:</span>
+                  <span>{formik.values.guests}</span>
+                </SummaryItem>
+                <SummaryItem>
                       <span>Стоимость за ночь:</span>
-                      <span>{selectedRoom.price.toLocaleString()} ₽</span>
-                    </SummaryRow>
-                    <SummaryRow className="total">
-                      <span>Итого:</span>
                       <span>
-                        {calculateTotalPrice(
-                          selectedRoom,
-                          values.checkIn,
-                          values.checkOut
-                        ).toLocaleString()}{' '}
-                        ₽
+                    {formik.values.guests === 2 && roomInfo.priceDouble ? roomInfo.priceDouble : roomInfo.price} ₽
                       </span>
-                    </SummaryRow>
-                  </CheckoutSummary>
-                )}
+                </SummaryItem>
+              </>
+            )}
+            {bookingType === 'service' && formik.values.serviceType && (
+              <>
+                {services.filter(service => service.id === parseInt(formik.values.serviceType)).map(service => (
+                  <React.Fragment key={service.id}>
+                    <SummaryItem>
+                      <span>Услуга:</span>
+                      <span>{service.name}</span>
+                    </SummaryItem>
+                    <SummaryItem>
+                      <span>Дата:</span>
+                      <span>{format(formik.values.serviceDate, 'dd.MM.yyyy')}</span>
+                    </SummaryItem>
+                    <SummaryItem>
+                      <span>Время:</span>
+                      <span>{formik.values.serviceTime}</span>
+                    </SummaryItem>
+                    <SummaryItem>
+                      <span>Продолжительность:</span>
+                      <span>{formik.values.serviceHours} ч.</span>
+                    </SummaryItem>
+                    <SummaryItem>
+                      <span>Гостей:</span>
+                      <span>{formik.values.guests}</span>
+                    </SummaryItem>
+                    <SummaryItem>
+                      <span>Стоимость в час:</span>
+                      <span>{service.price} ₽</span>
+                    </SummaryItem>
+                  </React.Fragment>
+                ))}
+              </>
+            )}
+          </SummaryDetails>
+        </PriceSummary>
 
-                <ButtonContainer>
-                  <Button type="submit" disabled={isSubmitting || !selectedRoom}>
-                    {isSubmitting ? 'Отправка...' : 'Забронировать'}
-                  </Button>
-                  <CancelButton type="button" onClick={() => navigate('/rooms')}>
-                    Отмена
-                  </CancelButton>
-                </ButtonContainer>
-              </BookingForm>
+        <BookingFormButton type="submit" disabled={loading}>
+          {loading ? 'Отправка...' : 'Забронировать'}
+        </BookingFormButton>
+        
+        <BookingPolicy>
+          Нажимая кнопку "Забронировать", вы соглашаетесь с нашими <PolicyLink href="/terms">правилами бронирования</PolicyLink> и <PolicyLink href="/privacy">политикой конфиденциальности</PolicyLink>.
+        </BookingPolicy>
+      </BookingForm>
 
-              <RoomPreview>
-                <SectionTitle>Выберите номер</SectionTitle>
-
-                {loading ? (
-                  <div style={{ textAlign: 'center', padding: '2rem' }}>
-                    <i
-                      className="fas fa-spinner fa-spin"
-                      style={{ fontSize: '2rem', color: 'var(--primary-color)' }}
-                    ></i>
-                    <p style={{ marginTop: '1rem' }}>Загрузка номеров...</p>
-                  </div>
-                ) : (
-                  <>
-                    {values.checkIn && values.checkOut ? (
-                      <>
-                        <p style={{ marginBottom: '1rem' }}>
-                          {availableRooms.length > 0
-                            ? `Доступно ${availableRooms.length} номеров на выбранные даты`
-                            : 'Нет доступных номеров на выбранные даты. Пожалуйста, выберите другие даты.'}
-                        </p>
-
-                        <RoomList>
-                          {rooms.map(room => (
-                            <RoomCard
-                              key={room._id}
-                              selected={selectedRoom && selectedRoom._id === room._id}
-                              onClick={() => isRoomAvailable(room._id) && setSelectedRoom(room)}
-                              style={{ opacity: isRoomAvailable(room._id) ? 1 : 0.6 }}
-                            >
-                              <RoomImage>
-                                <img
-                                  src={
-                                    room.images && room.images.length > 0
-                                      ? room.images[0]
-                                      : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80'
-                                  }
-                                  alt={room.name}
-                                />
-                              </RoomImage>
-                              <RoomInfo>
-                                <RoomName>{room.name}</RoomName>
-                                <RoomType>{getRoomTypeName(room.roomType)}</RoomType>
-
-                                <RoomFeatures>
-                                  <RoomFeature>
-                                    <i className="fas fa-user"></i> {room.capacity} чел.
-                                  </RoomFeature>
-                                  <RoomFeature>
-                                    <i className="fas fa-expand"></i> {room.area || '25'} м²
-                                  </RoomFeature>
-                                  <RoomFeature>
-                                    <i className="fas fa-bed"></i> {room.beds || '1 двуспальная'}
-                                  </RoomFeature>
-                                </RoomFeatures>
-
-                                <AvailabilityBadge available={isRoomAvailable(room._id)}>
-                                  {isRoomAvailable(room._id)
-                                    ? 'Доступен'
-                                    : 'Не доступен на выбранные даты'}
-                                </AvailabilityBadge>
-
-                                <RoomPrice>
-                                  <span>{room.price.toLocaleString()} ₽</span>
-                                  <span>за ночь</span>
-                                </RoomPrice>
-                              </RoomInfo>
-                            </RoomCard>
-                          ))}
-                        </RoomList>
-                      </>
-                    ) : (
-                      <p>
-                        Пожалуйста, выберите даты заезда и выезда, чтобы увидеть доступные номера
-                      </p>
-                    )}
-                  </>
-                )}
-              </RoomPreview>
-            </BookingContainer>
-          </Form>
-        )}
-      </Formik>
+      <BookingInfo>
+        <InfoTitle>Информация о бронировании</InfoTitle>
+        <InfoText>
+          <p>
+            <strong>Заезд:</strong> с 14:00<br />
+            <strong>Выезд:</strong> до 12:00
+          </p>
+          <p>
+            При бронировании номера предоплата не требуется. Вы можете оплатить проживание при заселении.
+          </p>
+          <p>
+            Для подтверждения бронирования с вами свяжется администратор гостиницы.
+          </p>
+          <p>
+            Если у вас возникли вопросы, вы можете связаться с нами по телефону:
+          </p>
+          <p>
+            <strong>Гостиница:</strong> 8 (498) 483 19 41<br />
+            <strong>Гостиница (моб.):</strong> 8 (915) 120 17 44<br />
+            <strong>Сауна:</strong> 8 (915) 120 17 44<br />
+            <strong>Конференц-зал:</strong> 8 (916) 926 65 14
+          </p>
+        </InfoText>
+      </BookingInfo>
     </PageContainer>
   );
 };

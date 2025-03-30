@@ -118,3 +118,31 @@ exports.updateBookingStatus = async (req, res) => {
     res.status(500).json({ message: 'Ошибка при обновлении статуса бронирования' });
   }
 };
+
+// Проверка доступности номера
+exports.checkAvailability = async (req, res) => {
+  try {
+    const { roomId, checkIn, checkOut } = req.query;
+
+    if (!roomId || !checkIn || !checkOut) {
+      return res.status(400).json({ message: 'Необходимо указать roomId, checkIn и checkOut' });
+    }
+
+    const isAvailable = await bookingService.checkRoomAvailability(roomId, checkIn, checkOut);
+    res.json({ available: isAvailable });
+  } catch (err) {
+    logger.error('Ошибка при проверке доступности номера:', err);
+    res.status(500).json({ message: 'Ошибка при проверке доступности номера' });
+  }
+};
+
+// Получение статистики по бронированиям (для админа)
+exports.getBookingStats = async (req, res) => {
+  try {
+    const stats = await bookingService.getBookingStats();
+    res.json(stats);
+  } catch (err) {
+    logger.error('Ошибка при получении статистики бронирований:', err);
+    res.status(500).json({ message: 'Ошибка при получении статистики бронирований' });
+  }
+};

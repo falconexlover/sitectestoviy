@@ -21,6 +21,22 @@ export interface Room {
   isActive: boolean;
 }
 
+// RoomType используется в компоненте RoomCard
+export interface RoomType {
+  id: string;
+  name: string;
+  type: string;
+  description: string;
+  price: number;
+  images: string[] | string;
+  amenities: string[];
+  optimizedImages?: Array<{
+    small?: string;
+    medium?: string;
+    large?: string;
+  }>;
+}
+
 export interface RoomData {
   name: string;
   type: 'standard' | 'deluxe' | 'suite' | 'family';

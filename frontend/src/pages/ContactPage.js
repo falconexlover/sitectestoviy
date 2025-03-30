@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMapMarkerAlt, faPhone, faEnvelope, faClock, faVk } from '@fortawesome/free-solid-svg-icons';
 
 const PageContainer = styled.div`
   max-width: 1200px;
@@ -337,9 +340,9 @@ const ContactPage = () => {
   return (
     <PageContainer>
       <PageHeader>
-        <PageTitle>Контакты</PageTitle>
+        <PageTitle>Контактная информация</PageTitle>
         <PageSubtitle>
-          Свяжитесь с нами для получения дополнительной информации или бронирования
+          Свяжитесь с нами для бронирования или получения дополнительной информации
         </PageSubtitle>
       </PageHeader>
 
@@ -353,7 +356,7 @@ const ContactPage = () => {
               <div>
                 <h4>Адрес</h4>
                 <p>
-                  Московская область, Одинцовский район, поселок Лесные поляны, ул. Сосновая, 15
+                  Московская область, г. Жуковский, ул. Нижегородская, д. 4
                 </p>
               </div>
             </ContactDetail>
@@ -361,11 +364,12 @@ const ContactPage = () => {
             <ContactDetail>
               <i className="fas fa-phone-alt"></i>
               <div>
-                <h4>Телефон</h4>
+                <h4>Телефоны</h4>
                 <p>
-                  <a href="tel:+74984831941">+7 (498) 483-19-41</a> - Ресепшн
-                  <br />
-                  <a href="tel:+74984831942">+7 (498) 483-19-42</a> - Бронирование
+                  <strong>Гостиница:</strong> 8 (498) 483 19 41<br />
+                  <strong>Гостиница (моб.):</strong> 8 (915) 120 17 44<br />
+                  <strong>Сауна:</strong> 8 (915) 120 17 44<br />
+                  <strong>Конференц-зал:</strong> 8 (916) 926 65 14
                 </p>
               </div>
             </ContactDetail>
@@ -415,11 +419,11 @@ const ContactPage = () => {
 
           <MapContainer>
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1125.6675758780342!2d37.29718621558629!3d55.67889444532309!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46b54c71e172e469%3A0x5f1d59e03e562b39!2z0JvQtdGB0L3QvtC5INCe0YLQtdC70Yw!5e0!3m2!1sru!2sru!4v1710702436272!5m2!1sru!2sru"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2256.7076770226634!2d38.09373987686212!3d55.59193497324332!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x414ab8f448440941%3A0x6d085c936ce34e06!2z0J3QuNC20LXQs9C-0YDQvtC00YHQutCw0Y8g0YPQuy4sIDQsINCW0YPQutC-0LLRgdC60LjQuSwg0JzQvtGB0LrQvtCy0YHQutCw0Y8g0L7QsdC7LiwgMTQwMTgw!5e0!3m2!1sru!2sru!4v1687867570909!5m2!1sru!2sru"
               allowFullScreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Карта отеля Лесной Дворик"
+              title="Карта расположения гостиницы"
             ></iframe>
           </MapContainer>
         </ContactInfo>

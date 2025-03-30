@@ -5,7 +5,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const xss = require('xss-clean');
 const hpp = require('hpp');
-const i18nMiddleware = require('./middleware/i18nMiddleware');
+const i18nMiddleware = require('./middlewares/i18nMiddleware');
 
 // Создание экземпляра приложения
 const app = express();
@@ -67,12 +67,24 @@ app.use(i18nMiddleware);
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
+// Эндпоинт для проверки здоровья API
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: 'success',
+    message: 'API is running',
+    time: new Date().toISOString(),
+    environment: process.env.NODE_ENV
+  });
+});
+
 // Маршруты
 app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/customers', require('./routes/customerRoutes'));
 app.use('/api/rooms', require('./routes/roomRoutes'));
 app.use('/api/bookings', require('./routes/bookingRoutes'));
 app.use('/api', require('./routes/reviewRoutes')); // Новые маршруты для отзывов
+app.use('/api/analytics', require('./routes/analyticsRoutes'));
+app.use('/api/payment', require('./routes/paymentRoutes'));
 
 // Обработка ошибок
 // ... existing code ...

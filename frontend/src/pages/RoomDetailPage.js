@@ -585,9 +585,56 @@ const RoomDetailPage = () => {
     executive: 'Премиум',
   };
 
+  // Создание массива изображений с учетом организованной структуры
+  const getRoomImages = (roomId) => {
+    switch(roomId) {
+      case '1': // 2-местный эконом
+        return [
+          '/images/rooms/2eco/room1.jpg',
+          '/images/rooms/2eco/room2.jpg',
+          '/images/rooms/2eco/room3.jpg',
+          '/images/rooms/2eco/room4.jpg',
+          '/images/rooms/2eco/room5.jpg',
+        ];
+      case '2': // 2-местный семейный
+        return [
+          '/images/rooms/2semeiny/room1.jpg',
+          '/images/rooms/2semeiny/room2.jpg',
+          '/images/rooms/2semeiny/room3.jpg',
+          '/images/rooms/2semeiny/room4.jpg',
+          '/images/rooms/2semeiny/room5.jpg',
+        ];
+      case '3': // 4-местный эконом
+        return [
+          '/images/rooms/4eco/room1.jpg',
+          '/images/rooms/4eco/room2.jpg',
+          '/images/rooms/4eco/room3.jpg',
+          '/images/rooms/4eco/room4.jpg',
+          '/images/rooms/4eco/room5.jpg',
+        ];
+      case '4': // Конференц-зал
+        return [
+          '/images/rooms/konf/room1.jpg',
+          '/images/rooms/konf/room2.jpg',
+          '/images/rooms/konf/room3.jpg',
+          '/images/rooms/konf/room4.jpg',
+          '/images/rooms/konf/room5.jpg',
+        ];
+      case '5': // Сауна
+        return [
+          '/images/rooms/sauna/room1.jpg',
+          '/images/rooms/sauna/room2.jpg',
+          '/images/rooms/sauna/room3.jpg',
+          '/images/rooms/sauna/room4.jpg',
+          '/images/rooms/sauna/room5.jpg',
+        ];
+      default:
+        return room.images && room.images.length > 0 ? room.images : generateImages(placeholderImage);
+    }
+  };
+
   // Создание массива изображений
-  const roomImages =
-    room.images && room.images.length > 0 ? room.images : generateImages(placeholderImage);
+  const roomImages = getRoomImages(id);
 
   // Дополнительные удобства, если они отсутствуют в данных
   const defaultAmenities = [
@@ -655,6 +702,51 @@ const RoomDetailPage = () => {
                 {room.description ||
                   `Уютный ${roomTypeNames[room.roomType].toLowerCase()} номер с современным дизайном и всеми необходимыми удобствами для комфортного проживания. Наслаждайтесь прекрасным видом и качественным сервисом.`}
               </p>
+              {room.id === 1 && (
+                <>
+                  <p>
+                    Двухместный эконом, в основном, заказывают те, кто приехал один. Номерного фонда достаточно, чтобы не подселять соседей. Подойдет для пары друзей или коллег одного пола. Или для семейной пары в ссоре - пока один любуется парком с балкона, другой озлобленно пьет чай. При низкой цене проживания, в номере есть все необходимое для удобства.
+                  </p>
+                  <p>
+                    <strong>В номере:</strong><br />
+                    Wi-Fi<br />
+                    Телевизор<br />
+                    Душ<br />
+                    Туалетные принадлежности<br />
+                    Холодильник<br />
+                    Чайник<br />
+                    Бутилированная вода при заезде
+                  </p>
+                  <p>
+                    <strong>Стоимость:</strong><br />
+                    За одного человека: 2500 руб/сутки<br />
+                    За двух человек: 3000 руб/сутки<br />
+                    Возможна б/н оплата
+                  </p>
+                </>
+              )}
+              {room.id === 2 && (
+                <>
+                  <p>
+                    Двухместный семейный номер-стандарт оснащен одной двуспальной кроватью, что подразумевает заселение пары или одиночки, любящего отдыхать с комфортом. Удобные кресла, стол, большая площадь, шикарный вид из окна - все способствует приятному времяпрепровождению.
+                  </p>
+                  <p>
+                    <strong>В номере:</strong><br />
+                    Wi-Fi<br />
+                    Телевизор<br />
+                    Душ<br />
+                    Туалетные принадлежности<br />
+                    Холодильник<br />
+                    Чайник<br />
+                    Бутилированная вода при заезде
+                  </p>
+                  <p>
+                    <strong>Стоимость:</strong><br />
+                    3800 руб/сутки<br />
+                    Возможна б/н оплата
+                  </p>
+                </>
+              )}
             </RoomDescription>
 
             <InfoGrid>

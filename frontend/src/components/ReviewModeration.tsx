@@ -113,8 +113,8 @@ const ReviewModeration: React.FC<ReviewModerationProps> = ({ user }) => {
     try {
       setLoading(true);
       const response = await reviewService.getModerationReviews(filter, currentPage);
-      setReviews(response.data.reviews as ReviewWithUser[]);
-      setTotalPages(response.data.pagination.totalPages);
+      setReviews(response.reviews as ReviewWithUser[]);
+      setTotalPages(Math.ceil(response.total / 10)); // Предполагаем 10 элементов на страницу
     } catch (error) {
       setError('Ошибка при загрузке отзывов для модерации');
     } finally {
