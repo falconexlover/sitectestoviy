@@ -1,7 +1,0 @@
-node_modules/
-dist/
-coverage/
-*.config.js
-jest.config.js
-logs/
-*.log 
