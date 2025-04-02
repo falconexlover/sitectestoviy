@@ -109,7 +109,7 @@ const RoomCard = styled(motion.div)`
 `;
 
 const RoomImage = styled.div`
-  height: 250px;
+  height: 200px;
   overflow: hidden;
   position: relative;
   

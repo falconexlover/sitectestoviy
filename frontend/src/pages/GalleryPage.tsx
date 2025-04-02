@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { loadGalleryFromStorage, removeImageFromStorage, updateImageInStorage, addImagesToStorage } from '../utils/localStorageUtils';
+import { loadGalleryFromStorage } from '../utils/localStorageUtils';
 import '../assets/css/gallery.css';
 
 // Фейковый импорт анимаций, если модуль не существует
@@ -11,10 +11,11 @@ const fadeIn = {
   exit: { opacity: 0 }
 };
 
-const GallerySection = styled.section`
-  padding: 5rem 0;
-  background-color: var(--bg-color);
-`;
+// Неиспользуемый компонент
+// const GallerySection = styled.section`
+//   padding: 5rem 0;
+//   background-color: var(--bg-color);
+// `;
 
 const GalleryContainer = styled.div`
   max-width: var(--max-width);

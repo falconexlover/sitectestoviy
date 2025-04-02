@@ -3,6 +3,85 @@ import styled from 'styled-components';
 import { RoomType, loadRoomsFromStorage, addRoom, updateRoom, deleteRoom, resetToDefaultRooms } from '../utils/roomsData';
 import RoomForm from './RoomForm';
 
+/**
+ * Функция для изменения размера изображения
+ * @param file - Исходный файл изображения
+ * @param maxWidth - Максимальная ширина выходного изображения
+ * @returns Promise с объектом File уменьшенного размера
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const resizeImage = (file: File, maxWidth: number = 800): Promise<File> => {
+  return new Promise((resolve, reject) => {
+    // Создаем объекты для работы с изображением
+    const reader = new FileReader();
+    const image = new Image();
+    
+    reader.onload = (event) => {
+      if (!event.target?.result) {
+        reject(new Error('Не удалось прочитать файл'));
+        return;
+      }
+      
+      image.onload = () => {
+        // Проверяем, нужно ли изменять размер
+        if (image.width <= maxWidth) {
+          resolve(file); // Если изображение меньше maxWidth, возвращаем исходный файл
+          return;
+        }
+        
+        // Вычисляем новые размеры с сохранением пропорций
+        const ratio = image.height / image.width;
+        const newWidth = maxWidth;
+        const newHeight = Math.round(newWidth * ratio);
+        
+        // Создаем canvas для изменения размера
+        const canvas = document.createElement('canvas');
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+        
+        // Рисуем изображение на canvas
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('Не удалось создать контекст canvas'));
+          return;
+        }
+        
+        ctx.drawImage(image, 0, 0, newWidth, newHeight);
+        
+        // Конвертируем canvas в blob
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            reject(new Error('Не удалось создать blob'));
+            return;
+          }
+          
+          // Создаем новый файл с тем же именем и типом
+          const resizedFile = new File([blob], file.name, {
+            type: file.type,
+            lastModified: Date.now()
+          });
+          
+          resolve(resizedFile);
+        }, file.type, 0.85); // Качество 0.85 (85%)
+      };
+      
+      image.onerror = () => {
+        reject(new Error('Не удалось загрузить изображение'));
+      };
+      
+      // Загружаем URL изображения
+      image.src = event.target.result as string;
+    };
+    
+    reader.onerror = () => {
+      reject(new Error('Не удалось прочитать файл'));
+    };
+    
+    // Читаем файл как Data URL
+    reader.readAsDataURL(file);
+  });
+};
+
 interface RoomsAdminPanelProps {
   onLogout: () => void;
 }

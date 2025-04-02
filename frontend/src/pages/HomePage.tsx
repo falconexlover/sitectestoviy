@@ -22,7 +22,7 @@ const HomePage: React.FC = () => {
   const { contact } = content;
   
   // Координаты отеля
-  const hotelCoordinates: [number, number] = [55.597678, 38.119384]; 
+  const hotelCoordinates: [number, number] = [55.591259, 38.141982]; 
   
   return (
     <>

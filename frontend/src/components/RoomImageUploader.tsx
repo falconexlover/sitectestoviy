@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 
+// Импортируем функцию для изменения размера изображений
+import { resizeImage } from '../utils/imageUpload';
+
 interface RoomImageUploaderProps {
   initialImage?: string;
   onImageChange: (imageData: string) => void;
@@ -177,37 +180,45 @@ const RoomImageUploader: React.FC<RoomImageUploaderProps> = ({ initialImage, onI
     return true;
   };
   
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
     
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       const file = e.dataTransfer.files[0];
-      processFile(file);
+      await processFile(file);
     }
   };
   
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
-      processFile(file);
+      await processFile(file);
     }
   };
   
-  const processFile = (file: File) => {
+  const processFile = async (file: File) => {
     if (validateFile(file)) {
-      const reader = new FileReader();
-      
-      reader.onload = (event) => {
-        if (event.target && typeof event.target.result === 'string') {
-          const imageData = event.target.result;
-          setImage(imageData);
-          onImageChange(imageData);
-        }
-      };
-      
-      reader.readAsDataURL(file);
+      try {
+        // Изменяем размер изображения перед загрузкой
+        const resizedFile = await resizeImage(file, 800);
+        
+        const reader = new FileReader();
+        
+        reader.onload = (event) => {
+          if (event.target && typeof event.target.result === 'string') {
+            const imageData = event.target.result;
+            setImage(imageData);
+            onImageChange(imageData);
+          }
+        };
+        
+        reader.readAsDataURL(resizedFile);
+      } catch (error) {
+        console.error('Ошибка при изменении размера изображения:', error);
+        setError('Не удалось обработать изображение. Пожалуйста, попробуйте другой файл.');
+      }
     }
   };
   

@@ -2,7 +2,7 @@
 import { authService } from './api';
 
 // Ключ для хранения статуса аутентификации в localStorage
-const AUTH_STORAGE_KEY = 'hotel_forest_admin_auth';
+// const AUTH_STORAGE_KEY = 'hotel_forest_admin_auth';
 
 /**
  * Проверка учетных данных администратора
