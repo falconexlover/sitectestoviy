@@ -1,8 +1,0 @@
-node_modules
-.env
-.env.local
-.git
-*.log
-/logs
-/database.sqlite
-/backups 
